@@ -9,7 +9,7 @@
 
 main()
 {
-	level.player_too_many_weapons_monitor = true;
+	level.player_too_many_weapons_monitor = false;
 	level.player_too_many_weapons_monitor_func = ::player_too_many_weapons_monitor;
 	level._dontInitNotifyMessage = 1;
 	
@@ -35,6 +35,8 @@ main()
 	level.zombie_trap_killed_count = 0;
 	level.zombie_pathing_failed = 0;
 	level.zombie_breadcrumb_failed = 0;
+	level.box_hits = 0;
+	level.trap_hits = 0;
 
 	level.zombie_visionset = "zombie_neutral";
 
@@ -198,6 +200,8 @@ post_all_players_connected()
 	
 	maps\_zombiemode_score::init();
 	level difficulty_init();
+
+	level thread hud_sph();
 
 	//thread zombie_difficulty_ramp_up(); 
 
@@ -1615,14 +1619,13 @@ onPlayerSpawned()
 		}
 #/
 
-		self.default_movespeed = 1;
 		self PlayerKnockback( false );
 
 		self SetClientDvars( "cg_thirdPerson", "0",
-			"cg_fov", "90",
-			"cg_thirdPersonAngle", "0",
-			"player_strafeSpeedScale", 1,
-			"player_backSpeedScale", 1 );
+			"cg_fov", "75",
+			"cg_thirdPersonAngle", "0", 
+			"player_backSpeedScale", "1",
+			"player_strafeSpeedScale", "1");
 
 		self SetDepthOfField( 0, 0, 512, 4000, 4, 0 );
 
@@ -1680,6 +1683,64 @@ onPlayerSpawned()
 				self thread player_monitor_travel_dist();	
 
 				self thread player_grenade_watcher();
+
+				if ( level.script == "zombie_cod5_factory" )
+					self.score = 651000;
+				else if ( level.script == "zombie_temple" )
+					self.score = 505000;
+				else
+					self.score = 500000;
+
+				level.chest_moves = 1;
+
+				level thread open_doors();
+				level thread open_windows();
+				level thread turn_on_power();
+				self thread watch_for_trade();
+				self.gamejustloaded = true;
+				self thread give_perks();
+				if ( level.script == "zombie_pentagon" )
+					self thread enable_traps_five();
+				
+				level.wuen = 0;
+				level.bridge = 0;
+				level.ware = 0;
+				
+				chests = getentarray( "treasure_chest_use", "targetname" );
+				for ( i = 0; i < chests.size; i++ )
+				{
+
+					chests[i] thread checkforboxhit();
+
+				}
+
+				wutrap = getentarray( "wuen_electric_trap", "targetname" );
+				watrap = getentarray( "warehouse_electric_trap", "targetname" );
+				brtrap = getentarray( "bridge_electric_trap", "targetname" );
+
+				for ( i = 0; i < wutrap.size; i++ )
+				{
+
+					wutrap[i] thread checkfortraphit( 0 );
+
+				}
+
+				for ( i = 0; i < watrap.size; i++ )
+				{
+
+					watrap[i] thread checkfortraphit( 1 );
+
+				}
+
+				for ( i = 0; i < brtrap.size; i++ )
+				{
+
+					brtrap[i] thread checkfortraphit( 2 );
+
+				}
+
+				wait( 5 );
+				self.gamejustloaded = false;
 				
 			}
 		}
@@ -2038,6 +2099,8 @@ player_revive_monitor()
         
 		bbPrint( "zombie_playerdeaths: round %d playername %s deathtype revived x %f y %f z %f", level.round_number, self.playername, self.origin );
 
+		self thread give_perks();
+
 		//self laststand_giveback_player_perks();
 
 		if ( IsDefined(reviver) )
@@ -2145,10 +2208,10 @@ player_laststand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, s
 	// Grab the perks, we'll give them back to the player if he's revived
 	//self.laststand_perks = maps\_zombiekmode_deathcard::deathcard_save_perks( self );
 
- 	if ( self HasPerk( "specialty_additionalprimaryweapon" ) )
+ 	/#if ( self HasPerk( "specialty_additionalprimaryweapon" ) )
  	{
  		self.weapon_taken_by_losing_specialty_additionalprimaryweapon = self take_additionalprimaryweapon();
- 	}
+ 	}#/
 
 	//AYERS: Working on Laststand Audio
 	/*
@@ -3222,7 +3285,7 @@ round_spawning()
 	//	iPrintLn(spawn_point.targetname + " " + level.zombie_vars["zombie_spawn_delay"]);
 
 		// MM Mix in dog spawns...
-		if ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 )
+		if ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 && isdefined( level.game_started ) && level.game_started == 1 )
 		{
 			spawn_dog = false;
 			if ( level.round_number > 30 )
@@ -3901,6 +3964,21 @@ chalk_round_over()
 
 round_think()
 {
+
+	level.round_number = 100;
+	level.dog_health = 1600;
+	level.first_round = false;
+	level.zombie_vars["zombie_spawn_delay"] = 0.08;
+	level.zombie_move_speed = 105;
+
+	round_pause(3);
+	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
+	level.dog_round_count = 5;
+	level.game_started = 1;
+	level.next_dog_round = 102;
+	level.next_monkey_round = 73;
+	level.next_doc_round = 73;
+
 	for( ;; )
 	{
 		//////////////////////////////////////////
@@ -6571,4 +6649,706 @@ set_sidequest_completed(id)
 	}
 }
 
+open_doors()
+{
+	
+	doors = getentarray( "zombie_door", "targetname" );
+	for ( i = 0; i < doors.size; i++ )
+	{
+		if ( level.script == "zombie_cosmodrome" && i == 1 )
+			continue;
+		else if ( level.script == "zombie_cosmodrome" && i == 2 )
+			continue;
+		else if ( level.script == "zombie_cosmodrome" && i == 4 )
+			continue;
+		else if ( level.script == "zombie_temple" && i == 0 )
+			continue;
+		else if ( level.script == "zombie_cod5_sumpf" && i == 4 )
+			continue;
+		else
+		{
 
+			doors[i] notify( "trigger", get_players()[0], true );
+
+		}
+	
+	}
+
+	debris = getentarray( "zombie_debris", "targetname" );
+	for ( i = 0; i < debris.size; i++ )
+	{
+
+		if ( level.script == "zombie_cod5_factory" && i == 1 )
+			continue;
+		else 
+		{			
+
+			if ( level.script == "zombie_temple" )
+				wait( 0.05 );
+			debris[i] notify( "trigger", get_players()[0], true );
+
+		}
+
+	}
+
+}
+
+open_windows()
+{
+
+	window_boards = getstructarray( "exterior_goal", "targetname" );
+
+	for ( i = 0; i < window_boards.size; i++ )
+	{
+
+		thread clearwindow(window_boards[i]);
+		wait(0.05);
+
+	}
+
+}
+
+clearwindow(window)
+{
+
+	if ( !all_chunks_destroyed(window.barrier_chunks) )
+	{
+		chunks = get_non_destroyed_chunks( window.barrier_chunks ); 
+		for ( j = 0; j < chunks.size; j++ )
+		{
+			
+			window thread maps\_zombiemode_blockers::remove_chunk( chunks[j], window, true );
+			wait_network_frame();
+			wait(0.05);
+
+		}
+			
+		if (all_chunks_destroyed(window.barrier_chunks))
+		{
+
+			if (IsDefined(window.clip))
+			{
+
+				window.clip ConnectPaths();
+				wait( 0.05 ); 
+				window.clip disable_trigger();  
+
+			}
+			else
+			{
+				for( k = 0; k < window.barrier_chunks.size; k++ )
+				{
+					window.barrier_chunks[k] ConnectPaths(); 
+				}
+			}
+		}
+
+		wait_network_frame();	
+
+	}
+
+}
+
+checkforboxhit()
+{
+
+	while ( true )
+	{
+
+		self waittill( "trigger" );
+		level.box_hits++;
+		self waittill( "chest_accessed" );
+
+	}
+
+}
+
+checkfortraphit( trap )
+{
+
+	if ( trap == 0 ) //wuen
+	{
+
+		while ( true )
+		{
+
+			self waittill( "trigger" );
+			if ( level.wuen == 0)
+				level.trap_hits++;
+			level.wuen = 1;
+			self waittill( "available" );
+			level.wuen = 0;
+
+		}
+
+	}
+	else if ( trap == 1 ) //warehouse
+	{
+
+		while ( true )
+		{
+
+			self waittill( "trigger" );
+			if ( level.ware == 0)
+				level.trap_hits++;
+			level.ware = 1;
+			self waittill( "available" );
+			level.ware = 0;
+
+		}
+
+	}
+	else if ( trap == 2 ) //bridge
+	{
+
+		while ( true )
+		{
+
+			self waittill( "trigger" );
+			if ( level.bridge == 0)
+				level.trap_hits++;
+			level.bridge = 1;
+			self waittill( "available" );
+			level.bridge = 0;
+
+		}
+
+	}
+
+}
+
+turn_on_power()
+{
+
+	if ( level.script == "zombie_cod5_factory" )
+	{
+
+		trig = getent( "use_power_switch", "targetname" );
+		wnuen_bridge = getent( "wnuen_bridge", "targetname" );
+		wnuen_bridge waittill( "rotatedone" );
+		trig notify( "trigger" );
+
+		trigger = getent( "trigger_teleport_core", "targetname" );
+
+		wait( 4 );
+
+		for ( i = 0; i < 3; i++ )
+		{
+
+			while ( level.is_cooldown )
+			{
+
+				wait( 0.05 );
+
+			}
+
+			level.teleporter_pad_trig[ i ] notify( "trigger" );
+			wait( 0.05 );
+			trigger notify( "trigger" );
+
+		}
+
+	}
+	else if ( level.script == "zombie_cosmodrome" )
+	{
+
+		/*level.rocket_lifter_arm waittill("rotatedone");
+		wait( 2 );*/
+		trig = getent( "use_elec_switch" , "targetname" );
+		trig notify( "trigger" );
+		/*level.rocket_lifter waittill("movedone");
+		level.rocket_lifter_arm waittill("rotatedone");
+		flag_set( "lander_a_used" );
+		flag_set( "lander_b_used" );
+		flag_set( "lander_c_used" );
+		flag_set( "launch_activated" );
+		level.rocket_lifter waittill("movedone");
+		launch_trig = getent( "trig_launch_rocket" , "targetname" );
+		wait( 2 );
+		launch_trig notify( "trigger" );*/
+
+		upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
+		upper_door_model.clip = GetEnt( upper_door_model.target, "targetname" );
+		upper_door_model.clip LinkTo( upper_door_model ); 
+	
+		upper_door_model MoveTo(upper_door_model.origin + upper_door_model.script_vector, 1.5 );
+		level.pack_a_punch_door MoveTo( level.pack_a_punch_door.origin + level.pack_a_punch_door.script_vector, 1.5 );
+		level.pack_a_punch_door.clip NotSolid();
+		level.pack_a_punch_door waittill( "movedone" );
+		level.pack_a_punch_door.clip ConnectPaths();
+
+		flag_set( "rocket_group" );
+
+	}
+	else if ( level.script == "zombie_temple" )
+	{
+
+		flag_set("left_switch_done");
+		flag_set("right_switch_done");
+
+	}
+	else if ( level.script == "zombie_pentagon" )
+	{
+
+		trig = getent("use_elec_switch","targetname");
+		trig notify( "trigger" );
+
+		wait ( 5 );
+		level.next_thief_round = 1;
+
+	}
+	else if ( level.script == "zombie_cod5_sumpf" )
+	{
+
+		wait(5);
+		zipPowerTrigger = getent("zip_lever_trigger", "targetname");
+		zipPowerTrigger notify( "trigger" );
+
+	}
+
+}
+
+watch_for_trade()
+{
+
+	has_weapon = false;
+	level.trades = 0;
+
+	pap = GetEnt("zombie_vending_upgrade", "targetname");
+
+	if ( level.script == "zombie_cod5_factory" )
+	{
+
+		while ( true )
+		{
+
+			if ( self maps\_zombiemode_weapons::has_weapon_or_upgrade( "tesla_gun_zm" ))
+			{
+
+				if ( !has_weapon )
+				{
+
+					level.trades++;
+
+				}
+
+				has_weapon = true;
+
+			}
+
+			wait ( 0.5 );
+
+			if ( !self maps\_zombiemode_weapons::has_weapon_or_upgrade ( "tesla_gun_zm" ) && pap.current_weapon == "")
+			{
+
+				has_weapon = false;
+
+			}
+
+		}
+
+	}
+	else if ( level.script == "zombie_temple" )
+	{
+
+		while ( true )
+		{
+
+			if ( self maps\_zombiemode_weapons::has_weapon_or_upgrade ( "shrink_ray_zm" ) )
+			{
+
+				if ( !has_weapon )
+				{
+
+					level.trades++;
+
+				}
+
+				has_weapon = true;
+
+			}
+
+			wait ( 0.5 );
+
+			if ( !self maps\_zombiemode_weapons::has_weapon_or_upgrade ( "shrink_ray_zm" ) )
+			{
+
+				has_weapon = false;
+
+			}
+
+		}
+
+	}
+	else if ( level.script == "zombie_cosmodrome" )
+	{
+
+		while ( true )
+		{
+
+			if ( self maps\_zombiemode_weapons::has_weapon_or_upgrade ( "thundergun_zm" ) )
+			{
+
+				if ( !has_weapon )
+				{
+
+					level.trades++;
+
+				}
+
+				has_weapon = true;
+
+			}
+
+			wait ( 0.5 );
+
+			if ( !self maps\_zombiemode_weapons::has_weapon_or_upgrade ( "thundergun_zm" ) )
+			{
+
+				has_weapon = false;
+
+			}
+
+		}
+
+	}
+
+}
+
+give_perks()
+{
+
+	if ( level.script == "zombie_cod5_factory" )
+	{
+
+		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+		wait( 0.05 );
+
+		if ( self.gamejustloaded )
+			self GiveWeapon( "bowie_knife_zm" );
+
+	}
+	else if ( level.script == "zombie_cosmodrome" )
+	{
+
+		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
+		wait( 0.05 );
+
+	}
+	else if ( level.script == "zombie_temple" )
+	{
+
+		if ( self.gamejustloaded )
+		{
+
+			wait ( 2 );
+			self GiveWeapon( "bowie_knife_zm" );
+
+		}
+
+		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
+		wait( 0.05 );
+
+	}
+	else if ( level.script == "zombie_cod5_sumpf" )
+	{
+
+		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+		wait( 0.05 );
+
+		if ( self.gamejustloaded )
+			self GiveWeapon( "tesla_gun_zm" );
+
+	}
+	else if ( level.script == "zombie_pentagon" )
+	{
+
+		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+		wait( 0.05 );
+		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+		wait( 0.05 );
+
+		if ( self.gamejustloaded )
+		{
+
+			self giveweapon( "bowie_knife_zm" );
+			self giveweapon( "crossbow_explosive_upgraded_zm" );
+			self giveweapon( "mpl_zm" );
+			self takeweapon( "m1911_zm" );
+
+		}
+
+	}
+
+}
+
+hud_sph()
+{
+
+	level endon("end_game");
+
+	zombies_this_round = 0;
+	total_zombies = 0;
+	a = 0;
+
+	sph_hud = NewHudElem();
+	sph_hud.horzAlign = "left";
+	sph_hud.vertAlign = "top";
+	sph_hud.alignX = "left";
+	sph_hud.alignY = "top";
+	sph_hud.y += 2;
+	sph_hud.x -= 5;
+	sph_hud.fontScale = 1.3;
+	sph_hud.alpha = 1;
+	sph_hud.hidewheninmenu = 0;
+	sph_hud.foreground = 1;
+	sph_hud.color = ( 1.0, 1.0, 1.0 );	
+	sph_hud.x += 5;
+	sph_hud.label = "SPH: ";
+
+	level waittill ( "start_of_round" );
+	level thread timer_hud();
+	//level thread bo_hud();
+	//level thread tra_hud();
+	level thread trade_hud();
+	start_time = int(gettime() / 1000);
+	sph_hud setValue( 0 );
+
+	while(1)
+	{
+
+		if(sph_hud.alpha != 1)
+		{
+			sph_hud.alpha = 1;
+		}
+		
+		zombies_this_round = level.zombie_total + get_enemy_count();
+		total_zombies = total_zombies + zombies_this_round;
+		hordes = total_zombies / 24;
+		level waittill( "end_of_round" );
+		current_time = int(gettime() / 1000) - start_time;
+		sph = current_time / hordes;
+		sph_hud setValue(sph);
+		wait 0.05;
+		level waittill( "start_of_round" );
+
+	}
+
+}
+
+trade_hud()
+{
+
+	level endon("end_game");
+
+	tradehud = NewHudElem();
+	tradehud.horzAlign = "center";
+	tradehud.vertAlign = "top";
+	tradehud.alignX = "middle";
+	tradehud.alignY = "top";
+	tradehud.fontScale = 1.3;
+	tradehud.alpha = 1;
+	tradehud.hidewheninmenu = 0;
+	tradehud.foreground = 1;
+	tradehud.color = ( 1.0, 1.0, 1.0 );	
+
+	tradehud.x -= 50;
+	tradehud.y += 2;
+	tradehud.label = "Trade Average: ";
+	tradehud setValue( 0 );
+	trade = 0;
+
+	while(1)
+	{
+
+		if(tradehud.alpha != 1)
+		{
+			tradehud.alpha = 1;
+		}
+
+		if ( trade != level.trades )
+		{
+
+			tradehud setValue( level.box_hits / level.trades );
+			trade = level.trades;
+
+		}
+		wait 0.05;
+
+	}
+
+}
+
+timer_hud()
+{
+
+	level endon("end_game");
+
+	timer = NewHudElem();
+	timer.horzAlign = "right";
+	timer.vertAlign = "top";
+	timer.alignX = "right";
+	timer.alignY = "top";
+	timer.y += 2;
+	timer.x -= 5;
+	timer.fontScale = 1.3;
+	timer.alpha = 1;
+	timer.hidewheninmenu = 0;
+	timer.foreground = 1;
+	timer.color = ( 1.0, 1.0, 1.0 );
+
+	timer SetTimerUp(0);
+
+	start_time = int(gettime() / 1000);
+	level.paused_time = 0;
+	
+	while(1)
+	{
+		current_time = int(getTime() / 1000);
+		level.total_time = current_time - level.paused_time - start_time;
+
+		wait 0.05;
+	}
+
+	while (1)
+	{
+		timer setTimer(level.total_time - 0.1);
+		wait 0.5;
+	}
+
+}
+
+bo_hud()
+{
+
+	level endon("end_game");
+
+	box_hud = NewHudElem();
+	box_hud.horzAlign = "center";
+	box_hud.vertAlign = "top";
+	box_hud.alignX = "left";
+	box_hud.alignY = "middle";
+	box_hud.y += 2;
+	box_hud.fontScale = 1.3;
+	box_hud.alpha = 1;
+	box_hud.hidewheninmenu = 0;
+	box_hud.foreground = 1;
+	box_hud.color = ( 1.0, 1.0, 1.0 );	
+
+	box_hud.y += 2;
+	box_hud.x += 5;
+	box_hud.label = "";
+	box_hud setValue( level.box_hits );
+
+	while(1)
+	{
+
+		if(box_hud.alpha != 1)
+		{
+			box_hud.alpha = 1;
+		}
+
+		box_hud setValue( level.box_hits );
+		wait 0.05;
+
+	}
+
+}
+
+tra_hud()
+{
+
+	level endon("end_game");
+
+	trap_hud = NewHudElem();
+	trap_hud.horzAlign = "center";
+	trap_hud.vertAlign = "top";
+	trap_hud.alignX = "left";
+	trap_hud.alignY = "middle";
+	trap_hud.y += 2;
+	trap_hud.fontScale = 1.3;
+	trap_hud.alpha = 1;
+	trap_hud.hidewheninmenu = 0;
+	trap_hud.foreground = 1;
+	trap_hud.color = ( 1.0, 1.0, 1.0 );	
+
+	trap_hud.y += 20;
+	trap_hud.x += 5;
+	trap_hud.label = "";
+	trap_hud setValue( level.trap_hits );
+
+	while(1)
+	{
+
+		if(trap_hud.alpha != 1)
+		{
+			trap_hud.alpha = 1;
+		}
+		
+		trap_hud setValue( level.trap_hits );
+		wait 0.05;
+
+	}
+
+}
+
+enable_traps_five()
+{
+
+	traps_array = getentarray( "trigger_battery_trap_fix", "targetname" );
+	
+	for ( i = 0; i < traps_array.size; i++ )
+	{
+
+		get_players()[0]._trap_piece = 1;
+		traps_array[i] build_trap();
+
+	}
+
+}
+
+build_trap()
+{
+
+	self notify( "trigger", get_players()[0] );
+	wait( 1 );
+
+}
