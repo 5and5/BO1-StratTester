@@ -38,6 +38,7 @@ main()
 	level.box_hits = 0;
 	level.trap_hits = 0;
 
+
 	level.zombie_visionset = "zombie_neutral";
 
 	if(GetDvar("anim_intro") == "1")
@@ -3964,10 +3965,7 @@ chalk_round_over()
 
 round_think()
 {
-
-	level.round_number = 100;
 	level.dog_health = 1600;
-	level.first_round = false;
 	level.zombie_vars["zombie_spawn_delay"] = 0.08;
 	level.zombie_move_speed = 105;
 
@@ -3981,6 +3979,7 @@ round_think()
 
 	for( ;; )
 	{
+
 		//////////////////////////////////////////
 		//designed by prod DT#36173
 		maxreward = 50 * level.round_number;
@@ -4011,6 +4010,10 @@ round_think()
 		level thread [[level.round_spawn_func]]();
 
 		level notify( "start_of_round" );
+
+		//reset kill tracker at the beginning of every round -TTS
+		level.global_zombies_killed_round = 0;
+		level.current_round_start_time = int(gettime() / 1000);
 
 		[[level.round_wait_func]]();
 
@@ -4044,18 +4047,6 @@ round_think()
 		// 
 		// Increase the zombie move speed
 		level.zombie_move_speed = level.round_number * level.zombie_vars["zombie_move_speed_multiplier"];
-
-// 		iPrintlnBold( "End of Round " + level.round_number );
-// 		for ( i=0; i<level.team_pool.size; i++ )
-// 		{
-// 			iPrintlnBold( "Team Pool "+(i+1)+" score: ", level.team_pool[i].score_total );
-// 		}
-// 
-// 		players = get_players();
-// 		for ( p=0; p<players.size; p++ )
-// 		{
-// 			iPrintlnBold( "Total Player "+(p+1)+" score : "+ players[p].score_total );
-// 		}
 
 		level.round_number++;
 
@@ -7125,10 +7116,6 @@ hud_sph()
 
 	level endon("end_game");
 
-	zombies_this_round = 0;
-	total_zombies = 0;
-	a = 0;
-
 	sph_hud = NewHudElem();
 	sph_hud.horzAlign = "left";
 	sph_hud.vertAlign = "top";
@@ -7149,7 +7136,7 @@ hud_sph()
 	//level thread bo_hud();
 	//level thread tra_hud();
 	level thread trade_hud();
-	start_time = int(gettime() / 1000);
+	
 	sph_hud setValue( 0 );
 
 	while(1)
@@ -7160,15 +7147,14 @@ hud_sph()
 			sph_hud.alpha = 1;
 		}
 		
-		zombies_this_round = level.zombie_total + get_enemy_count();
-		total_zombies = total_zombies + zombies_this_round;
-		hordes = total_zombies / 24;
-		level waittill( "end_of_round" );
-		current_time = int(gettime() / 1000) - start_time;
-		sph = current_time / hordes;
+		zombies_thus_far = level.global_zombies_killed;
+		hordes = zombies_thus_far / 24;
+		// level waittill( "end_of_round" );
+		current_time = int(gettime() / 1000) - level.current_round_start_time;
+		level.round_seconds_per_horde = current_time / hordes;
 		sph_hud setValue(sph);
-		wait 0.05;
-		level waittill( "start_of_round" );
+		wait 1;
+		// level waittill( "start_of_round" );
 
 	}
 
