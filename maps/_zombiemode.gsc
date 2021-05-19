@@ -3144,7 +3144,7 @@ default_max_zombie_func( max_num )
 {
 	max = max_num;
 
-	if ( level.first_round )
+	if ( level.first_round && level.round_number == 1 )
 	{
 		max = int( max_num * 0.25 );	
 	}
@@ -3749,7 +3749,7 @@ chalk_one_up()
 	{
 		level.doground_nomusic = 0;
 	}
-	if( level.first_round )
+	if( level.first_round && level.round_number == 1)
 	{
 		intro = true;
 		if( isdefined( level._custom_intro_vox ) )
@@ -3967,8 +3967,8 @@ chalk_round_over()
 round_think()
 {
 	level.dog_health = 1600;
-	level.zombie_vars["zombie_spawn_delay"] = 0.08;
-	level.zombie_move_speed = 105;
+	// level.zombie_vars["zombie_spawn_delay"] = 0.08;
+	// level.zombie_move_speed = 105;
 
 	round_pause(3);
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
@@ -4016,6 +4016,25 @@ round_think()
 		level.global_zombies_killed_round = 0;
 		level.current_round_start_time = int(gettime() / 1000);
 
+		//This makes it so starting on a particular round makes the spawn delay
+		//Be consistent with the round you skip to. -TTS
+		level.zombie_vars["zombie_spawn_delay"] = 2;
+		timer = level.zombie_vars["zombie_spawn_delay"];
+		for(i = 0; i < level.round_number; i++) {
+			if(level.zombie_vars["zombie_spawn_delay"] > .08) {
+				level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
+			}			
+			else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
+				level.zombie_vars["zombie_spawn_delay"] = .08;
+			}
+		}
+		iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
+
+		// 
+		// Increase the zombie move speed
+		level.zombie_move_speed = level.round_number * level.zombie_vars["zombie_move_speed_multiplier"];
+		iprintln("Move Speed: " + level.zombie_move_speed);
+
 		[[level.round_wait_func]]();
 
 		level.first_round = false;
@@ -4033,21 +4052,6 @@ round_think()
 
 		//		round_text( &"ZOMBIE_ROUND_END" );
 		level chalk_round_over();
-
-		// here's the difficulty increase over time area
-		timer = level.zombie_vars["zombie_spawn_delay"];
-		if ( timer > 0.08 )
-		{
-			level.zombie_vars["zombie_spawn_delay"] = timer * 0.95;
-		}
-		else if ( timer < 0.08 )
-		{
-			level.zombie_vars["zombie_spawn_delay"] = 0.08;
-		}
-
-		// 
-		// Increase the zombie move speed
-		level.zombie_move_speed = level.round_number * level.zombie_vars["zombie_move_speed_multiplier"];
 
 		level.round_number++;
 
@@ -7145,7 +7149,7 @@ hud_sph()
 	sph_hud.foreground = 1;
 	sph_hud.color = ( 1.0, 1.0, 1.0 );	
 	sph_hud.x += 5;
-	sph_hud.label = "SPH: ";
+	sph_hud.label = "Seconds Per Horde: ";
 
 	level waittill ( "start_of_round" );
 	level thread timer_hud();
@@ -7163,7 +7167,7 @@ hud_sph()
 			sph_hud.alpha = 1;
 		}
 		
-		zombies_thus_far = level.global_zombies_killed;
+		zombies_thus_far = level.global_zombies_killed_round;
 		hordes = zombies_thus_far / 24;
 		// level waittill( "end_of_round" );
 		current_time = int(gettime() / 1000) - level.current_round_start_time;
