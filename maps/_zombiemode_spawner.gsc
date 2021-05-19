@@ -33,56 +33,71 @@ init()
 
 track_players_intersection_tracker()
 {
-	self endon("disconnect");
-	self endon("death");
+	self endon( "disconnect" );
+	self endon( "death" );
 	level endon( "end_game" );
+
+	wait( 5 );
 	
-	wait(5);
-	
-	while(1)
+	while ( 1 )
 	{
 		killed_players = false;
 		players = get_players();
-		for(i=0;i<players.size;i++)
+		for ( i = 0; i < players.size; i++ )
 		{
 			if ( players[i] maps\_laststand::player_is_in_laststand() || "spectator" == players[i].sessionstate )
 			{
 				continue;
 			}
-
-			for(j=0;j<players.size;j++)
+			
+			for ( j = 0; j < players.size; j++ )
 			{
 				if ( i == j || players[j] maps\_laststand::player_is_in_laststand() || "spectator" == players[j].sessionstate )
 				{
 					continue;
+				}
+				
+				if ( isDefined( level.player_intersection_tracker_override ) )
+				{
+					if ( players[i] [[level.player_intersection_tracker_override]]( players[j] ) )
+					{
+						continue;
+					}
 				}
 
 				playerI_origin = players[i].origin;
 				playerJ_origin = players[j].origin;
 				
 				//Check height first
-				if( abs(playerI_origin[2] - playerJ_origin[2] ) > 60 )
+				if ( abs(playerI_origin[2] - playerJ_origin[2] ) > 60 )
 					continue;
 					
 				//Check 2d distance	
 				distance_apart = distance2d( playerI_origin, playerJ_origin );
 				//IPrintLnBold( "player=", i, ",", j, "distance_apart=", distance_apart );
 				
-				if( abs(distance_apart) > 18 )
+				if ( abs(distance_apart) > 18 )
 					continue;
 					
 				//IPrintLnBold( "PLAYERS ARE TOO FRIENDLY!!!!!" );
-				players[i] dodamage( 1000, (0,0,0) );
-				players[j] dodamage( 1000, (0,0,0) );
+				players[i] dodamage( 1000, (0, 0, 0) );
+				players[j] dodamage( 1000, (0, 0, 0) );
 
 				if ( !killed_players )
 				{
-					players[i] playsound( "zmb_laugh_child" );
+					if( is_true( level.player_4_vox_override ) )
+					{
+						players[i] playlocalsound( "zmb_laugh_rich" );
+					}
+					else
+					{
+						players[i] playlocalsound( "zmb_laugh_child" );	
+					}
 				}
 				killed_players = true;
 			}	
 		}
-		wait(.5);	
+		wait( .5 );
 	}
 }
 
@@ -111,6 +126,17 @@ is_spawner_targeted_by_blocker( ent )
 
 	return false;
 }
+
+add_cusom_zombie_spawn_logic(func)
+{
+	if(!IsDefined(level._zombie_custom_spawn_logic))
+	{
+		level._zombie_custom_spawn_logic = [];
+	}
+	
+	level._zombie_custom_spawn_logic[level._zombie_custom_spawn_logic.size] = func;
+}
+
 
 // set up zombie walk cycles
 zombie_spawn_init( animname_set )
@@ -182,6 +208,21 @@ zombie_spawn_init( animname_set )
 	self thread zombie_gib_on_damage(); 
 	self thread zombie_damage_failsafe();
 
+	if(IsDefined(level._zombie_custom_spawn_logic))
+	{
+		if(IsArray(level._zombie_custom_spawn_logic))
+		{
+			for(i = 0; i < level._zombie_custom_spawn_logic.size; i ++)
+			{
+			self thread [[level._zombie_custom_spawn_logic[i]]]();
+			}
+		}
+		else
+		{
+			self thread [[level._zombie_custom_spawn_logic]]();
+		}
+	}
+		
 	// MM - mixed zombies test
 // 	if ( flag( "crawler_round" ) || 
 // 		 ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 &&
@@ -201,6 +242,7 @@ zombie_spawn_init( animname_set )
 	self.flame_damage_time = 0;
 
 	self.meleeDamage = 60;	// 45
+	self.no_powerups = true;
 	
 	self zombie_history( "zombie_spawn_init -> Spawned = " + self.origin );
 
@@ -215,6 +257,12 @@ zombie_spawn_init( animname_set )
 		self [[level.achievement_monitor_func]]();
 	}
 
+	if ( isDefined( level.zombie_init_done ) )
+	{
+		self [[ level.zombie_init_done ]]();
+	}
+
+	self.zombie_init_done = true;
 	self notify( "zombie_init_done" );
 }
 
@@ -382,16 +430,22 @@ zombie_think()
 		self thread do_zombie_rise();
 		self waittill("risen", find_flesh_struct_string );
 	}
-	else if ( GetDvarInt( #"zombie_fall_test") || (IsDefined(self.script_string) && self.script_string == "faller"))
-	{
-		self thread do_zombie_fall();
-		self waittill("fallen", find_flesh_struct_string );
-	}
 	else
 	{
 		self notify("no_rise");
 	}
-	
+
+	// RAVEN BEGIN bhackbarth: Add callback to allow custom functionality similar to that of the riser
+	if ( IsDefined(level.zombie_custom_think_logic) )
+	{
+		shouldWait = self [[ level.zombie_custom_think_logic ]]();
+		if ( shouldWait )
+		{
+			self waittill("zombie_custom_think_done", find_flesh_struct_string);
+		}
+	}
+	// RAVEN END
+
 	node = undefined;
 
 	desired_nodes = [];
@@ -436,6 +490,7 @@ zombie_think()
 		}
 
 		self thread find_flesh();
+		self zombie_complete_emerging_into_playable_area();
 		return;	
 	}
 	else
@@ -570,6 +625,11 @@ zombie_goto_entrance( node, endon_bad_path )
 	}
 	
 	self thread find_flesh();
+
+	// wait for them to traverse out of the spawn closet
+	self waittill( "zombie_start_traverse" );
+	self waittill( "zombie_end_traverse" );
+	self zombie_complete_emerging_into_playable_area();
 }
 
 // Here the zombies constantly search 
@@ -763,6 +823,10 @@ tear_into_building()
 		// Now tear down boards
 		while( 1 )
 		{
+			if(isDefined(self.zombie_board_tear_down_callback))
+			{
+				self [[self.zombie_board_tear_down_callback]]();
+			}
 			
 			//chunk = priority_board_bar_selection( self.origin, self.first_node.barrier_chunks);
 			
@@ -1104,9 +1168,9 @@ zombie_tear_notetracks( msg, chunk, node )
 			if( !chunk.destroyed )
 			{
 				self.lastchunk_destroy_time = getTime();
-				PlayFx( level._effect["wood_chunk_destory"], chunk.origin );				
+				//PlayFx( level._effect["wood_chunk_destory"], chunk.origin );				
 				// jl created another function for dust so we create offsets with its timing
-				if(chunk.script_noteworthy == "4" || chunk.script_noteworthy == "6")
+				if(chunk.script_noteworthy == "4" || chunk.script_noteworthy == "6" || chunk.script_noteworthy == "5" || chunk.script_noteworthy == "1")
 				{
 					chunk thread zombie_boardtear_offset_fx_horizontle(chunk, node);
 				}
@@ -1363,67 +1427,134 @@ bar_repair_bend_right( bar_bend_right, chunk )
 // need to add this to the boards
 zombie_boardtear_offset_fx_horizontle( chunk, node )
 {
-		// DCS 090110: fx for breaking out glass or wall.
-		if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "repair_board" ) )
-		{
-			if(IsDefined(chunk.unbroken) && chunk.unbroken == true)
-			{ 
-				if(IsDefined(chunk.material) && chunk.material == "glass")
+	// DCS 090110: fx for breaking out glass or wall.
+	if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "repair_board"  || chunk.script_parameters == "board") )
+	{
+		if(IsDefined(chunk.unbroken) && chunk.unbroken == true)
+		{ 
+			if(IsDefined(chunk.material) && chunk.material == "glass")
+			{
+				PlayFX( level._effect["glass_break"], chunk.origin, node.angles );
+				chunk.unbroken = false;
+			}
+			else if(IsDefined(chunk.material) && chunk.material == "metal")
+			{
+				PlayFX( level._effect["fx_zombie_bar_break"], chunk.origin );
+				chunk.unbroken = false;
+			}
+			else if(IsDefined(chunk.material) && chunk.material == "rock")
+			{
+				if(	is_true(level.use_clientside_rock_tearin_fx))
 				{
-					PlayFX( level._effect["glass_break"], chunk.origin, node.angles );
-					chunk.unbroken = false;
-				}
-				else if(IsDefined(chunk.material) && chunk.material == "metal")
-				{
-					PlayFX( level._effect["fx_zombie_bar_break"], chunk.origin );
-					chunk.unbroken = false;
+					chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_ROCK_FX);
 				}
 				else
 				{
 					PlayFX( level._effect["wall_break"], chunk.origin );
-					chunk.unbroken = false;
 				}
+				chunk.unbroken = false;
 			}
-		}		
+		}
+	}
+	if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "barricade_vents" ) )
+	{
+		if(	is_true(level.use_clientside_board_fx))
+		{
+			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_BOARD_HORIZONTAL_FX);
+		}
 		else
-		{	
+		{
+			PlayFX( level._effect["fx_zombie_bar_break"], chunk.origin );
+		}
+	}	
+	else if(IsDefined(chunk.material) && chunk.material == "rock")
+	{
+		if(	is_true(level.use_clientside_rock_tearin_fx))
+		{
+			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_ROCK_FX);
+		}
+	}
+			
+	else
+	{	
+		if(isDefined(level.use_clientside_board_fx))
+		{
+			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_BOARD_HORIZONTAL_FX);
+		}
+		else
+		{
 			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (0, 0, 30));
 			wait( randomfloat( 0.2, 0.4 ));
 			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (0, 0, -30));
 		}	
+	}
 }
 
 zombie_boardtear_offset_fx_verticle( chunk, node )
 {
-		// DCS 090110: fx for breaking out glass or wall.
-		if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "repair_board" ) )
-		{
-			if(IsDefined(chunk.unbroken) && chunk.unbroken == true)
-			{ 
-				if(IsDefined(chunk.material) && chunk.material == "glass")
+	// DCS 090110: fx for breaking out glass or wall.
+	if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "repair_board"  || chunk.script_parameters == "board") )
+	{
+		if(IsDefined(chunk.unbroken) && chunk.unbroken == true)
+		{ 
+			if(IsDefined(chunk.material) && chunk.material == "glass")
+			{
+				PlayFX( level._effect["glass_break"], chunk.origin, node.angles );
+				chunk.unbroken = false;
+			}
+			else if(IsDefined(chunk.material) && chunk.material == "metal")
+			{
+				PlayFX( level._effect["fx_zombie_bar_break"], chunk.origin );
+				chunk.unbroken = false;
+			}
+			else if(IsDefined(chunk.material) && chunk.material == "rock")
+			{
+				if(	is_true(level.use_clientside_rock_tearin_fx))
 				{
-					PlayFX( level._effect["glass_break"], chunk.origin, node.angles );
-					chunk.unbroken = false;
-				}
-				else if(IsDefined(chunk.material) && chunk.material == "metal")
-				{
-					PlayFX( level._effect["fx_zombie_bar_break"], chunk.origin );
-					chunk.unbroken = false;
+					chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_ROCK_FX);
 				}
 				else
 				{
 					PlayFX( level._effect["wall_break"], chunk.origin );
-					chunk.unbroken = false;
 				}
+				chunk.unbroken = false;
 			}
-		}	
-		else	
-		{		
+		}
+	}
+	if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "barricade_vents" ) )
+	{
+		
+		if(isDefined(level.use_clientside_board_fx))
+		{
+			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_BOARD_VERTICAL_FX);
+		}
+		else
+		{
+			PlayFX( level._effect["fx_zombie_bar_break"], chunk.origin );
+		}
+	}	
+	else if(IsDefined(chunk.material) && chunk.material == "rock")
+	{
+		if(	is_true(level.use_clientside_rock_tearin_fx))
+		{
+			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_ROCK_FX);
+		}
+	}			
+	else	
+	{		
+		if(isDefined(level.use_clientside_board_fx))
+		{
+			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_BOARD_VERTICAL_FX);
+		}
+		else
+		{
 			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (30, 0, 0));
 			wait( randomfloat( 0.2, 0.4 ));
 			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (-30, 0, 0));
-		}	
+		}
+	}
 }
+
 
 zombie_bartear_offset_fx_verticle( chunk )
 {
@@ -1653,28 +1784,6 @@ check_for_zombie_death(zombie)
 
 get_tear_anim( chunk, zombo ) // zombo is self
 {
-
-	//level._zombie_board_tearing["left"]["one"] = %ai_zombie_boardtear_l_1;
-	//level._zombie_board_tearing["left"]["two"] = %ai_zombie_boardtear_l_2;
-	//level._zombie_board_tearing["left"]["three"] = %ai_zombie_boardtear_l_3;
-	//level._zombie_board_tearing["left"]["four"] = %ai_zombie_boardtear_l_4;
-	//level._zombie_board_tearing["left"]["five"] = %ai_zombie_boardtear_l_5;
-	//level._zombie_board_tearing["left"]["six"] = %ai_zombie_boardtear_l_6;
-
-	//level._zombie_board_tearing["middle"]["one"] = %ai_zombie_boardtear_m_1;
-	//level._zombie_board_tearing["middle"]["two"] = %ai_zombie_boardtear_m_2;
-	//level._zombie_board_tearing["middle"]["three"] = %ai_zombie_boardtear_m_3;
-	//level._zombie_board_tearing["middle"]["four"] = %ai_zombie_boardtear_m_4;
-	//level._zombie_board_tearing["middle"]["five"] = %ai_zombie_boardtear_m_5;
-	//level._zombie_board_tearing["middle"]["six"] = %ai_zombie_boardtear_m_6;
-
-	//level._zombie_board_tearing["right"]["one"] = %ai_zombie_boardtear_r_1;
-	//level._zombie_board_tearing["right"]["two"] = %ai_zombie_boardtear_r_2;
-	//level._zombie_board_tearing["right"]["three"] = %ai_zombie_boardtear_r_3;
-	//level._zombie_board_tearing["right"]["four"] = %ai_zombie_boardtear_r_4;
-	//level._zombie_board_tearing["right"]["five"] = %ai_zombie_boardtear_r_5;
-	//level._zombie_board_tearing["right"]["six"] = %ai_zombie_boardtear_r_6;
-	
 	anims = [];
 	anims[anims.size] = %ai_zombie_door_tear_high;
 	anims[anims.size] = %ai_zombie_door_tear_low;
@@ -1687,9 +1796,6 @@ get_tear_anim( chunk, zombo ) // zombo is self
 	
 	tear_anim = anims[RandomInt( anims.size )];
 	
-	
-	//chunk1 = get_tear_anim(chunk, self);// tto many embbedddeed functions	
-
 //---------------------------STANDING-----------------------------------------------------------
 	if(isdefined(chunk.script_parameters))
 	{
@@ -1784,18 +1890,14 @@ get_tear_anim( chunk, zombo ) // zombo is self
 					{
 						if(chunk.script_noteworthy == "1")
 						{
-		
 							tear_anim = %ai_zombie_boardtear_r_1;
-		
 						}
 						else if(chunk.script_noteworthy == "3")
 						{
-		
 							tear_anim = %ai_zombie_boardtear_r_3;
 						}
 						else if(chunk.script_noteworthy == "4")
 						{
-		
 							tear_anim = %ai_zombie_boardtear_r_4;
 						}
 						else if(chunk.script_noteworthy == "5")
@@ -1850,19 +1952,297 @@ get_tear_anim( chunk, zombo ) // zombo is self
 					}
 				}
 			}
-		}		
-	}
+			else if( self.has_legs == false )
+			{
 		
+				if(isdefined(chunk.script_noteworthy))
+				{
+		
+					if(zombo.attacking_spot_index == 0)
+					{
+						if(chunk.script_noteworthy == "1")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_m_1;
+		
+						}
+						else if(chunk.script_noteworthy == "2")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_m_2;
+						}
+						else if(chunk.script_noteworthy == "3")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_m_3;
+						}
+						else if(chunk.script_noteworthy == "4")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_m_4;
+						}
+						else if(chunk.script_noteworthy == "5")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_m_5;
+						}
+						else if(chunk.script_noteworthy == "6")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_m_6;
+						}
+		
+					}
+					else if(zombo.attacking_spot_index == 1)
+					{
+						if(chunk.script_noteworthy == "1")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_r_1;
+		
+						}
+						else if(chunk.script_noteworthy == "3")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_r_3;
+						}
+						else if(chunk.script_noteworthy == "4")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_r_4;
+						}
+						else if(chunk.script_noteworthy == "5")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_r_5;
+						}
+						else if(chunk.script_noteworthy == "6")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_6;
+						}
+						else if(chunk.script_noteworthy == "2")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_r_2;
+						}
+		
+					}
+					else if(zombo.attacking_spot_index == 2)
+					{
+						if(chunk.script_noteworthy == "1")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_l_1;
+		
+						}
+						else if(chunk.script_noteworthy == "2")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_l_2;
+						}
+						else if(chunk.script_noteworthy == "4")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_l_4;
+						}
+						else if(chunk.script_noteworthy == "5")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_l_5;
+						}
+						else if(chunk.script_noteworthy == "6")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_6;
+						}
+						else if(chunk.script_noteworthy == "3")
+						{
+		
+							tear_anim = %ai_zombie_boardtear_crawl_l_3;
+						}
 	
+					}
+				}
+			}			
+		}		
+		else if( chunk.script_parameters == "barricade_vents")
+		{
+			if( self.has_legs )
+			{
+				if(zombo.attacking_spot_index == 0)
+				{
+					if(chunk.script_noteworthy == "1")
+					{
+						tear_anim = %ai_zombie_boardtear_m_1;
+					}								
+					if(chunk.script_noteworthy == "2") 
+					{
+						tear_anim = %ai_zombie_boardtear_m_4;
+					}									
+					if(chunk.script_noteworthy == "3") 
+					{
+						tear_anim = %ai_zombie_boardtear_m_3;
+					}									
+					if(chunk.script_noteworthy == "4")
+					{
+						tear_anim = %ai_zombie_boardtear_m_5;
+					}									
+					if(chunk.script_noteworthy == "5")
+					{
+						tear_anim = %ai_zombie_boardtear_m_2;
+					}									
+					if(chunk.script_noteworthy == "6")
+					{
+						tear_anim = %ai_zombie_boardtear_m_6;
+					}									
+				}
+				else if(zombo.attacking_spot_index == 1) // right
+				{
+					if(chunk.script_noteworthy == "1")
+					{
+						tear_anim = %ai_zombie_boardtear_r_1;
+					}
+					else if(chunk.script_noteworthy == "3")
+					{
+						tear_anim = %ai_zombie_boardtear_r_3;
+					}
+					else if(chunk.script_noteworthy == "4")
+					{
+						tear_anim = %ai_zombie_boardtear_r_4;
+					}
+					else if(chunk.script_noteworthy == "5")
+					{
+						tear_anim = %ai_zombie_boardtear_r_5;
+					}
+					else if(chunk.script_noteworthy == "6")
+					{
+						tear_anim = %ai_zombie_boardtear_r_6;
+					}
+					else if(chunk.script_noteworthy == "2")
+					{
+						tear_anim = %ai_zombie_boardtear_r_2;
+					}
+				}
+				else if(zombo.attacking_spot_index == 2) // left
+				{
+					if(chunk.script_noteworthy == "1")
+					{
+						tear_anim = %ai_zombie_boardtear_l_1;
+					}
+					else if(chunk.script_noteworthy == "2")
+					{
+						tear_anim = %ai_zombie_boardtear_l_2;
+					}
+					else if(chunk.script_noteworthy == "4")
+					{
+						tear_anim = %ai_zombie_boardtear_l_4;
+					}
+					else if(chunk.script_noteworthy == "5")
+					{
+						tear_anim = %ai_zombie_boardtear_l_5;
+					}
+					else if(chunk.script_noteworthy == "6")
+					{
+						tear_anim = %ai_zombie_boardtear_l_6;
+					}
+					else if(chunk.script_noteworthy == "3")
+					{
+						tear_anim = %ai_zombie_boardtear_l_3;
+					}
+				}
+			}
+			if( self.has_legs == false )
+			{
+				if(isdefined(chunk.script_noteworthy))
+				{
+					if(zombo.attacking_spot_index == 0)
+					{
+						if(chunk.script_noteworthy == "1")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_m_1;
+						}
+						else if(chunk.script_noteworthy == "2")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_m_2;
+						}
+						else if(chunk.script_noteworthy == "3")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_m_3;
+						}
+						else if(chunk.script_noteworthy == "4")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_m_4;
+						}
+						else if(chunk.script_noteworthy == "5")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_m_5;
+						}
+						else if(chunk.script_noteworthy == "6")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_m_6;
+						}
+					}
+					else if(zombo.attacking_spot_index == 1)
+					{
+						if(chunk.script_noteworthy == "1")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_1;
+						}
+						else if(chunk.script_noteworthy == "3")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_3;
+						}
+						else if(chunk.script_noteworthy == "4")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_4;
+						}
+						else if(chunk.script_noteworthy == "5")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_5;
+						}
+						else if(chunk.script_noteworthy == "6")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_6;
+						}
+						else if(chunk.script_noteworthy == "2")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_r_2;
+						}
+					}
+					else if(zombo.attacking_spot_index == 2)
+					{
+						if(chunk.script_noteworthy == "1")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_1;
+						}
+						else if(chunk.script_noteworthy == "2")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_2;
+						}
+						else if(chunk.script_noteworthy == "4")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_4;
+						}
+						else if(chunk.script_noteworthy == "5")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_5;
+						}
+						else if(chunk.script_noteworthy == "6")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_6;
+						}
+						else if(chunk.script_noteworthy == "3")
+						{
+							tear_anim = %ai_zombie_boardtear_crawl_l_3;
+						}
+					}
+				}
+			}			
+		}		
 	// jl new code	
 	// bar 5 and 3 now get bent they do not get thrown off
 	// swap four and six for priority
-	if(isdefined(chunk.script_parameters))
-	{
-		
-		if( chunk.script_parameters == "bar" ) // jl this is a new check to see if it is a board then do board anims, this needs to hold the entire function
+		else if( chunk.script_parameters == "bar" )
 		{
-			
 			if( self.has_legs )
 			{	
 	
@@ -1977,16 +2357,118 @@ get_tear_anim( chunk, zombo ) // zombo is self
 					}
 				}
 			}
+			if( self.has_legs == false )
+			{	
+	
+				if(isdefined(chunk.script_noteworthy))
+				{
+		
+					if(zombo.attacking_spot_index == 0)
+					{
+						if(chunk.script_noteworthy == "1") // second to right
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_m_2;
+		
+						}
+						else if(chunk.script_noteworthy == "2") // far right
+						{
+							
+							tear_anim = %ai_zombie_bartear_crawl_m_3;
+							//tear_anim = %ai_zombie_bartear_m_2; this is the old
+						}
+						else if(chunk.script_noteworthy == "3") // second bar from left
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_m_1;
+						}
+						else if(chunk.script_noteworthy == "4") // high bar
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_m_5; 
+						}
+						else if(chunk.script_noteworthy == "5") // this is the far left
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_m_4;
+						}
+						else if(chunk.script_noteworthy == "6") // this is low bar
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_m_6;
+						}
+		
+					}
+					else if(zombo.attacking_spot_index == 1)
+					{
+						if(chunk.script_noteworthy == "1") // this looks good this is second to right
+						{
+							tear_anim = %ai_zombie_bartear_crawl_r_2; // anim second bar from right
+						}
+						else if(chunk.script_noteworthy == "3") // this is the far right
+						{
+							tear_anim = %ai_zombie_bartear_crawl_r_1; // anim  this is far right
+						}
+						else if(chunk.script_noteworthy == "2") // this is second to left
+						{
+							tear_anim = %ai_zombie_bartear_crawl_r_3; // anim this grabs the sedonc bar from the left
+						}
+						else if(chunk.script_noteworthy == "5") // this is far left 
+						{
+							tear_anim = %ai_zombie_bartear_crawl_r_4; // anim this tears the far left
+						}
+						else if(chunk.script_noteworthy == "6") // this looks good this is the low bar
+						{
+							tear_anim = %ai_zombie_bartear_crawl_r_6; // anim low grabs
+						}
+						else if(chunk.script_noteworthy == "4") // this is the reference for the high bar
+						{
+							tear_anim = %ai_zombie_bartear_crawl_r_5; // anim this is the high grab 
+							//tear_anim = %ai_zombie_bartear_r_3; this is what it used to be middle left
+						}
+						
+		
+					}
+					else if(zombo.attacking_spot_index == 2)
+					{
+						if(chunk.script_noteworthy == "1") // second bar to the right
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_l_2;
+		
+						}
+						else if(chunk.script_noteworthy == "2") // this is second to the left
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_l_3;
+						}
+						else if(chunk.script_noteworthy == "4") // this is the high bar
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_l_5;
+						}
+						else if(chunk.script_noteworthy == "5") // this is the far left
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_l_4;
+						}
+						else if(chunk.script_noteworthy == "6") // this is the low bar
+						{
+							tear_anim = %ai_zombie_bartear_crawl_l_6;
+						}
+						else if(chunk.script_noteworthy == "3") // this is the far right
+						{
+		
+							tear_anim = %ai_zombie_bartear_crawl_l_1;
+						}
+		
+					}
+				}
+			}			
 		}
-	}
-		
-		
-		
-	// jl added grate	
-	// I need to set up the crate here
-	if(isdefined(chunk.script_parameters))
-	{
-		if( chunk.script_parameters == "grate" ) // jl this is new check to see if it is a board then do board anims, this needs to hold the entire function
+		// jl added grate	
+		// I need to set up the crate here
+		else if( chunk.script_parameters == "grate" ) // jl this is new check to see if it is a board then do board anims, this needs to hold the entire function
 		{
 
 			if( self.has_legs )
@@ -2102,425 +2584,6 @@ get_tear_anim( chunk, zombo ) // zombo is self
 			}
 		}		
 	}
-		
-		
-		// using old anims but needs alot of work
-		/*
-		if( chunk.script_parameters == "grate" ) // jl this is a new check to see if it is a board then do board anims, this needs to hold the entire function
-		{
-			
-			if( self.has_legs )
-			{	
-	
-				if(isdefined(chunk.script_noteworthy))
-				{
-		
-					if(zombo.attacking_spot_index == 0) // center
-					{
-						if(chunk.script_noteworthy == "1") 
-						{
-							tear_anim = tear_anim; // second bar from right
-							// I can send a notify from here that one type of board is removed but I need to know what window it is from
-						}
-						else if(chunk.script_noteworthy == "2") // far right
-						{
-							tear_anim = tear_anim;
-							//tear_anim = %ai_zombie_bartear_m_2; this is the old
-						}
-						else if(chunk.script_noteworthy == "3") // second bar from right
-						{
-							tear_anim = tear_anim; // new tear anim
-							// alignment is too off
-						}
-						else if(chunk.script_noteworthy == "4") // high bar
-						{
-							tear_anim = tear_anim; 
-						}
-						else if(chunk.script_noteworthy == "5") // this is the far left , this bar now bends it does not leave
-						{
-							tear_anim = tear_anim; // this is off
-						}
-						else if(chunk.script_noteworthy == "6") // this is low bar
-						{
-							tear_anim = %ai_zombie_bartear_m_4;
-							
-							if( 50 > RandomIntRange( 1, 100 ) )
-							{
-								tear_anim = %ai_zombie_bartear_m_4;
-							}
-							
-							if ( 50 < RandomIntRange( 1, 100 ) )
-							{
-								tear_anim = %ai_zombie_bartear_m_6;
-							}
-							
-						}
-		
-					}
-					else if(zombo.attacking_spot_index == 1) // right side
-					{
-						
-						if(chunk.script_noteworthy == "1") // this looks good this is second to right
-						{
-							tear_anim = tear_anim; // anim second bar from right
-						}
-						else if(chunk.script_noteworthy == "2") // this is second to left
-						{
-							tear_anim = tear_anim; // anim this grabs the sedonc bar from the left
-						}
-						else if(chunk.script_noteworthy == "3") // this is the far right
-						{
-							tear_anim = tear_anim; // anim  this is far right
-						}
-						else if(chunk.script_noteworthy == "4") // this is the reference for the high bar
-						{
-							tear_anim = tear_anim; // anim this is the high grab 
-							//tear_anim = %ai_zombie_bartear_r_3; this is what it used to be middle left
-						}
-						else if(chunk.script_noteworthy == "5") // this is far left 
-						{
-							tear_anim = tear_anim; // anim this tears the far left
-						}
-						else if(chunk.script_noteworthy == "6") // this looks good this is the low bar
-						{
-							tear_anim = %ai_zombie_bartear_r_4;
-							
-							if( 50 > RandomIntRange( 1, 100 ) )
-							{
-								tear_anim = %ai_zombie_bartear_r_4;
-							}
-							
-							if ( 50 < RandomIntRange( 1, 100 ) )
-							{
-								tear_anim = %ai_zombie_bartear_r_6;
-							}
-							
-						}
-					}
-					else if(zombo.attacking_spot_index == 2) // this is working good now.
-					{								
-						if(chunk.script_noteworthy == "1") // second bar to the right
-						{
-							tear_anim = tear_anim;
-						}
-						else if(chunk.script_noteworthy == "2") // this is second to the left
-						{
-		
-							tear_anim = tear_anim;
-						}
-						else if(chunk.script_noteworthy == "3") // this is the far right
-						{
-							tear_anim = tear_anim;
-
-						}
-						else if(chunk.script_noteworthy == "4") // this is the high bar
-						{
-							tear_anim = tear_anim;
-						}
-						else if(chunk.script_noteworthy == "5") // this is the far left
-						{
-							tear_anim = tear_anim;		
-						}
-						else if(chunk.script_noteworthy == "6") // this is the low bar
-						{
-							tear_anim = %ai_zombie_bartear_l_4;
-							
-							if( 50 > RandomIntRange( 1, 100 ) )
-							{
-								tear_anim = %ai_zombie_bartear_l_4;
-							}
-							
-							if ( 50 < RandomIntRange( 1, 100 ) )
-							{
-								tear_anim = %ai_zombie_bartear_l_6;
-							}
-							
-						}	
-		
-					}
-				}
-			}
-		}
-	}
-		*/
-		
-		/*
-		else if(self.has_legs) // jl these anims are used if the zombie can't find one to use pluse this updates thier position
-		{
-			
-			z_dist = chunk.origin[2] - self.origin[2];
-			if( z_dist > 70 )
-			{
-				tear_anim = %ai_zombie_door_tear_high;
-			}
-			else if( z_dist < 40 )
-			{
-				tear_anim = %ai_zombie_door_tear_low;
-			}
-			else
-			{
-				anims = [];
-				anims[anims.size] = %ai_zombie_door_tear_left;
-				anims[anims.size] = %ai_zombie_door_tear_right;
-
-				tear_anim = anims[RandomInt( anims.size )];
-			}
-			
-		}
-		
-	}
-*/
-//---------------------------STANDING-----------------------------------------------------------
-//---------------------------crawlers-----------------------------------------------------------
-	if(isdefined(chunk.script_parameters))
-	{
-		
-		if( chunk.script_parameters == "board" || chunk.script_parameters == "repair_board") // jl this is new check to see if it is a board then do board anims, this needs to hold the entire function
-		{
-
-			if( self.has_legs == false )
-			{
-		
-				if(isdefined(chunk.script_noteworthy))
-				{
-		
-					if(zombo.attacking_spot_index == 0)
-					{
-						if(chunk.script_noteworthy == "1")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_m_1;
-		
-						}
-						else if(chunk.script_noteworthy == "2")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_m_2;
-						}
-						else if(chunk.script_noteworthy == "3")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_m_3;
-						}
-						else if(chunk.script_noteworthy == "4")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_m_4;
-						}
-						else if(chunk.script_noteworthy == "5")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_m_5;
-						}
-						else if(chunk.script_noteworthy == "6")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_m_6;
-						}
-		
-					}
-					else if(zombo.attacking_spot_index == 1)
-					{
-						if(chunk.script_noteworthy == "1")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_r_1;
-		
-						}
-						else if(chunk.script_noteworthy == "3")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_r_3;
-						}
-						else if(chunk.script_noteworthy == "4")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_r_4;
-						}
-						else if(chunk.script_noteworthy == "5")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_r_5;
-						}
-						else if(chunk.script_noteworthy == "6")
-						{
-							tear_anim = %ai_zombie_boardtear_crawl_r_6;
-						}
-						else if(chunk.script_noteworthy == "2")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_r_2;
-						}
-		
-					}
-					else if(zombo.attacking_spot_index == 2)
-					{
-						if(chunk.script_noteworthy == "1")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_l_1;
-		
-						}
-						else if(chunk.script_noteworthy == "2")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_l_2;
-						}
-						else if(chunk.script_noteworthy == "4")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_l_4;
-						}
-						else if(chunk.script_noteworthy == "5")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_l_5;
-						}
-						else if(chunk.script_noteworthy == "6")
-						{
-							tear_anim = %ai_zombie_boardtear_crawl_l_6;
-						}
-						else if(chunk.script_noteworthy == "3")
-						{
-		
-							tear_anim = %ai_zombie_boardtear_crawl_l_3;
-						}
-	
-					}
-				}
-			}
-		}		
-	}
-		
-	
-	// jl new code crawl selection code with bar and board tear
-	
-	if(isdefined(chunk.script_parameters))
-	{
-		
-		if( chunk.script_parameters == "bar" ) // jl this is new check to see if it is a board then do board anims, this needs to hold the entire function
-		{
-			
-			if( self.has_legs == false )
-			{	
-	
-				if(isdefined(chunk.script_noteworthy))
-				{
-		
-					if(zombo.attacking_spot_index == 0)
-					{
-						if(chunk.script_noteworthy == "1") // second to right
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_m_2;
-		
-						}
-						else if(chunk.script_noteworthy == "2") // far right
-						{
-							
-							tear_anim = %ai_zombie_bartear_crawl_m_3;
-							//tear_anim = %ai_zombie_bartear_m_2; this is the old
-						}
-						else if(chunk.script_noteworthy == "3") // second bar from left
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_m_1;
-						}
-						else if(chunk.script_noteworthy == "4") // high bar
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_m_5; 
-						}
-						else if(chunk.script_noteworthy == "5") // this is the far left
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_m_4;
-						}
-						else if(chunk.script_noteworthy == "6") // this is low bar
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_m_6;
-						}
-		
-					}
-					else if(zombo.attacking_spot_index == 1)
-					{
-						if(chunk.script_noteworthy == "1") // this looks good this is second to right
-						{
-							tear_anim = %ai_zombie_bartear_crawl_r_2; // anim second bar from right
-						}
-						else if(chunk.script_noteworthy == "3") // this is the far right
-						{
-							tear_anim = %ai_zombie_bartear_crawl_r_1; // anim  this is far right
-						}
-						else if(chunk.script_noteworthy == "2") // this is second to left
-						{
-							tear_anim = %ai_zombie_bartear_crawl_r_3; // anim this grabs the sedonc bar from the left
-						}
-						else if(chunk.script_noteworthy == "5") // this is far left 
-						{
-							tear_anim = %ai_zombie_bartear_crawl_r_4; // anim this tears the far left
-						}
-						else if(chunk.script_noteworthy == "6") // this looks good this is the low bar
-						{
-							tear_anim = %ai_zombie_bartear_crawl_r_6; // anim low grabs
-						}
-						else if(chunk.script_noteworthy == "4") // this is the reference for the high bar
-						{
-							tear_anim = %ai_zombie_bartear_crawl_r_5; // anim this is the high grab 
-							//tear_anim = %ai_zombie_bartear_r_3; this is what it used to be middle left
-						}
-						
-		
-					}
-					else if(zombo.attacking_spot_index == 2)
-					{
-						if(chunk.script_noteworthy == "1") // second bar to the right
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_l_2;
-		
-						}
-						else if(chunk.script_noteworthy == "2") // this is second to the left
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_l_3;
-						}
-						else if(chunk.script_noteworthy == "4") // this is the high bar
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_l_5;
-						}
-						else if(chunk.script_noteworthy == "5") // this is the far left
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_l_4;
-						}
-						else if(chunk.script_noteworthy == "6") // this is the low bar
-						{
-							tear_anim = %ai_zombie_bartear_crawl_l_6;
-						}
-						else if(chunk.script_noteworthy == "3") // this is the far right
-						{
-		
-							tear_anim = %ai_zombie_bartear_crawl_l_1;
-						}
-		
-					}
-				}
-			}
-			
-			else if( self.has_legs == false)
-			{
-				anims = [];
-				anims[anims.size] = %ai_zombie_attack_crawl;
-				anims[anims.size] = %ai_zombie_attack_crawl_lunge;
-
-				tear_anim = anims[RandomInt( anims.size )];
-			}
-		}
-		
-	}	
 	
 	return tear_anim; 
 }
@@ -2587,7 +2650,7 @@ zombie_head_gib( attacker, means_of_death )
 				self detach( self.hatModel, "" ); 
 			}
 
-//			self play_sound_on_ent( "zombie_head_gib" );
+			self play_sound_on_ent( "zombie_head_gib" );
 			
 			self Detach( model, "", true ); 
 			if ( isDefined(self.torsoDmg5) )
@@ -2898,7 +2961,6 @@ zombie_gib_on_damage()
 					which_anim = RandomInt( 5 ); 
 					if(self.a.gib_ref == "no_legs")
 					{
-						
 						if(randomint(100) < 50)
 						{
 							self.deathanim = %ai_zombie_crawl_death_v1;
@@ -2958,7 +3020,11 @@ zombie_gib_on_damage()
 						self.crouchRunAnim = level.scr_anim[self.animname]["crawl5"];
 						self.crouchrun_combatanim = level.scr_anim[self.animname]["crawl5"];
 					}
-										
+						
+					if ( isdefined( self.crawl_anim_override ) )
+					{
+						self [[ self.crawl_anim_override ]]();
+					}
 				}
 			}
 
@@ -3177,7 +3243,7 @@ zombie_can_drop_powerups( zombie )
 		return false;
 	}
 
-	if ( isdefined(zombie.no_powerups) )
+	if ( isdefined(zombie.no_powerups) && zombie.no_powerups )
 	{
 		return false;
 	}
@@ -3197,14 +3263,26 @@ zombie_death_points( origin, mod, hit_location, attacker, zombie )
 
 	if( zombie_can_drop_powerups( zombie ) )
 	{
-		level thread maps\_zombiemode_powerups::powerup_drop( origin );
+		// DCS 031611: hack to prevent risers from dropping powerups under the ground.
+		if(IsDefined(zombie.in_the_ground) && zombie.in_the_ground == true)
+		{
+			trace = BulletTrace(zombie.origin + (0, 0, 100), zombie.origin + (0, 0, -100), false, undefined);
+			origin = trace["position"];
+			level thread maps\_zombiemode_powerups::powerup_drop( origin );
+		}
+		else
+		{	
+			trace = GroundTrace(zombie.origin + (0, 0, 5), zombie.origin + (0, 0, -300), false, undefined);
+			origin = trace["position"];
+			level thread maps\_zombiemode_powerups::powerup_drop( origin );
+		}	
 	}
 
 	//AUDIO: Ayers - Decides what vox to play after killing a zombie
 	level thread maps\_zombiemode_audio::player_zombie_kill_vox( hit_location, attacker, mod, zombie );
 
 	event = "death";
-	if ( issubstr( zombie.damageweapon, "knife_ballistic_" ) )
+	if ( (issubstr( zombie.damageweapon, "knife_ballistic_" )) && (mod == "MOD_MELEE" || mod == "MOD_IMPACT") )
 	{
 		event = "ballistic_knife_death";
 	}
@@ -3274,6 +3352,11 @@ zombie_death_animscript()
 {
 	self reset_attack_spot();
 
+	if ( self check_zombie_death_animscript_callbacks() )
+	{
+		return false;
+	}
+
 	if( self maps\_zombiemode_weap_tesla::enemy_killed_by_tesla() || self maps\_zombiemode_weap_thundergun::enemy_killed_by_thundergun() )
 	{
 		return false;
@@ -3308,7 +3391,19 @@ zombie_death_animscript()
 	{
 		if( zombie_can_drop_powerups( self ) )
 		{
-			level thread maps\_zombiemode_powerups::powerup_drop( self.origin );
+			// DCS 031611: hack to prevent risers from dropping powerups under the ground.
+			if(IsDefined(self.in_the_ground) && self.in_the_ground == true)
+			{
+				trace = BulletTrace(self.origin + (0, 0, 100), self.origin + (0, 0, -100), false, undefined);
+				origin = trace["position"];
+				level thread maps\_zombiemode_powerups::powerup_drop( origin );
+			}
+			else
+			{	
+				trace = GroundTrace(self.origin + (0, 0, 5), self.origin + (0, 0, -300), false, undefined);
+				origin = trace["position"];
+				level thread maps\_zombiemode_powerups::powerup_drop( self.origin );
+			}	
 		}
 	}
 	else
@@ -3340,6 +3435,37 @@ zombie_death_animscript()
 
 	return false;
 }
+
+
+check_zombie_death_animscript_callbacks()
+{
+	if ( !isdefined( level.zombie_death_animscript_callbacks ) )
+	{
+		return false;
+	}
+
+	for ( i = 0; i < level.zombie_death_animscript_callbacks.size; i++ )
+	{
+		if ( self [[ level.zombie_death_animscript_callbacks[i] ]]() )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+register_zombie_death_animscript_callback( func )
+{
+	if ( !isdefined( level.zombie_death_animscript_callbacks ) )
+	{
+		level.zombie_death_animscript_callbacks = [];
+	}
+
+	level.zombie_death_animscript_callbacks[level.zombie_death_animscript_callbacks.size] = func;
+}
+
 
 damage_on_fire( player )
 {
@@ -3408,7 +3534,11 @@ zombie_damage( mod, hit_location, hit_origin, player, amount )
 		return; 
 	}
 
-	if( self zombie_flame_damage( mod, player ) )
+	if ( self check_zombie_damage_callbacks( mod, hit_location, hit_origin, player, amount ) )
+	{
+		return;
+	}
+	else if( self zombie_flame_damage( mod, player ) )
 	{
 		if( self zombie_give_flame_damage_points() )
 		{
@@ -3438,7 +3568,11 @@ zombie_damage( mod, hit_location, hit_origin, player, amount )
 			{
 				damage_type = "damage_light";
 			}
-			player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location, self.isdog );
+
+			if ( !is_true( self.no_damage_points ) )
+			{
+				player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location, self.isdog );
+			}
 		}
 	}
 
@@ -3510,7 +3644,7 @@ zombie_damage( mod, hit_location, hit_origin, player, amount )
 			if ( isdefined( player ) )
 			{
 				rand = randomintrange(0, 100);
-				if(rand < 3)
+				if(rand < 7)
 				{
 					player create_and_play_dialog( "general", "shoot_arm" );
 				}
@@ -3533,7 +3667,11 @@ zombie_damage_ads( mod, hit_location, hit_origin, player, amount )
 		return; 
 	}
 
-	if( self zombie_flame_damage( mod, player ) )
+	if ( self check_zombie_damage_callbacks( mod, hit_location, hit_origin, player, amount ) )
+	{
+		return;
+	}
+	else if( self zombie_flame_damage( mod, player ) )
 	{
 		if( self zombie_give_flame_damage_points() )
 		{
@@ -3563,12 +3701,47 @@ zombie_damage_ads( mod, hit_location, hit_origin, player, amount )
 			{
 				damage_type = "damage_light";
 			}
-			player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location );
+
+			if ( !is_true( self.no_damage_points ) )
+			{
+				player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location );
+			}
 		}
 	}
 
 	self thread maps\_zombiemode_powerups::check_for_instakill( player, mod, hit_location );
 }
+
+
+check_zombie_damage_callbacks( mod, hit_location, hit_origin, player, amount )
+{
+	if ( !isdefined( level.zombie_damage_callbacks ) )
+	{
+		return false;
+	}
+
+	for ( i = 0; i < level.zombie_damage_callbacks.size; i++ )
+	{
+		if ( self [[ level.zombie_damage_callbacks[i] ]]( mod, hit_location, hit_origin, player, amount ) )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+register_zombie_damage_callback( func )
+{
+	if ( !isdefined( level.zombie_damage_callbacks ) )
+	{
+		level.zombie_damage_callbacks = [];
+	}
+
+	level.zombie_damage_callbacks[level.zombie_damage_callbacks.size] = func;
+}
+
 
 zombie_give_flame_damage_points()
 {
@@ -3632,6 +3805,9 @@ zombie_death_event( zombie )
 	//Track all zombies killed
 	level.global_zombies_killed++;
 
+	//Track all zombies killed
+	level.global_zombies_killed++;
+
 	//Track for Round -TTS
 	level.global_zombies_killed_round++;
 
@@ -3640,6 +3816,8 @@ zombie_death_event( zombie )
 	{
 		level.zombie_trap_killed_count++;
 	}
+	
+	zombie check_zombie_death_event_callbacks();
 
 	// this gets called before the freezegun gets a chance to set freezegun_death, so we check whether it will do it
 	if ( !zombie maps\_zombiemode_weap_freezegun::should_do_freezegun_death( zombie.damagemod ) )
@@ -3697,6 +3875,32 @@ zombie_death_event( zombie )
 	level.total_zombies_killed++;
 }
 
+
+check_zombie_death_event_callbacks()
+{
+	if ( !isdefined( level.zombie_death_event_callbacks ) )
+	{
+		return;
+	}
+
+	for ( i = 0; i < level.zombie_death_event_callbacks.size; i++ )
+	{
+		self [[ level.zombie_death_event_callbacks[i] ]]();
+	}
+}
+
+
+register_zombie_death_event_callback( func )
+{
+	if ( !isdefined( level.zombie_death_event_callbacks ) )
+	{
+		level.zombie_death_event_callbacks = [];
+	}
+
+	level.zombie_death_event_callbacks[level.zombie_death_event_callbacks.size] = func;
+}
+
+
 // this is where zombies go into attack mode, and need different attributes set up
 zombie_setup_attack_properties()
 {
@@ -3745,7 +3949,7 @@ find_flesh()
 	self.goalradius = 32;
 	while( 1 )
 	{
-
+		zombie_poi = undefined;
 		// try to split the zombies up when the bunch up
 		// see if a bunch zombies are already near my current target; if there's a bunch
 		// and I'm still far enough away, ignore my current target and go after another one
@@ -3780,9 +3984,17 @@ find_flesh()
        		self [[ level.zombieTheaterTeleporterSeekLogicFunc ]]();
        	}
        	//PI_CHANGE_END
-
-		zombie_poi = self get_zombie_point_of_interest( self.origin );
-		
+       	
+    if( IsDefined( level._poi_override ) )
+    {
+    	zombie_poi = self [[ level._poi_override ]]();
+    }
+    
+    if( !IsDefined( zombie_poi ) )
+    {
+    	zombie_poi = self get_zombie_point_of_interest( self.origin );	
+    }
+    
 		players = get_players();
 					
 		// If playing single player, never ignore the player
@@ -3820,33 +4032,12 @@ find_flesh()
 		
 		//PI_CHANGE - 7/2/2009 JV Reenabling change 274916 (from DLC3)
 		//self.ignore_player = undefined;
-
-		self.enemyoverride = zombie_poi;
-
-//		path_timer_extension = 0;
-//		if ( isdefined( self.lastfavoriteenemy ) && isdefined( self.favoriteenemy ) && isdefined( player ) && self.lastfavoriteenemy != self.favoriteenemy && self.lastfavoriteenemy == player )
-//		{
-//			//looks like we're pinging back and forth, let's stay on this guy longer
-//			if ( !isdefined( self.zombie_move_speed ) || self.zombie_move_speed == "walk" )
-//			{
-//				self.path_timer_extension += 9000;
-//			}
-//			else if ( self.zombie_move_speed == "run" )
-//			{
-//				self.path_timer_extension += 6000;
-//			}
-//			else if ( self.zombie_move_speed == "sprint" )
-//			{
-//				self.path_timer_extension += 3000;
-//			}
-//			path_timer_extension = self.path_timer_extension;
-//		}
-//		else
-//		{
-//			self.path_timer_extension = 0;
-//		}
-//		self.lastfavoriteenemy = self.favoriteenemy;
-		self.favoriteenemy = player;
+		if ( !isDefined( level.check_for_alternate_poi ) || ![[level.check_for_alternate_poi]]() )
+		{
+			self.enemyoverride = zombie_poi;
+			self.favoriteenemy = player;
+		}
+		
 		self thread zombie_pathing();
 		
 		//PI_CHANGE_BEGIN - 7/2/2009 JV Reenabling change 274916 (from DLC3)
@@ -3926,7 +4117,10 @@ zombie_pathing()
 	}
 	else
 	{
-		debug_print( "Zombie couldn't path to player at origin: " + self.favoriteenemy.origin + " Falling back to breadcrumb system" );
+		if( IsDefined( self.favoriteenemy ) )
+		{
+			debug_print( "Zombie couldn't path to player at origin: " + self.favoriteenemy.origin + " Falling back to breadcrumb system" );	
+		}
 	}
 	
 	if( !isDefined( self.favoriteenemy ) )
@@ -4337,6 +4531,13 @@ do_zombie_rise()
 	//self animMode("nogravity");
 	//self setFlaggedAnimKnoballRestart("rise", level.scr_anim["zombie"]["rise_walk"], %body, 1, .1, 1);	// no "noclip" mode for these anim functions
 
+	//recheck this in case his speed changed after he spawned
+	if (self.zombie_move_speed != "walk")
+	{
+		// only do version 1 anims for "run" and "sprint"
+		self.zombie_rise_version = 1;
+	}
+
 	self AnimScripted("rise", self.origin, spot.angles, self get_rise_anim());
 	self animscripts\zombie_shared::DoNoteTracks("rise", ::handle_rise_notetracks, undefined, spot);
 
@@ -4348,8 +4549,12 @@ do_zombie_rise()
 
 hide_pop()
 {
-	wait .5;
-	self Show();
+	self endon( "death" );
+	wait( 0.5 );
+	if ( IsDefined( self ) )
+	{
+		self Show();
+	}
 }
 
 handle_rise_notetracks(note, spot)
@@ -4396,9 +4601,16 @@ off when the zombie is out of the ground.
 */
 zombie_rise_fx(zombie)
 {
-	self thread zombie_rise_dust_fx(zombie);
-	self thread zombie_rise_burst_fx();
-	playsoundatposition ("zmb_zombie_spawn", self.origin);
+	
+	if(!is_true(level.riser_fx_on_client))
+	{
+		self thread zombie_rise_dust_fx(zombie);
+		self thread zombie_rise_burst_fx(zombie);
+	}
+	else
+	{
+		self thread zombie_rise_burst_fx(zombie);
+	}
 	zombie endon("death");
 	self endon("stop_zombie_rise_fx");
 	wait 1;
@@ -4409,38 +4621,82 @@ zombie_rise_fx(zombie)
 	}
 }
 
-zombie_rise_burst_fx()
+zombie_rise_burst_fx(zombie)
 {
 	self endon("stop_zombie_rise_fx");
 	self endon("rise_anim_finished");
 	
-	if(IsDefined(self.script_string) && self.script_string == "in_water")
+	if(IsDefined(self.script_string) && self.script_string == "in_water" && (!is_true(level._no_water_risers)) )
 	{
-
-		playfx(level._effect["rise_burst_water"],self.origin + ( 0,0,randomintrange(5,10) ) );
-		wait(.25);
-		playfx(level._effect["rise_billow_water"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
-		
+		if(is_true(level.riser_fx_on_client) )
+		{
+			zombie setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_RISER_FX_WATER);
+  	}
+  	else
+  	{
+    	playsoundatposition ("zmb_zombie_spawn_water", self.origin);
+			playfx(level._effect["rise_burst_water"],self.origin + ( 0,0,randomintrange(5,10) ) );
+			wait(.25);
+			playfx(level._effect["rise_billow_water"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
+		}
 	}
-	else
+	else if(IsDefined(self.script_string) && self.script_string == "in_snow")
 	{
-		playfx(level._effect["rise_burst"],self.origin + ( 0,0,randomintrange(5,10) ) );
-		wait(.25);
-		playfx(level._effect["rise_billow"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
-
-
+	
+		if(is_true(level.riser_fx_on_client))
+		{
+			// this needs to have "level.riser_type = "snow" set in the level script to work properly in snow levels!
+			zombie setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_RISER_FX);
+  	}
+  	else
+  	{
+			
+    	playsoundatposition ("zmb_zombie_spawn_snow", self.origin);
+			playfx(level._effect["rise_burst_snow"],self.origin + ( 0,0,randomintrange(5,10) ) );
+			wait(.25);
+			playfx(level._effect["rise_billow_snow"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
+		}
 	}
-	
-
-	
-	
-	//burst_time = 10; // play dust fx for a max time
-	//interval = randomfloatrange(.15,.45); // wait this time in between playing the effect
-		
-	//for (t = 0; t < burst_time; t += interval)
-	//{
-	//	wait interval;
-	//}	
+	else 
+	{
+		if(isDefined(zombie.zone_name ) && isDefined(level.zones[zombie.zone_name]) )
+		{
+			low_g_zones = getentarray(zombie.zone_name,"targetname");
+			
+			if(isDefined(low_g_zones[0].script_string) && low_g_zones[0].script_string == "lowgravity")
+			{
+				zombie setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_RISER_LOWG_FX);
+			}
+			else
+			{
+				if(is_true(level.riser_fx_on_client))
+				{
+					zombie setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_RISER_FX);
+				}
+				else
+				{
+					playsoundatposition ("zmb_zombie_spawn", self.origin);
+					playfx(level._effect["rise_burst"],self.origin + ( 0,0,randomintrange(5,10) ) );
+					wait(.25);
+					playfx(level._effect["rise_billow"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
+				}
+			}
+		}
+		else
+		{
+			if(is_true(level.riser_fx_on_client))
+			{
+				zombie setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_RISER_FX);
+			}
+			else
+			{
+				playsoundatposition ("zmb_zombie_spawn", self.origin);
+				playfx(level._effect["rise_burst"],self.origin + ( 0,0,randomintrange(5,10) ) );
+				wait(.25);
+				playfx(level._effect["rise_billow"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
+			}
+		}
+	}	
 }
 
 zombie_rise_dust_fx(zombie)
@@ -4456,10 +4712,20 @@ zombie_rise_dust_fx(zombie)
 	//TODO - add rising dust stuff ere
 	if(IsDefined(self.script_string) && self.script_string == "in_water")
 	{
-
+		
 		for (t = 0; t < dust_time; t += dust_interval)
 		{
 			PlayfxOnTag(level._effect["rise_dust_water"], zombie, dust_tag);
+			wait dust_interval;
+		}
+
+	}
+	else if(IsDefined(self.script_string) && self.script_string == "in_snow")
+	{
+
+		for (t = 0; t < dust_time; t += dust_interval)
+		{
+			PlayfxOnTag(level._effect["rise_dust_snow"], zombie, dust_tag);
 			wait dust_interval;
 		}
 
@@ -4515,195 +4781,6 @@ get_rise_death_anim()
 
 	return random(possible_anims);
 }
-
-
-// RAVEN BEGIN: bhackbarth faller support
-do_zombie_fall()
-{
-	self endon("death");
-
-	self.anchor = spawn("script_origin", self.origin);
-	self.anchor.angles = self.angles;
-	self linkto(self.anchor);
-
-	if ( IsDefined( self.zone_name ) )
-	{
-		spots = level.zones[ self.zone_name ].fall_locations;
-	}
-	else
-	{
-		spots = GetStructArray("zombie_fall", "targetname");
-	}
-
-	if( spots.size < 1 )
-	{
-		self unlink();
-		self.anchor delete();
-		return;
-	}
-	else
-	{
-		spot = random(spots);
-	}
-
-	if( !isDefined( spot.angles ) )
-	{
-		spot.angles = (0, 0, 0);
-	}
-
-	anim_org = spot.origin;
-	anim_ang = spot.angles;
-
-	self Hide();
-	self.anchor moveto(anim_org, .05);
-	self.anchor waittill("movedone");
-
-	// face goal
-	target_org = maps\_zombiemode_spawner::get_desired_origin();
-	if (IsDefined(target_org))
-	{
-		anim_ang = VectorToAngles(target_org - self.origin);
-		self.anchor RotateTo((0, anim_ang[1], 0), .05);
-		self.anchor waittill("rotatedone");
-	}
-
-	self unlink();
-	self.anchor delete();
-
-	self thread hide_pop();	// hack to hide the pop when the zombie gets to the start position before the anim starts
-
-	level thread zombie_fall_death(self, spot);
-	spot thread zombie_fall_fx(self);
-
-	emerge_anim = self get_fall_emerge_anim();
-	// first play the emerge, then the fall anim
-	self AnimScripted("fall_emerge", self.origin, spot.angles, emerge_anim);
-	time = GetAnimLength(emerge_anim);
-	wait(max(time - 0.1, 0.1));
-
-	fall_anim = self get_fall_anim(spot);
-	self AnimScripted("fall", self.origin, spot.angles, fall_anim);
-	time = GetAnimLength(fall_anim);
-	wait(max(time - 0.1, 0.1));
-
-	self notify("fall_anim_finished");
-	spot notify("stop_zombie_fall_fx");
-	self notify("fallen", spot.script_noteworthy );
-}
-
-get_fall_emerge_anim()
-{
-	return level._zombie_fall_anims[self.animname]["emerge"];
-}
-
-get_fall_anim(spot)
-{
-	return level._zombie_fall_anims[self.animname]["fall"];
-
-	//if ( IsDefined(spot.script_string) && IsDefined(level._zombie_fall_anims[self.animname][spot.script_string]) )
-	//{
-	//	return level._zombie_fall_anims[self.animname][spot.script_string];
-	//}
-
-	//return level._zombie_fall_anims[self.animname]["default"];
-}
-
-/*
-zombie_rise_death:
-Track when the zombie should die, set the death anim, and stop the animscripted so he can die
-*/
-zombie_fall_death(zombie, spot)
-{
-	//self.nodeathragdoll = true;
-	zombie.zombie_fall_death_out = false;
-
-	zombie endon("fall_anim_finished");
-
-	while (zombie.health > 1)	// health will only go down to 1 when playing animation with AnimScripted()
-	{
-		zombie waittill("damage", amount);
-	}
-
-	spot notify("stop_zombie_fall_fx");
-
-	zombie.deathanim = zombie get_fall_death_anim();
-	zombie StopAnimScripted();	// stop the anim so the zombie can die.  death anim is handled by the anim scripts.
-}
-
-/*
-zombie_rise_fx:	 self is the script struct at the rise location
-Play the fx as the zombie crawls out of the ground and thread another function to handle the dust falling
-off when the zombie is out of the ground.
-*/
-zombie_fall_fx(zombie)
-{
-	self thread zombie_fall_dust_fx(zombie);
-	self thread zombie_fall_burst_fx();
-	playsoundatposition ("zmb_zombie_spawn", self.origin);
-	zombie endon("death");
-	self endon("stop_zombie_fall_fx");
-	wait 1;
-	if (zombie.zombie_move_speed != "sprint")
-	{
-		// wait longer before starting billowing fx if it's not a really fast animation
-		wait 1;
-	}
-}
-
-zombie_fall_burst_fx()
-{
-	self endon("stop_zombie_fall_fx");
-	self endon("fall_anim_finished");
-	
-	playfx(level._effect["rise_burst"],self.origin + ( 0,0,randomintrange(5,10) ) );
-	wait(.25);
-	playfx(level._effect["rise_billow"],self.origin + ( randomintrange(-10,10),randomintrange(-10,10),randomintrange(5,10) ) );
-}
-
-zombie_fall_dust_fx(zombie)
-{
-	dust_tag = "J_SpineUpper";
-	
-	self endon("stop_zombie_fall_dust_fx");
-	self thread stop_zombie_fall_dust_fx(zombie);
-
-	dust_time = 7.5; // play dust fx for a max time
-	dust_interval = .1; //randomfloatrange(.1,.25); // wait this time in between playing the effect
-	
-	for (t = 0; t < dust_time; t += dust_interval)
-	{
-		PlayfxOnTag(level._effect["rise_dust"], zombie, dust_tag);
-		wait dust_interval;
-	}
-}
-
-stop_zombie_fall_dust_fx(zombie)
-{
-	zombie waittill("death");
-	self notify("stop_zombie_fall_dust_fx");
-}
-
-handle_fall_notetracks(note, spot)
-{
-	// the anim notetracks control which death anim to play
-	// default to "deathin" (still in the ground)
-
-	if (note == "deathout" || note == "deathhigh")
-	{
-		self.zombie_fall_death_out = true;
-		self notify("zombie_fall_death_out");
-
-		wait 2;
-		spot notify("stop_zombie_fall_fx");
-	}
-}
-
-get_fall_death_anim()
-{
-	return undefined;
-}
-
-// RAVEN END
 
 
 
@@ -4821,6 +4898,10 @@ make_crawler()
 				self.crouchrun_combatanim = level.scr_anim[self.animname]["crawl5"];
 			}
 
+			if ( isdefined( self.crawl_anim_override ) )
+			{
+				self [[ self.crawl_anim_override ]]();
+			}
 		}
 	}
 
@@ -4872,14 +4953,28 @@ zombie_knockdown( player, gib )
 		self thread animscripts\zombie_death::do_gib();
 	}
 
-//	self playsound( "thundergun_impact" );
-	self.thundergun_handle_pain_notetracks = maps\_zombiemode_weap_thundergun::handle_thundergun_pain_notetracks;
-	self DoDamage( level.zombie_vars["thundergun_knockdown_damage"], player.origin, player );
+	damage = level.zombie_vars["thundergun_knockdown_damage"];
+	if(isDefined(level.override_thundergun_damage_func))
+	{
+		self[[level.override_thundergun_damage_func]](player,gib);
+	}
+	else
+	{
+		self.thundergun_handle_pain_notetracks = maps\_zombiemode_weap_thundergun::handle_thundergun_pain_notetracks;
+		self DoDamage( damage, player.origin, player );
+	}
 }
 
 // for now only regular zombies can head gib from the tesla
 zombie_tesla_head_gib()
 {
+	self endon("death");
+	
+	if(self.animname == "quad_zombie")
+	{
+		return;
+	}	
+	
 	if( RandomInt( 100 ) < level.zombie_vars["tesla_head_gib_chance"] )
 	{
 		wait( RandomFloat( 0.53, 1.0 ) );
@@ -4931,4 +5026,11 @@ play_ambient_zombie_vocals()
 		
 		wait(RandomFloatRange(1,float));
     }
+}
+
+zombie_complete_emerging_into_playable_area()
+{
+	self.completed_emerging_into_playable_area = true;
+	self notify( "completed_emerging_into_playable_area" );
+	self.no_powerups = false;
 }

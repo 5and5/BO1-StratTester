@@ -7015,8 +7015,12 @@ give_perks()
 
 		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-		wait( 0.05 );
+
+		if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+			wait( 0.05 );
+		}
+
 		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 		wait( 0.05 );
 		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
@@ -7035,8 +7039,12 @@ give_perks()
 		wait( 0.05 );
 		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-		wait( 0.05 );
+
+		if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+			wait( 0.05 );
+		}
+
 		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 		wait( 0.05 );
 		self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
@@ -7060,8 +7068,12 @@ give_perks()
 		wait( 0.05 );
 		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-		wait( 0.05 );
+
+		if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+			wait( 0.05 );
+		}
+		
 		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 		wait( 0.05 );
 		self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
@@ -7095,8 +7107,11 @@ give_perks()
 		wait( 0.05 );
 		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-		wait( 0.05 );
+
+		if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+			wait( 0.05 );
+		}
 
 		if ( self.gamejustloaded )
 		{
