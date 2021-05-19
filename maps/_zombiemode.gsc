@@ -1698,6 +1698,7 @@ onPlayerSpawned()
 				level thread open_windows();
 				level thread turn_on_power();
 				self thread watch_for_trade();
+				self thread hud_health_bar();
 				self.gamejustloaded = true;
 				self thread give_perks();
 				if ( level.script == "zombie_pentagon" )
@@ -7114,49 +7115,49 @@ give_perks()
 hud_sph()
 {
 
-	level endon("end_game");
+	// level endon("end_game");
 
-	sph_hud = NewHudElem();
-	sph_hud.horzAlign = "left";
-	sph_hud.vertAlign = "top";
-	sph_hud.alignX = "left";
-	sph_hud.alignY = "top";
-	sph_hud.y += 2;
-	sph_hud.x -= 5;
-	sph_hud.fontScale = 1.3;
-	sph_hud.alpha = 1;
-	sph_hud.hidewheninmenu = 0;
-	sph_hud.foreground = 1;
-	sph_hud.color = ( 1.0, 1.0, 1.0 );	
-	sph_hud.x += 5;
-	sph_hud.label = "SPH: ";
+	// sph_hud = NewHudElem();
+	// sph_hud.horzAlign = "left";
+	// sph_hud.vertAlign = "top";
+	// sph_hud.alignX = "left";
+	// sph_hud.alignY = "top";
+	// sph_hud.y += 2;
+	// sph_hud.x -= 5;
+	// sph_hud.fontScale = 1.3;
+	// sph_hud.alpha = 1;
+	// sph_hud.hidewheninmenu = 0;
+	// sph_hud.foreground = 1;
+	// sph_hud.color = ( 1.0, 1.0, 1.0 );	
+	// sph_hud.x += 5;
+	// sph_hud.label = "SPH: ";
 
-	level waittill ( "start_of_round" );
-	level thread timer_hud();
-	//level thread bo_hud();
-	//level thread tra_hud();
-	level thread trade_hud();
+	// level waittill ( "start_of_round" );
+	// level thread timer_hud();
+	// //level thread bo_hud();
+	// //level thread tra_hud();
+	// level thread trade_hud();
 	
-	sph_hud setValue( 0 );
+	// sph_hud setValue( 0 );
 
-	while(1)
-	{
+	// while(1)
+	// {
 
-		if(sph_hud.alpha != 1)
-		{
-			sph_hud.alpha = 1;
-		}
+	// 	if(sph_hud.alpha != 1)
+	// 	{
+	// 		sph_hud.alpha = 1;
+	// 	}
 		
-		zombies_thus_far = level.global_zombies_killed;
-		hordes = zombies_thus_far / 24;
-		// level waittill( "end_of_round" );
-		current_time = int(gettime() / 1000) - level.current_round_start_time;
-		level.round_seconds_per_horde = current_time / hordes;
-		sph_hud setValue(sph);
-		wait 1;
-		// level waittill( "start_of_round" );
+	// 	zombies_thus_far = level.global_zombies_killed;
+	// 	hordes = zombies_thus_far / 24;
+	// 	// level waittill( "end_of_round" );
+	// 	current_time = int(gettime() / 1000) - level.current_round_start_time;
+	// 	level.round_seconds_per_horde = current_time / hordes;
+	// 	sph_hud setValue(sph);
+	// 	wait 1;
+	// 	// level waittill( "start_of_round" );
 
-	}
+	// }
 
 }
 
@@ -7337,4 +7338,93 @@ build_trap()
 	self notify( "trigger", get_players()[0] );
 	wait( 1 );
 
+}
+
+hud_health_bar()
+{
+	self endon("disconnect");
+	self endon("end_game");
+
+	width = 113;
+	height = 7;
+
+	barElemBackround = create_hud( "left", "bottom");
+	barElemBackround.x = 0;
+	barElemBackround.y = -100;
+	barElemBackround.width = width + 2;
+	barElemBackround.height = height + 2;
+	barElemBackround.foreground = 0;
+	barElemBackround.shader = "black";
+	barElemBackround setShader( "black", width + 2, height + 2 );
+
+	barElem = create_hud( "left", "bottom");
+	barElem.x = 1;
+	barElem.y = -101;
+	barElem.width = width;
+	barElem.height = height;
+	barElem.foreground = 1;
+	barElem.shader = "white";
+	barElem setShader( "white", width, height );
+
+	health_text = create_hud( "left", "bottom");
+	health_text.x = 49;
+	health_text.y = -107;
+	health_text.fontScale = 1.3;
+
+	while (1)
+	{
+		if( getDvarInt( "hud_health_bar" ) == 0 )
+		{	
+			if(barElem.alpha != 0)
+			{
+			barElem.alpha = 0;
+			barElemBackround.alpha = 0;
+			health_text.alpha = 0;
+			}
+		}
+		else
+		{
+			barElem updateHealth(self.health / self.maxhealth);
+			health_text setValue(self.health);
+
+			if( is_true( self.waiting_to_revive ) || self maps\_laststand::player_is_in_laststand() )
+			{
+				barElem.alpha = 0;
+				barElemBackround.alpha = 0;
+				health_text.alpha = 0;
+
+				wait 0.05;
+				continue;
+			}
+
+			if ( health_text.alpha != 0.8 )
+	        {
+	            barElem.alpha = 0.75;
+	            barElemBackround.alpha = 0.75;
+				health_text.alpha = 0.8;
+	        }
+    	}
+		wait 0.05;
+	}
+}
+
+updateHealth( barFrac )
+{
+	barWidth = int(self.width * barFrac);
+	self setShader( self.shader, barWidth, self.height );
+}
+
+create_hud( side, top )
+{
+	hud = NewClientHudElem( self );
+	hud.horzAlign = side;
+	hud.vertAlign = top;
+	hud.alignX = side;
+	hud.alignY = top;
+	hud.alpha = 0;
+	hud.fontscale = 1.3;
+	hud.color = ( 1.0, 1.0, 1.0 );
+	hud.hidewheninmenu = 1;
+
+	return hud;
 }
