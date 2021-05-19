@@ -7115,49 +7115,49 @@ give_perks()
 hud_sph()
 {
 
-	// level endon("end_game");
+	level endon("end_game");
 
-	// sph_hud = NewHudElem();
-	// sph_hud.horzAlign = "left";
-	// sph_hud.vertAlign = "top";
-	// sph_hud.alignX = "left";
-	// sph_hud.alignY = "top";
-	// sph_hud.y += 2;
-	// sph_hud.x -= 5;
-	// sph_hud.fontScale = 1.3;
-	// sph_hud.alpha = 1;
-	// sph_hud.hidewheninmenu = 0;
-	// sph_hud.foreground = 1;
-	// sph_hud.color = ( 1.0, 1.0, 1.0 );	
-	// sph_hud.x += 5;
-	// sph_hud.label = "SPH: ";
+	sph_hud = NewHudElem();
+	sph_hud.horzAlign = "left";
+	sph_hud.vertAlign = "top";
+	sph_hud.alignX = "left";
+	sph_hud.alignY = "top";
+	sph_hud.y += 2;
+	sph_hud.x -= 5;
+	sph_hud.fontScale = 1.3;
+	sph_hud.alpha = 1;
+	sph_hud.hidewheninmenu = 0;
+	sph_hud.foreground = 1;
+	sph_hud.color = ( 1.0, 1.0, 1.0 );	
+	sph_hud.x += 5;
+	sph_hud.label = "SPH: ";
 
-	// level waittill ( "start_of_round" );
-	// level thread timer_hud();
-	// //level thread bo_hud();
-	// //level thread tra_hud();
-	// level thread trade_hud();
+	level waittill ( "start_of_round" );
+	level thread timer_hud();
+	//level thread bo_hud();
+	//level thread tra_hud();
+	level thread trade_hud();
 	
-	// sph_hud setValue( 0 );
+	sph_hud setValue( 0 );
 
-	// while(1)
-	// {
+	while(1)
+	{
 
-	// 	if(sph_hud.alpha != 1)
-	// 	{
-	// 		sph_hud.alpha = 1;
-	// 	}
+		if(sph_hud.alpha != 1)
+		{
+			sph_hud.alpha = 1;
+		}
 		
-	// 	zombies_thus_far = level.global_zombies_killed;
-	// 	hordes = zombies_thus_far / 24;
-	// 	// level waittill( "end_of_round" );
-	// 	current_time = int(gettime() / 1000) - level.current_round_start_time;
-	// 	level.round_seconds_per_horde = current_time / hordes;
-	// 	sph_hud setValue(sph);
-	// 	wait 1;
-	// 	// level waittill( "start_of_round" );
+		zombies_thus_far = level.global_zombies_killed;
+		hordes = zombies_thus_far / 24;
+		// level waittill( "end_of_round" );
+		current_time = int(gettime() / 1000) - level.current_round_start_time;
+		level.round_seconds_per_horde = current_time / hordes;
+		sph_hud setValue(level.round_seconds_per_horde);
+		wait 1;
+		// level waittill( "start_of_round" );
 
-	// }
+	}
 
 }
 
