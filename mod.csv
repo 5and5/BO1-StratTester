@@ -1,3 +1,10 @@
 // MENU
 menufile,ui/options_game_pc.menu
 localize,mod
+
+//GENERAL
+rawfile,maps/_zombiemode.gsc
+rawfile,maps/_zombiemode_weapons.gsc
+rawfile,maps/_zombiemode_zone_manager.gsc
+rawfile,maps/_zombiemode_spawner.gsc
+rawfile,maps/_zombiemode_blockers.gsc
