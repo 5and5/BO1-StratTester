@@ -6872,6 +6872,8 @@ checkfortraphit( trap )
 turn_on_power()
 {
 
+	level waittill( "fade_introblack" );
+
 	if ( level.script == "zombie_cod5_factory" )
 	{
 
