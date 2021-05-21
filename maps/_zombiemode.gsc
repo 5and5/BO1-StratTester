@@ -6696,6 +6696,55 @@ open_doors()
 
 }
 
+//custom function to get non destroyed chunks ( includes all window types )
+custom_get_non_destroyed_chunks( barrier_chunks )
+{
+
+	array = [];
+
+	for( i = 0; i < barrier_chunks.size; i++ )
+	{
+
+		if( barrier_chunks[i] get_chunk_state() == "repaired" )
+		{
+			if (IsDefined (barrier_chunks[i].script_parameters) && barrier_chunks[i].script_parameters == "board")
+			{			
+				if( barrier_chunks[i].origin == barrier_chunks[i].og_origin ) 
+					{
+						array[array.size] = barrier_chunks[i]; 
+					}
+			}
+			else if (IsDefined (barrier_chunks[i].script_parameters) && barrier_chunks[i].script_parameters == "repair_board" || barrier_chunks[i].script_parameters == "barricade_vents")
+			{			
+				if( barrier_chunks[i].origin == barrier_chunks[i].og_origin ) 
+				{
+					array[array.size] = barrier_chunks[i]; 
+				}
+			}
+			else if (IsDefined (barrier_chunks[i].script_parameters) && (barrier_chunks[i].script_parameters == "bar") )
+			{
+				if( barrier_chunks[i].origin == barrier_chunks[i].og_origin ) 
+				{
+					array[array.size] = barrier_chunks[i];
+				}
+			}	
+			
+			else if (IsDefined (barrier_chunks[i].script_parameters) && (barrier_chunks[i].script_parameters == "grate") )
+			{
+				return undefined;
+				//array[array.size] = barrier_chunks[i];
+			}	
+		}
+
+	}
+
+	if (array.size == 0)
+		return undefined;
+	
+	return array;
+
+}
+
 open_windows()
 {
 
@@ -6716,7 +6765,7 @@ clearwindow(window)
 
 	if ( !all_chunks_destroyed(window.barrier_chunks) )
 	{
-		chunks = get_non_destroyed_chunks( window.barrier_chunks ); 
+		chunks = custom_get_non_destroyed_chunks( window.barrier_chunks ); 
 		for ( j = 0; j < chunks.size; j++ )
 		{
 			
@@ -6822,6 +6871,8 @@ checkfortraphit( trap )
 
 turn_on_power()
 {
+
+	level waittill( "fade_introblack" );
 
 	if ( level.script == "zombie_cod5_factory" )
 	{
