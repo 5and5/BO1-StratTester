@@ -12,6 +12,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - All Debris and Doors open 
 - (Most) Barriers removed from zombies spawns on spawn
 - Power on by default
+- Remove Perk Limit
 
 Planned Features:
 - Tools for tracking/optimizing box hits

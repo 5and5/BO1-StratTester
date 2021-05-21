@@ -7553,3 +7553,13 @@ round_time_setting_watcher(roundTime) {
 		wait(.05);
 	}
 }
+
+hud_zombies_stats() {
+	//level thread hud_zombies_health();
+	//level thread hud_zombies_remaining();
+	//level thread hud_zombies_speed();
+}
+
+hud_zombies_health() {
+
+}
