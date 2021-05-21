@@ -4,7 +4,7 @@ This is a mod for creating, testing, and learning new strategies in Call of Duty
 
 This mod is meant to be an all-encompassing mod, with loads of features and options to give yourself the loadout and map setup you need to practice your strategies.
 
-Current Features:
+## Current Features:
 - Toggleable Total Game Timer and Current Round Timer
 - Seconds Per Horde (measured every second)
 - Toggleable Health Bar
@@ -20,7 +20,7 @@ Planned Features:
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 
-#Contributing
+# Contributing
 
 To contribute to the project, you need to first clone the repo. (If you are on Windows you need somme form of git client, such as GitHub Desktop)
 
@@ -34,12 +34,12 @@ You may also need to compile the mod in order to see some of the menu changes. T
 
 When you've made the changes, submit a pull request to the repo to be reviewed.
 
-#Credits
-##Coders
+# Credits
+## Coders
 TTS4life
 5and5
 
-##Others
+## Others
 Iveez - Initial mod made for practicing strats
 Porterico - Initial mod for Five Windows being set
 JBleezy - Reimagined/Code references
