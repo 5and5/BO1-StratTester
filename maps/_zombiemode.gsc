@@ -1685,6 +1685,8 @@ onPlayerSpawned()
 
 				self thread player_grenade_watcher();
 
+				
+				//Practice Stuff
 				if ( level.script == "zombie_cod5_factory" )
 					self.score = 651000;
 				else if ( level.script == "zombie_temple" )
@@ -1698,7 +1700,12 @@ onPlayerSpawned()
 				level thread open_windows();
 				level thread turn_on_power();
 				self thread watch_for_trade();
+
 				self thread hud_health_bar();
+				self thread hud_game_time();
+
+				
+				
 				self.gamejustloaded = true;
 				self thread give_perks();
 				if ( level.script == "zombie_pentagon" )
@@ -7152,10 +7159,11 @@ hud_sph()
 	sph_hud.label = "Seconds Per Horde: ";
 
 	level waittill ( "start_of_round" );
-	level thread timer_hud();
+	
+	//level thread timer_hud();
 	//level thread bo_hud();
 	//level thread tra_hud();
-	level thread trade_hud();
+	//level thread trade_hud();
 	
 	sph_hud setValue( 0 );
 
@@ -7219,45 +7227,6 @@ trade_hud()
 		}
 		wait 0.05;
 
-	}
-
-}
-
-timer_hud()
-{
-
-	level endon("end_game");
-
-	timer = NewHudElem();
-	timer.horzAlign = "right";
-	timer.vertAlign = "top";
-	timer.alignX = "right";
-	timer.alignY = "top";
-	timer.y += 2;
-	timer.x -= 5;
-	timer.fontScale = 1.3;
-	timer.alpha = 1;
-	timer.hidewheninmenu = 0;
-	timer.foreground = 1;
-	timer.color = ( 1.0, 1.0, 1.0 );
-
-	timer SetTimerUp(0);
-
-	start_time = int(gettime() / 1000);
-	level.paused_time = 0;
-	
-	while(1)
-	{
-		current_time = int(getTime() / 1000);
-		level.total_time = current_time - level.paused_time - start_time;
-
-		wait 0.05;
-	}
-
-	while (1)
-	{
-		timer setTimer(level.total_time - 0.1);
-		wait 0.5;
 	}
 
 }
@@ -7396,9 +7365,9 @@ hud_health_bar()
 		{	
 			if(barElem.alpha != 0)
 			{
-			barElem.alpha = 0;
-			barElemBackround.alpha = 0;
-			health_text.alpha = 0;
+				barElem.alpha = 0;
+				barElemBackround.alpha = 0;
+				health_text.alpha = 0;
 			}
 		}
 		else
@@ -7446,4 +7415,90 @@ create_hud( side, top )
 	hud.hidewheninmenu = 1;
 
 	return hud;
+}
+
+hud_game_time() {
+
+	level thread game_time();
+	level thread round_time();
+}
+
+game_time() {
+	//GameTime
+
+	level endon("intermission");
+
+	level waittill("fade_introblack");
+
+	level.total_time = 0;
+
+	gameTime = NewHudElem();
+	gameTime.horzAlign = "right";
+	gameTime.vertAlign = "top";
+	gameTime.alignX = "right";
+	gameTime.alignY = "top";
+	gameTime.y += 18;
+	gameTime.x -= 5;
+	gameTime.fontScale = 1.3;
+	gameTime.alpha = 1;
+	gameTime.label = "Game Time: ";
+	gameTime.hidewheninmenu = 0;
+	gameTime.foreground = 1;
+	gameTime.color = ( 1.0, 1.0, 1.0 );
+
+	gameTime setTimerUp(0);
+
+	while(1) {
+		if(getDvarInt("hud_timer") == 0) {
+			if(gameTime.alpha != 0)
+				gameTime.alpha = 0;
+		} 
+		else {
+			if(gameTime.alpha != 1) {
+				gameTime.alpha = 1;
+			}
+			
+		}
+		wait(.05);
+	}
+
+}
+
+round_time() {
+	roundTime = NewHudElem();
+	roundTime.horzAlign = "right";
+	roundTime.vertAlign = "top";
+	roundTime.alignX = "right";
+	roundTime.alignY = "top";
+	roundTime.y += 30;
+	roundTime.x -= 5;
+	roundTime.label = "Round Time: ";
+	roundTime.fontScale = 1.3;
+	roundTime.alpha = 1;
+	roundTime.hidewheninmenu = 0;
+	roundTime.foreground = 1;
+	roundTime.color = ( 1.0, 1.0, 1.0 );
+
+	level thread round_time_setting_watcher(roundTime);
+
+	while(1) {
+		level waittill("start_of_round");
+		roundTime setTimerUp(0);
+		wait(.5);
+	}
+}
+
+round_time_setting_watcher(roundTime) {
+	while(1) {
+		if(getDvarInt("hud_timer") == 0) {
+			if(roundTime.alpha != 0)
+				roundTime.alpha = 0;
+		} 
+		else {
+			if(roundTime.alpha == 0) {
+				roundTime.alpha = 1;
+			}	
+		}
+		wait(.05);
+	}
 }
