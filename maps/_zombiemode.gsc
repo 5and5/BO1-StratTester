@@ -6878,8 +6878,6 @@ turn_on_power()
 	{
 
 		trig = getent( "use_power_switch", "targetname" );
-		wnuen_bridge = getent( "wnuen_bridge", "targetname" );
-		wnuen_bridge waittill( "rotatedone" );
 		trig notify( "trigger" );
 
 		trigger = getent( "trigger_teleport_core", "targetname" );
