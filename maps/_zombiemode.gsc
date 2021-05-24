@@ -202,6 +202,8 @@ post_all_players_connected()
 	maps\_zombiemode_score::init();
 	level difficulty_init();
 
+	//TTS
+	level thread hud_zombies_stats();
 	level thread hud_sph();
 
 	//thread zombie_difficulty_ramp_up(); 
@@ -1560,11 +1562,15 @@ onPlayerConnect_clientDvars()
 	//self setclientdvar( "cg_drawfps", "1" );
 	
 	self setClientDvar( "aim_lockon_pitch_strength", 0.0 );
+
+
 	
 	if(!level.wii)
 	{
 		//self SetClientDvar("r_enablePlayerShadow", 1); 
 	}
+
+	self SetClientDvar("hud_enemy_counter_value", "0");
 }
 
 
@@ -7199,8 +7205,8 @@ hud_sph()
 	sph_hud.vertAlign = "top";
 	sph_hud.alignX = "left";
 	sph_hud.alignY = "top";
-	sph_hud.y += 2;
-	sph_hud.x -= 5;
+	sph_hud.y += 15;
+	sph_hud.x -= 0;
 	sph_hud.fontScale = 1.3;
 	sph_hud.alpha = 1;
 	sph_hud.hidewheninmenu = 0;
@@ -7556,10 +7562,42 @@ round_time_setting_watcher(roundTime) {
 
 hud_zombies_stats() {
 	//level thread hud_zombies_health();
-	//level thread hud_zombies_remaining();
+	level thread hud_zombies_remaining();
 	//level thread hud_zombies_speed();
 }
 
 hud_zombies_health() {
 
+}
+
+hud_zombies_remaining() {
+	while(1)
+	{
+		players = get_players();
+		zombs = level.zombie_total + get_enemy_count();
+
+		if( zombs == 0 || is_true(flag("enter_nml")) || is_true(flag("round_restarting")) )
+		{
+			if(GetDvar("hud_enemy_counter_value") != "0")
+			{
+				for(i=0;i<players.size;i++)
+				{
+					players[i] SetClientDvar("hud_enemy_counter_value", "0");
+				}
+			}
+		}
+		else
+		{
+
+			if(GetDvarInt("hud_enemy_counter_value") != zombs)
+			{
+				for(i=0;i<players.size;i++)
+				{
+					players[i] SetClientDvar("hud_enemy_counter_value", zombs);
+				}
+			}
+		}
+
+		wait 2;
+	}
 }

@@ -1,5 +1,9 @@
 // MENU
 menufile,ui/options_game_pc.menu
+menufile,ui/hud_practice.menu
+menufile,ui/hud_zombie.menu
+menufile,ui/hud_zombie.txt
+
 localize,mod
 
 //GENERAL
