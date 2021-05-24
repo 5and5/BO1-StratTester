@@ -1709,8 +1709,7 @@ onPlayerSpawned()
 
 				self thread hud_health_bar();
 				self thread hud_game_time();
-
-				
+				self thread insta_kill_rounds();				
 				
 				self.gamejustloaded = true;
 				self thread give_perks();
@@ -3980,6 +3979,7 @@ chalk_round_over()
 round_think()
 {
 	level.dog_health = 1600;
+	// level.round_number = 100;
 	// level.zombie_vars["zombie_spawn_delay"] = 0.08;
 	// level.zombie_move_speed = 105;
 
@@ -6875,23 +6875,107 @@ checkfortraphit( trap )
 
 }
 
+theater_disable_crawlers( spawner )
+{
+
+	if ( spawner.script_noteworthy == "quad_zombie_spawner" )
+	{
+
+		return true;
+
+	}
+
+}
+
+// turns on power and activates things around the map
 turn_on_power()
 {
 
 	level waittill( "fade_introblack" );
 
-	if ( level.script == "zombie_cod5_factory" )
+	if ( level.script == "zombie_theater" )
+	{
+
+		level.ignore_spawner_func = ::theater_disable_crawlers;
+		trig = getent("use_elec_switch","targetname");
+		trig notify( "trigger" );
+
+	}	
+	else if ( level.script == "zombie_pentagon" )
+	{
+
+		trig = getent("use_elec_switch","targetname");
+		trig notify( "trigger" );
+
+		wait ( 5 );
+		level.next_thief_round = 1;
+
+	}	
+	else if ( level.script == "zombie_cosmodrome" )
+	{
+
+		trig = getent( "use_elec_switch" , "targetname" );
+		trig notify( "trigger" );
+
+		// open up pack a punch
+		upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
+		upper_door_model.clip = GetEnt( upper_door_model.target, "targetname" );
+		upper_door_model.clip LinkTo( upper_door_model ); 
+	
+		upper_door_model MoveTo(upper_door_model.origin + upper_door_model.script_vector, 1.5 );
+		level.pack_a_punch_door MoveTo( level.pack_a_punch_door.origin + level.pack_a_punch_door.script_vector, 1.5 );
+		level.pack_a_punch_door.clip NotSolid();
+		level.pack_a_punch_door waittill( "movedone" );
+		level.pack_a_punch_door.clip ConnectPaths();
+
+		flag_set( "rocket_group" );
+
+	}
+	else if ( level.script == "zombie_coast" )
+	{
+
+		trig = getent("use_elec_switch","targetname");
+		trig notify( "trigger" );
+
+	}
+	else if ( level.script == "zombie_temple" )
+	{
+
+		flag_set("left_switch_done");
+		flag_set("right_switch_done");
+
+	}
+	else if ( level.script == "zombie_moon" )
+	{
+
+		trig = getent("use_elec_switch","targetname");
+		trig notify( "trigger" );
+
+	}
+	else if ( level.script == "zombie_cod5_asylum" )
+	{
+
+		trig = getent("use_master_switch","targetname");
+		trig notify( "trigger" );
+
+	}
+	else if ( level.script == "zombie_cod5_sumpf" )
+	{
+
+		// activate zipline
+		zipPowerTrigger = getent("zip_lever_trigger", "targetname");
+		zipPowerTrigger notify( "trigger" );
+
+	}
+	else if ( level.script == "zombie_cod5_factory" )
 	{
 
 		trig = getent( "use_power_switch", "targetname" );
-		wnuen_bridge = getent( "wnuen_bridge", "targetname" );
-		wnuen_bridge waittill( "rotatedone" );
 		trig notify( "trigger" );
 
+		// link teleporters
 		trigger = getent( "trigger_teleport_core", "targetname" );
-
-		wait( 4 );
-
+		wait 0.5;
 		for ( i = 0; i < 3; i++ )
 		{
 
@@ -6909,62 +6993,7 @@ turn_on_power()
 		}
 
 	}
-	else if ( level.script == "zombie_cosmodrome" )
-	{
-
-		/*level.rocket_lifter_arm waittill("rotatedone");
-		wait( 2 );*/
-		trig = getent( "use_elec_switch" , "targetname" );
-		trig notify( "trigger" );
-		/*level.rocket_lifter waittill("movedone");
-		level.rocket_lifter_arm waittill("rotatedone");
-		flag_set( "lander_a_used" );
-		flag_set( "lander_b_used" );
-		flag_set( "lander_c_used" );
-		flag_set( "launch_activated" );
-		level.rocket_lifter waittill("movedone");
-		launch_trig = getent( "trig_launch_rocket" , "targetname" );
-		wait( 2 );
-		launch_trig notify( "trigger" );*/
-
-		upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
-		upper_door_model.clip = GetEnt( upper_door_model.target, "targetname" );
-		upper_door_model.clip LinkTo( upper_door_model ); 
 	
-		upper_door_model MoveTo(upper_door_model.origin + upper_door_model.script_vector, 1.5 );
-		level.pack_a_punch_door MoveTo( level.pack_a_punch_door.origin + level.pack_a_punch_door.script_vector, 1.5 );
-		level.pack_a_punch_door.clip NotSolid();
-		level.pack_a_punch_door waittill( "movedone" );
-		level.pack_a_punch_door.clip ConnectPaths();
-
-		flag_set( "rocket_group" );
-
-	}
-	else if ( level.script == "zombie_temple" )
-	{
-
-		flag_set("left_switch_done");
-		flag_set("right_switch_done");
-
-	}
-	else if ( level.script == "zombie_pentagon" )
-	{
-
-		trig = getent("use_elec_switch","targetname");
-		trig notify( "trigger" );
-
-		wait ( 5 );
-		level.next_thief_round = 1;
-
-	}
-	else if ( level.script == "zombie_cod5_sumpf" )
-	{
-
-		wait(5);
-		zipPowerTrigger = getent("zip_lever_trigger", "targetname");
-		zipPowerTrigger notify( "trigger" );
-
-	}
 
 }
 
@@ -7570,6 +7599,7 @@ hud_zombies_health() {
 
 }
 
+<<<<<<< HEAD
 hud_zombies_remaining() {
 	while(1)
 	{
@@ -7600,4 +7630,48 @@ hud_zombies_remaining() {
 
 		wait 2;
 	}
+=======
+// checks if player has set insta kill rounds and changes zombie helf accordingly
+insta_kill_rounds()
+{
+
+	while (true)
+	{
+
+		// set insta kill round if not already set
+		if (getDvarInt("insta_kill_round") == 1 && level.zombie_health != -50)
+		{
+
+			level.zombie_health = -50;
+
+			// set zombie health for all currently alive zombies
+			zombies = GetAiArray( "axis" );
+			for (i = 0; i < zombies.size; i++)
+			{
+
+				zombies[i].health = 150;
+
+			}
+
+		}
+		else if (getDvarInt("insta_kill_round") == 0 && level.zombie_health == -50)
+		{
+
+			ai_calculate_health( level.round_number );
+			// set zombie health back to normal for all currently alive zombies
+			zombies = GetAiArray( "axis" );
+			for (i = 0; i < zombies.size; i++)
+			{
+
+				zombies[i].health = level.zombie_health;
+
+			}
+
+		}
+
+		wait 1;
+
+	}
+
+>>>>>>> 7d91c2841ed752bd23f24f282e7a50f3d02cf84b
 }
