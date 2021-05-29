@@ -26,7 +26,7 @@
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
 			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("hud_enemy_counter_value"))
-			visible				1
+			visible				when(dvarInt(hud_zombies_stats) > 0)
 			decoration
 		}
 	}
@@ -34,7 +34,7 @@
 	menuDef 
 	{
 		name 				"sph"
-		rect 				0 15 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
+		rect 				-130 20 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
 		fullscreen 			0
 		visible 			1
 

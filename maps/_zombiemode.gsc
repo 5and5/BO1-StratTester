@@ -660,7 +660,7 @@ init_levelvars()
 	level.is_zombie_level			= true; 
 	level.laststandpistol			= "m1911_zm";		// so we dont get the uber colt when we're knocked out
 	level.first_round				= true;
-	level.round_number				= 1;
+	level.round_number				= 100;
 	level.round_start_time			= 0;
 	level.pro_tips_start_time		= 0;
 	level.intermission				= false;
@@ -7243,7 +7243,7 @@ hud_sph()
 		zombies_thus_far = level.global_zombies_killed_round;
 		hordes = zombies_thus_far / 24;
 		current_time = int(gettime() / 1000) - level.current_round_start_time;
-		level.round_seconds_per_horde = current_time / hordes;
+		level.round_seconds_per_horde = int(current_time / hordes * 100) / 100;
 		
 		players = getplayers();
 		for(i = 0; i < players.size; i++) {
@@ -7574,10 +7574,6 @@ hud_zombies_stats() {
 	//level thread hud_zombies_health();
 	level thread hud_zombies_remaining();
 	//level thread hud_zombies_speed();
-}
-
-hud_zombies_health() {
-
 }
 
 hud_zombies_remaining() {

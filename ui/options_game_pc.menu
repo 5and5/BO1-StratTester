@@ -148,6 +148,7 @@
 		FRAME_CHOICE_DVARYESNO_VIS( 27, "@MOD_HUD_TIMER", hud_timer, ;, 1)
 		FRAME_CHOICE_DVARYESNO_VIS( 28, "@MOD_HUD_HEALTH_BAR", hud_health_bar, ;, 1)
 		FRAME_CHOICE_DVARYESNO_VIS( 29, "@MOD_INSTA_KILL_ROUND", insta_kill_round, ;, 1)
+		FRAME_CHOICE_DVARFLOATLIST_VIS( 30, "@MOD_HUD_ZOMBIES_STATS", hud_zombies_stats, { "NONE" 0 "MINIMAL" 1 "DETAILED" 2}, ;, 1 )
 		FRAME_CHOICE_BUTTON_VIS( 31, "@MOD_BOX_LOCATION", setdvar ui_options_game_popup "set_box_locations"; open mature_content_pc_disable_warning, 1)		
 		// FRAME_CHOICE_DVARYESNO_VIS( 29, "@MOD_HUD_ZOMBIES_STATS", hud_zombie_stats, ;, 1);
 
