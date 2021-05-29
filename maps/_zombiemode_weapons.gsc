@@ -49,7 +49,7 @@ check_for_box_location()
 
 		if (getDvar(#"boxlocation") != "")
 		{
-			self iPrintLn("moving box");
+			// self iPrintLn("moving box");
 			chest = level.chests[ level.chest_index ];	
 			level.movebox = true;
 			chest notify( "trigger" );

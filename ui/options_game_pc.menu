@@ -130,7 +130,7 @@
 		//SP
 		//FRAME_CHOICE_DVARYESNO_VIS( 22, "@MENU_SUBTITLES_CAPS", cg_subtitles, ;, ( !dvarBool(ui_multiplayer) && SHOW_SUBTITLES ) )
    		FRAME_CHOICE_DVARFLOATLIST_VIS( 23, "@MENU_MATURE_CAPS", ;, { "@MENU_MATURE_UNRESTRICTED_CAPS" 0 "@MENU_MATURE_UNRESTRICTED_CAPS" 1 }, open mature_content_pc_disable_warning, ( dvarString( "cg_mature" ) == "1" && dvarBool(cg_allow_mature) && !IsInGame() && !dvarBool(ui_multiplayer) && SHOW_MATURE ) )
-   		FRAME_CHOICE_DVARFLOATLIST_VIS( 23, "@MENU_MATURE_CAPS", cg_mature, { "@MENU_MATURE_REDUCED_CAPS" 1 "@MENU_MATURE_REDUCED_CAPS" 0 }, setdvar "cg_mature" 1; setdvar cg_blood "1", ( dvarString( "cg_mature" ) == "0" && dvarBool(cg_allow_mature) && !IsInGame() && !dvarBool(ui_multiplayer) && SHOW_MATURE ) )
+   		// FRAME_CHOICE_DVARFLOATLIST_VIS( 23, "@MENU_MATURE_CAPS", cg_mature, { "@MENU_MATURE_REDUCED_CAPS" 1 "@MENU_MATURE_REDUCED_CAPS" 0 }, setdvar "cg_mature" 1; setdvar cg_blood "1", ( dvarString( "cg_mature" ) == "0" && dvarBool(cg_allow_mature) && !IsInGame() && !dvarBool(ui_multiplayer) && SHOW_MATURE ) )
 		FRAME_CHOICE_DVARFLOATLIST_VIS( 23, "@MENU_ENABLE_CONSOLE_CAPS", monkeytoy, { "@MENU_YES_CAPS" 0 "@MENU_NO_CAPS" 1 }, ;, ( dvar(ui_allowConsole) && ( ( !dvarBool(cg_allow_mature) && !IsInGame() && !dvarBool(ui_multiplayer) ) || ( IsInGame() && !dvarBool(ui_multiplayer) ) ) ) )		
 		FRAME_CHOICE_DVARFLOATLIST_VIS( 24, "@MENU_ENABLE_CONSOLE_CAPS", monkeytoy, { "@MENU_YES_CAPS" 0 "@MENU_NO_CAPS" 1 }, ;, ( dvar(ui_allowConsole) && dvarBool(cg_allow_mature) && !IsInGame() && !dvarBool(ui_multiplayer) ) )
 		//MP
@@ -161,6 +161,8 @@
 #undef	CHOICE_CAPTION_TEXT_COLOR_NO_HL
 #undef	CHOICE_CAPTION_TEXT_COLOR_HL
 
+#undef CHOICE_TEXT_COLOR_
+
 #define CHOICE_TEXT_COLOR_NO_HL			1 1 1 1
 #define CHOICE_TEXT_COLOR_HL			0 0 0 1
 #define CHOICE_CAPTION_TEXT_COLOR_NO_HL 1 1 1 1
@@ -169,27 +171,13 @@
 #include "ui_mp/popupstyle.inc"	
 #include "ui/choices_setup_popmenu.menu"
 
-	#define OPEN_MATURE_DISABLE \
-			execondvarstring cg_mature 0 "set cg_mature 1; set cg_blood 1; closemenu mature_content_pc_disable_warning"; 
-
 	menuDef
 	{	
-		CHOICE_DVARFLOATLIST_VIS( 3, "@REIMAGINED_TIMER", hud_time_on, { "@MENU_YES_CAPS" 1 "@MENU_NO_CAPS" 0 }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
 		SYSTEM_POPUP_SETUP_VIS( mature_content_pc_disable_warning, setFocus mature_content_pc_disable_warning_2; OPEN_MATURE_DISABLE, ;, 1 )
-		//SYSTEM_POPUP_TITLE_VIS( "@MENU_WARNING_CAPS", 1 )
-		//SYSTEM_POPUP_SUBTITLE_VIS( "@MENU_WARNING_DISABLE_MATURE_CONTENT", 1 )
-
-		#define DISABLE_CONTENT			\
-				close self;				\
-				exec "set cg_blood 0";	\
-				exec "set cg_mature 0";
-
-		FRAME_CHOICE_BUTTON_VIS_EX( 1, "@MENU_YES",	DISABLE_CONTENT,	1, ;										)
-		FRAME_CHOICE_BUTTON_VIS_EX( 2, "@MENU_NO",	close self;,		1, name mature_content_pc_disable_warning_2	)
 
 		// set box locations
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_BOX_LOCATION", when(dvarString("ui_options_game_popup") == "set_box_locations") )
-		FRAME_CHOICE_DVARSTRINGLIST_VIS( 6, "", boxlocation, { 
+		CHOICE_DVARSTRINGLIST_VIS( 1, "", boxlocation, { 
 			"@MOD_STAY_AT_LOC"; "";
 			"@MOD_HALLWAY_BOX"; "trench"; 
 			"@MOD_THOMPSON_BOX"; "tommy"; 
@@ -197,6 +185,6 @@
 			"@MOD_TYPE100_BOX"; "type100"; 
 			"@MOD_MP40_BOX"; "mp40"; 
 			"@MOD_POWER_BOX"; "power" 
-			}, ;, dvarString("ui_options_game_popup") == "set_box_locations" && dvarString("mapname") == "zombie_cod5_factory")
+			}, ;, when(dvarString("ui_options_game_popup") == "set_box_locations" && dvarString("mapname") == "zombie_cod5_factory"))
 	}
 }
