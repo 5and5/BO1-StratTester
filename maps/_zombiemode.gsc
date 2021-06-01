@@ -7486,6 +7486,8 @@ create_hud( side, top )
 
 hud_game_time() {
 
+	level waittill("fade_introblack");
+
 	level thread game_time();
 	level thread round_time();
 }
@@ -7495,79 +7497,52 @@ game_time() {
 
 	level endon("intermission");
 
-	level waittill("fade_introblack");
-
-	level.total_time = 0;
-
-	gameTime = NewHudElem();
-	gameTime.horzAlign = "right";
-	gameTime.vertAlign = "top";
-	gameTime.alignX = "right";
-	gameTime.alignY = "top";
-	gameTime.y += 18;
-	gameTime.x -= 5;
-	gameTime.fontScale = 1.3;
-	gameTime.alpha = 1;
-	gameTime.label = "Game Time: ";
-	gameTime.hidewheninmenu = 0;
-	gameTime.foreground = 1;
-	gameTime.color = ( 1.0, 1.0, 1.0 );
-
-	gameTime setTimerUp(0);
+	level.total_time = 3600;
 
 	while(1) {
-		if(getDvarInt("hud_timer") == 0) {
-			if(gameTime.alpha != 0)
-				gameTime.alpha = 0;
-		} 
-		else {
-			if(gameTime.alpha != 1) {
-				gameTime.alpha = 1;
-			}
-			
-		}
-		wait(.05);
-	}
+		level.total_time++;
+		
+		update_time(level.total_time, "hud_total_time");
 
+		wait 1;
+	}
 }
 
-round_time() {
-	roundTime = NewHudElem();
-	roundTime.horzAlign = "right";
-	roundTime.vertAlign = "top";
-	roundTime.alignX = "right";
-	roundTime.alignY = "top";
-	roundTime.y += 30;
-	roundTime.x -= 5;
-	roundTime.label = "Round Time: ";
-	roundTime.fontScale = 1.3;
-	roundTime.alpha = 1;
-	roundTime.hidewheninmenu = 0;
-	roundTime.foreground = 1;
-	roundTime.color = ( 1.0, 1.0, 1.0 );
+update_time(time, timer) {
+	players = get_players();
+	for(i = 0; i < players.size; i++) {
+		players[i] setClientDvar(timer, seconds_to_string(time));
+	}
+}
 
-	level thread round_time_setting_watcher(roundTime);
+	
+
+
+
+round_time() {
+
+	level.round_time = 0;
+
+	level thread round_time_watcher();
+
+	while(1) {
+		level.round_time++;
+		update_time(level.round_time, "hud_round_time");
+		wait(1);
+	}
+}
+
+round_time_watcher(roundTime) {
+
+	level endon("end_game");
 
 	while(1) {
 		level waittill("start_of_round");
-		roundTime setTimerUp(0);
-		wait(.5);
+		level.round_time = 0;
+		wait(1);
 	}
-}
 
-round_time_setting_watcher(roundTime) {
-	while(1) {
-		if(getDvarInt("hud_timer") == 0) {
-			if(roundTime.alpha != 0)
-				roundTime.alpha = 0;
-		} 
-		else {
-			if(roundTime.alpha == 0) {
-				roundTime.alpha = 1;
-			}	
-		}
-		wait(.05);
-	}
+
 }
 
 hud_zombies_stats() {
@@ -7650,4 +7625,27 @@ insta_kill_rounds()
 
 	}
 
+}
+
+seconds_to_string(seconds) {
+	hours = int(seconds / 3600);
+	minutes = int((seconds - (hours * 3600)) / 60);
+	seconds = seconds % 60;
+
+	if(seconds < 10) {
+		seconds = "0" + seconds;
+	}
+
+	if(minutes < 10 && hours >= 1) {
+		minutes = "0" + minutes;
+	}
+
+	time = "";
+
+	if(hours > 0) {
+		time = hours + ":";
+	}
+		time += minutes + ":" + seconds;
+
+	return time;
 }
