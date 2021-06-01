@@ -57,7 +57,7 @@
 	menuDef 
 	{
 		name			"mod_timers"
-		rect 			4 20 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
+		rect 			-4 20 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
 		fullscreen		0
 		visible			1
 

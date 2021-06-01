@@ -259,6 +259,9 @@ zombiemode_melee_miss()
 
 init_additionalprimaryweapon_machine_locations()
 {
+
+	if(getDvarInt("mulekick_enabled") == 0) { return; }
+
 	switch ( Tolower( GetDvar( #"mapname" ) ) )
 	{
 	case "zombie_theater":
