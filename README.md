@@ -13,6 +13,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - (Most) Barriers removed from zombies spawns on spawn
 - Power on by default
 - Remove Perk Limit
+- Option to enable/disable Mule Kick without playing offline
 
 Planned Features:
 - Tools for tracking/optimizing box hits
@@ -25,7 +26,7 @@ Missing a crucial feature for you to get better at the game? We are open to requ
 
 To contribute to the project, you need to first clone the repo. (If you are on Windows you need somme form of git client, such as GitHub Desktop)
 
-First, clone the project 
+First, you'll want to fork and/or clone the project. 
 
 ```git clone https://github.com/5and5/BO1-Strat_Tester.git```
 
@@ -39,6 +40,7 @@ When you've made the changes, submit a pull request to the repo to be reviewed.
 ## Coders
 TTS4life
 5and5
+Iveez
 
 ## Others
 Iveez - Initial mod made for practicing strats
