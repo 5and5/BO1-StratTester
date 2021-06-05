@@ -662,7 +662,7 @@ init_levelvars()
 	// used to a check in last stand for players to become zombies
 	level.is_zombie_level			= true; 
 	level.laststandpistol			= "m1911_zm";		// so we dont get the uber colt when we're knocked out
-	level.first_round				= true;
+	level.first_round				= false;
 	level.round_number				= 100;
 	level.round_start_time			= 0;
 	level.pro_tips_start_time		= 0;
@@ -3982,18 +3982,29 @@ chalk_round_over()
 
 round_think()
 {
-	level.dog_health = 1600;
-	// level.round_number = 100;
-	// level.zombie_vars["zombie_spawn_delay"] = 0.08;
-	// level.zombie_move_speed = 105;
 
-	round_pause(3);
+	level.round_number = getDvarInt( "round_number" );
+
+	for(i = 0; i < level.round_number; i++) {
+		if(level.zombie_vars["zombie_spawn_delay"] > .08) {
+			level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
+		}			
+		else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
+			level.zombie_vars["zombie_spawn_delay"] = .08;
+		}
+	}
+
+	round_pause( getDvarInt( "round_start_delay" ) );
+	iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
+	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
+	level.zombie_move_speed = 105;
+	level.dog_health = 1600;
 	level.dog_round_count = 5;
 	level.game_started = 1;
-	level.next_dog_round = 102;
-	level.next_monkey_round = 73;
-	level.next_doc_round = 73;
+	level.next_dog_round = 666;
+	level.next_monkey_round = 666;
+	level.next_doc_round = 666;
 
 	for( ;; )
 	{
@@ -4045,12 +4056,6 @@ round_think()
 				level.zombie_vars["zombie_spawn_delay"] = .08;
 			}
 		}
-		iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
-
-		// 
-		// Increase the zombie move speed
-		level.zombie_move_speed = level.round_number * level.zombie_vars["zombie_move_speed_multiplier"];
-		iprintln("Move Speed: " + level.zombie_move_speed);
 
 		[[level.round_wait_func]]();
 
@@ -7594,7 +7599,7 @@ insta_kill_rounds()
 	{
 
 		// set insta kill round if not already set
-		if (getDvarInt("insta_kill_round") == 1 && level.zombie_health != -50)
+		if (getDvarInt("round_insta") == 1 && level.zombie_health != -50)
 		{
 
 			level.zombie_health = -50;
@@ -7609,7 +7614,7 @@ insta_kill_rounds()
 			}
 
 		}
-		else if (getDvarInt("insta_kill_round") == 0 && level.zombie_health == -50)
+		else if (getDvarInt("round_insta") == 0 && level.zombie_health == -50)
 		{
 
 			ai_calculate_health( level.round_number );
