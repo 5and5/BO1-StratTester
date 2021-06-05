@@ -254,7 +254,7 @@
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_MOON_TOWER"; "tower_chest"
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations"))
 		
-		CHOICE_DVARSTRINGLIST_VIS( 6, "@MOD_ZOMBIE_COD5_FACTORY_CAPS", zombie_factory_initial_box_location, {
+		CHOICE_DVARSTRINGLIST_VIS( 6, "@MOD_ZOMBIE_COD5_FACTORY_CAPS", boxlocation, {
 			"@MOD_POWER_BOX"; "power";
 			"@MOD_HALLWAY_BOX"; "trench";
 			"@MOD_THOMPSON_BOX"; "tommy";
