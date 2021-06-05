@@ -4,9 +4,7 @@ menufile,ui/hud_practice.menu
 menufile,ui/hud_zombie.menu
 menufile,ui/hud_zombie.txt
 
-localize,mod
-
-//GENERAL
+//GENERAL SCRITPS
 rawfile,maps/_zombiemode.gsc
 rawfile,maps/_zombiemode_weapons.gsc
 rawfile,maps/_zombiemode_perks.gsc
@@ -18,3 +16,10 @@ rawfile,maps/_weaponobjects.gsc
 rawfile,maps/_zombiemode_ai_dogs.gsc
 rawfile,maps/_zombiemode_ai_faller.gsc
 rawfile,maps/_zombiemode_spawner.gsc
+
+//CLIENT SCRITPS
+rawfile,clientscripts/_zombiemode_ffotd.csc
+
+// STRINGS
+localize,mod
+localize,reimagined
