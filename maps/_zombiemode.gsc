@@ -1717,6 +1717,7 @@ onPlayerSpawned()
 				
 				self.gamejustloaded = true;
 				self thread give_perks();
+				self thread perk_select();
 				if ( level.script == "zombie_pentagon" )
 					self thread enable_traps_five();
 				
@@ -7113,124 +7114,135 @@ watch_for_trade()
 
 }
 
-give_perks()
+perk_select()
+{	
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_1"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_2"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_3"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_4"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_5"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
+}
+
+give_perks( )
 {
-
-	if ( level.script == "zombie_cod5_factory" )
+	if ( getDvar( "player_perk_1") == "" && getDvar( "player_perk_2") == "" && getDvar( "player_perk_3") == "" && getDvar( "player_perk_4") == "" && getDvar( "player_perk_5") == "" && getDvar( "player_perk_6") == "" )
 	{
-
-		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-		wait( 0.05 );
-
-		if(isDefined(level.additional_primaryweaponmachine_origin)) {
-			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-			wait( 0.05 );
-		}
-
-		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
-		wait( 0.05 );
-
-		if ( self.gamejustloaded )
-			self GiveWeapon( "bowie_knife_zm" );
-
-	}
-	else if ( level.script == "zombie_cosmodrome" )
-	{
-
-		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-		wait( 0.05 );
-
-		if(isDefined(level.additional_primaryweaponmachine_origin)) {
-			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-			wait( 0.05 );
-		}
-
-		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
-		wait( 0.05 );
-
-	}
-	else if ( level.script == "zombie_temple" )
-	{
-
-		if ( self.gamejustloaded )
+		if ( level.script == "zombie_cod5_factory" )
 		{
 
-			wait ( 2 );
-			self GiveWeapon( "bowie_knife_zm" );
-
-		}
-
-		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-		wait( 0.05 );
-
-		if(isDefined(level.additional_primaryweaponmachine_origin)) {
-			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 			wait( 0.05 );
-		}
-		
-		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
-		wait( 0.05 );
 
-	}
-	else if ( level.script == "zombie_cod5_sumpf" )
-	{
+			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+				wait( 0.05 );
+			}
 
-		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
-		wait( 0.05 );
-
-		if ( self.gamejustloaded )
-			self GiveWeapon( "tesla_gun_zm" );
-
-	}
-	else if ( level.script == "zombie_pentagon" )
-	{
-
-		self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-		wait( 0.05 );
-		self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
-		wait( 0.05 );
-
-		if(isDefined(level.additional_primaryweaponmachine_origin)) {
-			self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			wait( 0.05 );
-		}
+			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+			wait( 0.05 );
 
-		if ( self.gamejustloaded )
+			if ( self.gamejustloaded )
+				self GiveWeapon( "bowie_knife_zm" );
+
+		}
+		else if ( level.script == "zombie_cosmodrome" )
 		{
 
-			self giveweapon( "bowie_knife_zm" );
-			self giveweapon( "crossbow_explosive_upgraded_zm" );
-			self giveweapon( "mpl_zm" );
-			self takeweapon( "m1911_zm" );
+			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+			wait( 0.05 );
+
+			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+				wait( 0.05 );
+			}
+
+			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
+			wait( 0.05 );
 
 		}
+		else if ( level.script == "zombie_temple" )
+		{
 
+			if ( self.gamejustloaded )
+			{
+
+				wait ( 2 );
+				self GiveWeapon( "bowie_knife_zm" );
+
+			}
+
+			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+			wait( 0.05 );
+
+			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+				wait( 0.05 );
+			}
+			
+			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
+			wait( 0.05 );
+
+		}
+		else if ( level.script == "zombie_cod5_sumpf" )
+		{
+
+			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+			wait( 0.05 );
+
+			if ( self.gamejustloaded )
+				self GiveWeapon( "tesla_gun_zm" );
+
+		}
+		else if ( level.script == "zombie_pentagon" )
+		{
+
+			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
+			wait( 0.05 );
+			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+			wait( 0.05 );
+
+			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
+				wait( 0.05 );
+			}
+
+			if ( self.gamejustloaded )
+			{
+
+				self giveweapon( "bowie_knife_zm" );
+				self giveweapon( "crossbow_explosive_upgraded_zm" );
+				self giveweapon( "mpl_zm" );
+				self takeweapon( "m1911_zm" );
+
+			}
+
+		}
 	}
-
 }
 
 hud_sph()

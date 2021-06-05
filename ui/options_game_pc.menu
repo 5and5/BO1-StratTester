@@ -270,8 +270,8 @@
 
 		CHOICE_DVARSTRINGLIST_VIS( 1, "PERK 1", player_perk_1, {
 			"@MOD_NONE"; "";
-			"@MOD_JUG"; "specialty_juggernaut_zombies";
-			"@MOD_SPEED"; "specialty_fastreload_zombies";
+			"@MOD_JUG"; "specialty_armorvest";
+			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
 			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
@@ -282,10 +282,10 @@
 
 		CHOICE_DVARSTRINGLIST_VIS( 2, "PERK 2", player_perk_2, {
 			"@MOD_NONE"; "";
-			"@MOD_JUG"; "specialty_juggernaut_zombies";
-			"@MOD_SPEED"; "specialty_fastreload_zombies";
+			"@MOD_JUG"; "specialty_armorvest";
+			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
-			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
+			"@MOD_REVIVE"; "specialty_quickrevive";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
 			"@MOD_FLOPPER"; "specialty_flakjacket";
 			"@MOD_STAMINUP"; "specialty_longersprint";
@@ -294,10 +294,10 @@
 
 		CHOICE_DVARSTRINGLIST_VIS( 3, "PERK 3", player_perk_3, {
 			"@MOD_NONE"; "";
-			"@MOD_JUG"; "specialty_juggernaut_zombies";
-			"@MOD_SPEED"; "specialty_fastreload_zombies";
+			"@MOD_JUG"; "specialty_armorvest";
+			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
-			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
+			"@MOD_REVIVE"; "specialty_quickrevive";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
 			"@MOD_FLOPPER"; "specialty_flakjacket";
 			"@MOD_STAMINUP"; "specialty_longersprint";
@@ -306,10 +306,10 @@
 
 		CHOICE_DVARSTRINGLIST_VIS( 4, "PERK 5", player_perk_4, {
 			"@MOD_NONE"; "";
-			"@MOD_JUG"; "specialty_juggernaut_zombies";
-			"@MOD_SPEED"; "specialty_fastreload_zombies";
+			"@MOD_JUG"; "specialty_armorvest";
+			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
-			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
+			"@MOD_REVIVE"; "specialty_quickrevive";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
 			"@MOD_FLOPPER"; "specialty_flakjacket";
 			"@MOD_STAMINUP"; "specialty_longersprint";
@@ -318,10 +318,10 @@
 
 		CHOICE_DVARSTRINGLIST_VIS( 5, "PERK 5", player_perk_5, {
 			"@MOD_NONE"; "";
-			"@MOD_JUG"; "specialty_juggernaut_zombies";
-			"@MOD_SPEED"; "specialty_fastreload_zombies";
+			"@MOD_JUG"; "specialty_armorvest";
+			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
-			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
+			"@MOD_REVIVE"; "specialty_quickrevive";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
 			"@MOD_FLOPPER"; "specialty_flakjacket";
 			"@MOD_STAMINUP"; "specialty_longersprint";
@@ -330,10 +330,10 @@
 
 		CHOICE_DVARSTRINGLIST_VIS( 6, "PERK 6", player_perk_6, {
 			"@MOD_NONE"; "";
-			"@MOD_JUG"; "specialty_juggernaut_zombies";
-			"@MOD_SPEED"; "specialty_fastreload_zombies";
+			"@MOD_JUG"; "specialty_armorvest";
+			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
-			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
+			"@MOD_REVIVE"; "specialty_quickrevive";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
 			"@MOD_FLOPPER"; "specialty_flakjacket";
 			"@MOD_STAMINUP"; "specialty_longersprint";
