@@ -247,6 +247,46 @@ post_all_players_connected()
 	{
 		level.music_override = false;
 	}
+	
+	//levelthreads
+	level thread open_doors();
+	level thread open_windows();
+	level thread turn_on_power();
+
+	if ( level.script == "zombie_pentagon" )
+		self thread enable_traps_five();
+	
+	chests = getentarray( "treasure_chest_use", "targetname" );
+	for ( i = 0; i < chests.size; i++ )
+	{
+		chests[i] thread checkforboxhit();
+	}
+
+	if (level.script == "zombie_factory" )
+	{	
+		level.wuen = 0;
+		level.bridge = 0;
+		level.ware = 0;
+
+		wutrap = getentarray( "wuen_electric_trap", "targetname" );
+		watrap = getentarray( "warehouse_electric_trap", "targetname" );
+		brtrap = getentarray( "bridge_electric_trap", "targetname" );
+
+		for ( i = 0; i < wutrap.size; i++ )
+		{
+			wutrap[i] thread checkfortraphit( 0 );
+		}
+
+		for ( i = 0; i < watrap.size; i++ )
+		{
+			watrap[i] thread checkfortraphit( 1 );
+		}
+
+		for ( i = 0; i < brtrap.size; i++ )
+		{
+			brtrap[i] thread checkfortraphit( 2 );
+		}
+	}
 }
 
 zombiemode_melee_miss()
@@ -1706,61 +1746,14 @@ onPlayerSpawned()
 
 				level.chest_moves = 1;
 
-				level thread open_doors();
-				level thread open_windows();
-				level thread turn_on_power();
 				self thread watch_for_trade();
 
 				self thread hud_health_bar();
 				self thread hud_game_time();
 				self thread insta_kill_rounds();				
 				
-				self.gamejustloaded = true;
 				self thread give_perks();
 				self thread perk_select();
-				if ( level.script == "zombie_pentagon" )
-					self thread enable_traps_five();
-				
-				level.wuen = 0;
-				level.bridge = 0;
-				level.ware = 0;
-				
-				chests = getentarray( "treasure_chest_use", "targetname" );
-				for ( i = 0; i < chests.size; i++ )
-				{
-
-					chests[i] thread checkforboxhit();
-
-				}
-
-				wutrap = getentarray( "wuen_electric_trap", "targetname" );
-				watrap = getentarray( "warehouse_electric_trap", "targetname" );
-				brtrap = getentarray( "bridge_electric_trap", "targetname" );
-
-				for ( i = 0; i < wutrap.size; i++ )
-				{
-
-					wutrap[i] thread checkfortraphit( 0 );
-
-				}
-
-				for ( i = 0; i < watrap.size; i++ )
-				{
-
-					watrap[i] thread checkfortraphit( 1 );
-
-				}
-
-				for ( i = 0; i < brtrap.size; i++ )
-				{
-
-					brtrap[i] thread checkfortraphit( 2 );
-
-				}
-
-				wait( 5 );
-				self.gamejustloaded = false;
-				
 			}
 		}
 	}
@@ -6670,46 +6663,48 @@ set_sidequest_completed(id)
 
 open_doors()
 {
-	
-	doors = getentarray( "zombie_door", "targetname" );
-	for ( i = 0; i < doors.size; i++ )
+	while(1)
 	{
-		if ( level.script == "zombie_cosmodrome" && i == 1 )
-			continue;
-		else if ( level.script == "zombie_cosmodrome" && i == 2 )
-			continue;
-		else if ( level.script == "zombie_cosmodrome" && i == 4 )
-			continue;
-		else if ( level.script == "zombie_temple" && i == 0 )
-			continue;
-		else if ( level.script == "zombie_cod5_sumpf" && i == 4 )
-			continue;
-		else
+		if( getDvarInt( "open_doors" ) == 1 )
 		{
+			doors = getentarray( "zombie_door", "targetname" );
+			for ( i = 0; i < doors.size; i++ )
+			{
+				if ( level.script == "zombie_cosmodrome" && i == 1 )
+					continue;
+				else if ( level.script == "zombie_cosmodrome" && i == 2 )
+					continue;
+				else if ( level.script == "zombie_cosmodrome" && i == 4 )
+					continue;
+				else if ( level.script == "zombie_temple" && i == 0 )
+					continue;
+				else if ( level.script == "zombie_cod5_sumpf" && i == 4 )
+					continue;
+				else
+				{
+					doors[i] notify( "trigger", get_players()[0], true );
+				}
+			}
 
-			doors[i] notify( "trigger", get_players()[0], true );
+			debris = getentarray( "zombie_debris", "targetname" );
+			for ( i = 0; i < debris.size; i++ )
+			{
 
+				if ( level.script == "zombie_cod5_factory" && i == 1 )
+					continue;
+				else 
+				{			
+
+					if ( level.script == "zombie_temple" )
+						wait( 0.05 );
+					debris[i] notify( "trigger", get_players()[0], true );
+
+				}
+			}	
+			break;
 		}
-	
+		wait 0.1;
 	}
-
-	debris = getentarray( "zombie_debris", "targetname" );
-	for ( i = 0; i < debris.size; i++ )
-	{
-
-		if ( level.script == "zombie_cod5_factory" && i == 1 )
-			continue;
-		else 
-		{			
-
-			if ( level.script == "zombie_temple" )
-				wait( 0.05 );
-			debris[i] notify( "trigger", get_players()[0], true );
-
-		}
-
-	}
-
 }
 
 //custom function to get non destroyed chunks ( includes all window types )
@@ -6762,18 +6757,22 @@ custom_get_non_destroyed_chunks( barrier_chunks )
 }
 
 open_windows()
-{
-
-	window_boards = getstructarray( "exterior_goal", "targetname" );
-
-	for ( i = 0; i < window_boards.size; i++ )
+{	
+	while(1)
 	{
+		if( getDvarInt( "open_windows" ) == 1 )
+		{
+			window_boards = getstructarray( "exterior_goal", "targetname" );
 
-		thread clearwindow(window_boards[i]);
-		wait(0.05);
-
+			for ( i = 0; i < window_boards.size; i++ )
+			{
+				thread clearwindow(window_boards[i]);
+				wait(0.05);
+			}
+			break;
+		}
+		wait 0.1;
 	}
-
 }
 
 clearwindow(window)
@@ -6900,111 +6899,111 @@ theater_disable_crawlers( spawner )
 // turns on power and activates things around the map
 turn_on_power()
 {
-
 	level waittill( "fade_introblack" );
 
-	if ( level.script == "zombie_theater" )
+	while(1)
 	{
-
-		level.ignore_spawner_func = ::theater_disable_crawlers;
-		trig = getent("use_elec_switch","targetname");
-		trig notify( "trigger" );
-
-	}	
-	else if ( level.script == "zombie_pentagon" )
-	{
-
-		trig = getent("use_elec_switch","targetname");
-		trig notify( "trigger" );
-
-		wait ( 5 );
-		level.next_thief_round = 1;
-
-	}	
-	else if ( level.script == "zombie_cosmodrome" )
-	{
-
-		trig = getent( "use_elec_switch" , "targetname" );
-		trig notify( "trigger" );
-
-		// open up pack a punch
-		upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
-		upper_door_model.clip = GetEnt( upper_door_model.target, "targetname" );
-		upper_door_model.clip LinkTo( upper_door_model ); 
-	
-		upper_door_model MoveTo(upper_door_model.origin + upper_door_model.script_vector, 1.5 );
-		level.pack_a_punch_door MoveTo( level.pack_a_punch_door.origin + level.pack_a_punch_door.script_vector, 1.5 );
-		level.pack_a_punch_door.clip NotSolid();
-		level.pack_a_punch_door waittill( "movedone" );
-		level.pack_a_punch_door.clip ConnectPaths();
-
-		flag_set( "rocket_group" );
-
-	}
-	else if ( level.script == "zombie_coast" )
-	{
-
-		trig = getent("use_elec_switch","targetname");
-		trig notify( "trigger" );
-
-	}
-	else if ( level.script == "zombie_temple" )
-	{
-
-		flag_set("left_switch_done");
-		flag_set("right_switch_done");
-
-	}
-	else if ( level.script == "zombie_moon" )
-	{
-
-		trig = getent("use_elec_switch","targetname");
-		trig notify( "trigger" );
-
-	}
-	else if ( level.script == "zombie_cod5_asylum" )
-	{
-
-		trig = getent("use_master_switch","targetname");
-		trig notify( "trigger" );
-
-	}
-	else if ( level.script == "zombie_cod5_sumpf" )
-	{
-
-		// activate zipline
-		zipPowerTrigger = getent("zip_lever_trigger", "targetname");
-		zipPowerTrigger notify( "trigger" );
-
-	}
-	else if ( level.script == "zombie_cod5_factory" )
-	{
-
-		trig = getent( "use_power_switch", "targetname" );
-		trig notify( "trigger" );
-
-		// link teleporters
-		trigger = getent( "trigger_teleport_core", "targetname" );
-		wait 0.5;
-		for ( i = 0; i < 3; i++ )
+		if ( getDvarInt( "turn_power_on" ) == 1 )
 		{
-
-			while ( level.is_cooldown )
+			if ( level.script == "zombie_theater" )
 			{
 
-				wait( 0.05 );
+				level.ignore_spawner_func = ::theater_disable_crawlers;
+				trig = getent("use_elec_switch","targetname");
+				trig notify( "trigger" );
+
+			}	
+			else if ( level.script == "zombie_pentagon" )
+			{
+
+				trig = getent("use_elec_switch","targetname");
+				trig notify( "trigger" );
+
+				wait ( 5 );
+				level.next_thief_round = 1;
+
+			}	
+			else if ( level.script == "zombie_cosmodrome" )
+			{
+
+				trig = getent( "use_elec_switch" , "targetname" );
+				trig notify( "trigger" );
+
+				// open up pack a punch
+				upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
+				upper_door_model.clip = GetEnt( upper_door_model.target, "targetname" );
+				upper_door_model.clip LinkTo( upper_door_model ); 
+			
+				upper_door_model MoveTo(upper_door_model.origin + upper_door_model.script_vector, 1.5 );
+				level.pack_a_punch_door MoveTo( level.pack_a_punch_door.origin + level.pack_a_punch_door.script_vector, 1.5 );
+				level.pack_a_punch_door.clip NotSolid();
+				level.pack_a_punch_door waittill( "movedone" );
+				level.pack_a_punch_door.clip ConnectPaths();
+
+				flag_set( "rocket_group" );
 
 			}
+			else if ( level.script == "zombie_coast" )
+			{
 
-			level.teleporter_pad_trig[ i ] notify( "trigger" );
-			wait( 0.05 );
-			trigger notify( "trigger" );
+				trig = getent("use_elec_switch","targetname");
+				trig notify( "trigger" );
 
+			}
+			else if ( level.script == "zombie_temple" )
+			{
+
+				flag_set("left_switch_done");
+				flag_set("right_switch_done");
+
+			}
+			else if ( level.script == "zombie_moon" )
+			{
+
+				trig = getent("use_elec_switch","targetname");
+				trig notify( "trigger" );
+
+			}
+			else if ( level.script == "zombie_cod5_asylum" )
+			{
+
+				trig = getent("use_master_switch","targetname");
+				trig notify( "trigger" );
+
+			}
+			else if ( level.script == "zombie_cod5_sumpf" )
+			{
+
+				// activate zipline
+				zipPowerTrigger = getent("zip_lever_trigger", "targetname");
+				zipPowerTrigger notify( "trigger" );
+
+			}
+			else if ( level.script == "zombie_cod5_factory" )
+			{
+
+				trig = getent( "use_power_switch", "targetname" );
+				trig notify( "trigger" );
+
+				// link teleporters
+				trigger = getent( "trigger_teleport_core", "targetname" );
+				wait 0.5;
+				for ( i = 0; i < 3; i++ )
+				{
+					while ( level.is_cooldown )
+					{
+						wait( 0.05 );
+					}
+
+					level.teleporter_pad_trig[ i ] notify( "trigger" );
+					wait( 0.05 );
+					trigger notify( "trigger" );
+				}
+			}
+			break;
 		}
-
+		wait 0.1;
 	}
-	
-
 }
 
 watch_for_trade()
@@ -7124,7 +7123,7 @@ perk_select()
 	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
 }
 
-give_perks( )
+give_perks()
 {
 	if ( getDvar( "player_perk_1") == "" && getDvar( "player_perk_2") == "" && getDvar( "player_perk_3") == "" && getDvar( "player_perk_4") == "" && getDvar( "player_perk_5") == "" && getDvar( "player_perk_6") == "" )
 	{
@@ -7144,7 +7143,7 @@ give_perks( )
 			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			wait( 0.05 );
 
-			if ( self.gamejustloaded )
+			if ( level.gamejustloaded )
 				self GiveWeapon( "bowie_knife_zm" );
 
 		}
@@ -7172,7 +7171,7 @@ give_perks( )
 		else if ( level.script == "zombie_temple" )
 		{
 
-			if ( self.gamejustloaded )
+			if ( level.gamejustloaded )
 			{
 
 				wait ( 2 );
@@ -7212,7 +7211,7 @@ give_perks( )
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			wait( 0.05 );
 
-			if ( self.gamejustloaded )
+			if ( level.gamejustloaded )
 				self GiveWeapon( "tesla_gun_zm" );
 
 		}
@@ -7231,7 +7230,7 @@ give_perks( )
 				wait( 0.05 );
 			}
 
-			if ( self.gamejustloaded )
+			if ( level.gamejustloaded )
 			{
 
 				self giveweapon( "bowie_knife_zm" );

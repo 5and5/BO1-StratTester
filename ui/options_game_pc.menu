@@ -348,6 +348,9 @@
 
 		CHOICE_DVARSTRINGLIST_VIS(1, "@MOD_MULE_KICK_ENABLED", mulekick_enabled, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		CHOICE_DVARFLOATLIST_VIS( 2, "@MENU_MATURE_CAPS", cg_mature, { "@MENU_MATURE_UNRESTRICTED_CAPS" 1 "@MENU_MATURE_REDUCED_CAPS" 0 }, ;, when(dvarString("ui_options_game_popup") == "game_options") )
+		CHOICE_DVARSTRINGLIST_VIS(3, "@MOD_POWER_ON", turn_power_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
+		CHOICE_DVARSTRINGLIST_VIS(4, "@MOD_DOORS_OPEN", open_doors, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
+		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_WINDOWS_OPEN", open_windows, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 
 		#undef CHOICE_TEXT_OFFSET_X
 		#define CHOICE_TEXT_OFFSET_X		-58
