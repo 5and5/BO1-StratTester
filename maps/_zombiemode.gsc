@@ -1755,6 +1755,7 @@ onPlayerSpawned()
 				self thread set_player_perks();
 				self thread give_player_perks();
 				self thread give_player_weapons();
+				self thread set_player_weapon();
 			}
 		}
 	}
@@ -3528,6 +3529,7 @@ round_pause( delay )
 	wait( 1.0 );
 
 	level.countdown_hud destroy_hud();
+	iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
 }
 
 
@@ -3977,8 +3979,10 @@ chalk_round_over()
 
 round_think()
 {
-
-	level.round_number = getDvarInt( "round_number" );
+	round_number = getDvarInt( "round_number" );
+	if( round_number == "" )
+		round_number = 100;
+	level.round_number = round_number;
 
 	for(i = 0; i < level.round_number; i++) {
 		if(level.zombie_vars["zombie_spawn_delay"] > .08) {
@@ -3990,7 +3994,7 @@ round_think()
 	}
 
 	round_pause( getDvarInt( "round_start_delay" ) );
-	iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
+	
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
 	level.zombie_move_speed = 105;
@@ -7120,7 +7124,7 @@ give_player_weapons()
 
 	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
 	{
-	case "zombie_cod5_protype":
+	case "zombie_cod5_prototype":
 		self takeWeapon( "m1911_zm" );
 		self giveWeapon( "thundergun_zm" );
 		self giveWeapon( "ray_gun_zm" );
@@ -7220,7 +7224,7 @@ give_player_perks()
 	{	
 		switch ( Tolower( GetDvar( #"mapname" ) ) ) 
 		{
-		case "zombie_cod5_protype":
+		case "zombie_cod5_prototype":
 
 			break;
 
@@ -7335,6 +7339,26 @@ set_player_perks()
 		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_5"), true );
 		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
 	}
+}
+
+set_player_weapon()
+{	
+	level waittill( "fade_introblack" );
+	prev_weapon = "";
+
+	while(1)
+	{	
+		wait 0.05;
+		weapon = getDvar( "weapon_to_give" );
+		if( weapon == "" )
+			continue;
+		if( weapon == prev_weapon )
+			continue;
+
+		self maps\_zombiemode_weapons::weapon_give( weapon );
+		prev_weapon = weapon;
+	}
+
 }
 
 hud_sph()
