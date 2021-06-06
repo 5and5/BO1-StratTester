@@ -307,7 +307,7 @@
 			"@MOD_JUG"; "specialty_armorvest";
 			"@MOD_SPEED"; "specialty_fastreload";
 			"@MOD_DOUBLE_TAP"; "specialty_rof";
-			"@MOD_REVIVE"; "specialty_quickrevive_zombies";
+			"@MOD_REVIVE"; "specialty_quickrevive";
 			"@MOD_MULE_KICK"; "specialty_additionalprimaryweapon";
 			"@MOD_FLOPPER"; "specialty_flakjacket";
 			"@MOD_STAMINUP"; "specialty_longersprint";
