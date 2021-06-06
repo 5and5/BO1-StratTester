@@ -16,6 +16,8 @@ rawfile,maps/_weaponobjects.gsc
 rawfile,maps/_zombiemode_ai_dogs.gsc
 rawfile,maps/_zombiemode_ai_faller.gsc
 rawfile,maps/_zombiemode_spawner.gsc
+rawfile,maps/_zombiemode_weap_nesting_dolls.gsc
+rawfile,maps/_zombiemode_weap_black_hole_bomb.gsc
 
 //CLIENT SCRITPS
 rawfile,clientscripts/_zombiemode_ffotd.csc

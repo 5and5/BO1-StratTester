@@ -249,12 +249,13 @@ post_all_players_connected()
 	}
 	
 	//levelthreads
+	level thread hud_game_time();
 	level thread open_doors();
 	level thread open_windows();
 	level thread turn_on_power();
 
 	if ( level.script == "zombie_pentagon" )
-		self thread enable_traps_five();
+		level thread enable_traps_five();
 	
 	chests = getentarray( "treasure_chest_use", "targetname" );
 	for ( i = 0; i < chests.size; i++ )
@@ -262,7 +263,7 @@ post_all_players_connected()
 		chests[i] thread checkforboxhit();
 	}
 
-	if (level.script == "zombie_factory" )
+	if (level.script == "zombie_cod5_factory" )
 	{	
 		level.wuen = 0;
 		level.bridge = 0;
@@ -1749,11 +1750,11 @@ onPlayerSpawned()
 				self thread watch_for_trade();
 
 				self thread hud_health_bar();
-				self thread hud_game_time();
 				self thread insta_kill_rounds();				
 				
-				self thread give_perks();
-				self thread perk_select();
+				self thread set_player_perks();
+				self thread give_player_perks();
+				self thread give_player_weapons();
 			}
 		}
 	}
@@ -2111,7 +2112,7 @@ player_revive_monitor()
         
 		bbPrint( "zombie_playerdeaths: round %d playername %s deathtype revived x %f y %f z %f", level.round_number, self.playername, self.origin );
 
-		self thread give_perks();
+		self thread give_player_perks();
 
 		//self laststand_giveback_player_perks();
 
@@ -7113,27 +7114,158 @@ watch_for_trade()
 
 }
 
-perk_select()
+give_player_weapons()
 {	
-	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_1"), true );
-	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_2"), true );
-	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_3"), true );
-	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_4"), true );
-	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_5"), true );
-	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
+	level waittill( "fade_introblack" );
+
+	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
+	{
+	case "zombie_cod5_protype":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "thundergun_zm" );
+		self giveWeapon( "ray_gun_zm" );
+		self switchToWeapon( "thundergun_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		break;
+
+	case "zombie_cod5_asylum":
+		self takeweapon( "m1911_zm" );
+		self giveWeapon( "cz75dw_zm" );
+		self giveWeapon( "ray_gun_zm" );
+		self switchToWeapon( "cz75dw_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		break;
+
+	case "zombie_cod5_sumpf":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "tesla_gun_zm" );
+		self giveWeapon( "cz75dw_zm" );
+		self switchToWeapon( "tesla_gun_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		// if(isDefined(level.additional_primaryweaponmachine_origin))
+		// 	self giveWeapon( "ray_gun_zm" );}
+		break;
+
+	case "zombie_cod5_factory":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "bowie_knife_zm" );
+		self giveWeapon( "tesla_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "tesla_gun_upgraded_zm" ) );
+		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
+		self switchToWeapon( "tesla_gun_upgraded_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		// if(isDefined(level.additional_primaryweaponmachine_origin))
+		// 	self giveWeapon( "m1911_upgraded_zm", 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
+		break;
+
+	case "zombie_theater":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "bowie_knife_zm" );
+		self giveWeapon( "thundergun_zm" );
+		self giveWeapon( "ray_gun_zm" );
+		self switchToWeapon( "thundergun_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+			break;
+
+	case "zombie_pentagon":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "bowie_knife_zm" );
+		self giveWeapon( "crossbow_explosive_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "crossbow_explosive_upgraded_zm" ) );	
+		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
+		self switchToWeapon( "crossbow_explosive_upgraded_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		break;	
+
+	case "zombie_cosmodrome":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "thundergun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "thundergun_upgraded_zm" ) );
+		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
+		self switchToWeapon( "thundergun_upgraded_zm");
+		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
+		break;
+
+	case "zombie_coast":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "sniper_explosive_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "sniper_explosive_upgraded_zm" ) );
+		self giveWeapon( "humangun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "humangun_upgraded_zm" ) );
+		self switchToWeapon( "sniper_explosive_upgraded_zm");
+		//self giveWeapon( "ray_gun_upgraded_zm", 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
+		self maps\_zombiemode_weap_nesting_dolls::player_give_nesting_dolls();
+		break;
+
+	case "zombie_temple":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "bowie_knife_zm" );
+		self giveWeapon( "shrink_ray_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "shrink_ray_upgraded_zm" ) );
+		self giveWeapon( "m1911_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
+		self switchToWeapon( "shrink_ray_upgraded_zm");
+		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		break;
+
+	case "zombie_moon":
+		self takeWeapon( "m1911_zm" );
+		self giveWeapon( "bowie_knife_zm" );
+		self giveWeapon( "microwavegun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "microwavegun_upgraded_zm" ) );
+		self giveWeapon( "m1911_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
+		self switchToWeapon( "microwavegun_upgraded_zm");
+		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
+		break;
+	}
 }
 
-give_perks()
-{
+give_player_perks()
+{	
+
 	if ( getDvar( "player_perk_1") == "" && getDvar( "player_perk_2") == "" && getDvar( "player_perk_3") == "" && getDvar( "player_perk_4") == "" && getDvar( "player_perk_5") == "" && getDvar( "player_perk_6") == "" )
-	{
+	{	
+		// switch ( Tolower( GetDvar( #"mapname" ) ) ) 
+		// {
+		// case "zombie_cod5_protype":
+
+		// 	break;
+
+		// case "zombie_cod5_asylum":
+
+		// 	break;
+
+		// case "zombie_cod5_sumpf":
+
+		// 	break;
+
+		// case "zombie_cod5_factory":
+
+		// 	break;
+
+		// case "zombie_theater":
+
+		// 	break;
+
+		// case "zombie_pentagon":
+
+		// 	break;	
+
+		// case "zombie_cosmodrome":
+
+		// 	break;
+
+		// case "zombie_coast":
+
+		// break;
+
+		// case "zombie_temple":
+
+		// 	break;
+
+		// case "zombie_moon":
+
+		// 	break;
+		// }
 		if ( level.script == "zombie_cod5_factory" )
 		{
 
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 			wait( 0.05 );
 
-			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			if(isDefined(level.zombie_additionalprimaryweapon_machine_origin)) {
 				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
 				wait( 0.05 );
 			}
@@ -7142,9 +7274,6 @@ give_perks()
 			wait( 0.05 );
 			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			wait( 0.05 );
-
-			if ( level.gamejustloaded )
-				self GiveWeapon( "bowie_knife_zm" );
 
 		}
 		else if ( level.script == "zombie_cosmodrome" )
@@ -7157,7 +7286,7 @@ give_perks()
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 			wait( 0.05 );
 
-			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			if(isDefined(level.zombie_additionalprimaryweapon_machine_origin)) {
 				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
 				wait( 0.05 );
 			}
@@ -7170,15 +7299,6 @@ give_perks()
 		}
 		else if ( level.script == "zombie_temple" )
 		{
-
-			if ( level.gamejustloaded )
-			{
-
-				wait ( 2 );
-				self GiveWeapon( "bowie_knife_zm" );
-
-			}
-
 			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			wait( 0.05 );
 			self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
@@ -7186,7 +7306,7 @@ give_perks()
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
 			wait( 0.05 );
 
-			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			if(isDefined(level.zombie_additionalprimaryweapon_machine_origin)) {
 				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
 				wait( 0.05 );
 			}
@@ -7211,8 +7331,7 @@ give_perks()
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			wait( 0.05 );
 
-			if ( level.gamejustloaded )
-				self GiveWeapon( "tesla_gun_zm" );
+
 
 		}
 		else if ( level.script == "zombie_pentagon" )
@@ -7225,23 +7344,22 @@ give_perks()
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			wait( 0.05 );
 
-			if(isDefined(level.additional_primaryweaponmachine_origin)) {
+			if(isDefined(level.zombie_additionalprimaryweapon_machine_origin)) {
 				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
 				wait( 0.05 );
 			}
-
-			if ( level.gamejustloaded )
-			{
-
-				self giveweapon( "bowie_knife_zm" );
-				self giveweapon( "crossbow_explosive_upgraded_zm" );
-				self giveweapon( "mpl_zm" );
-				self takeweapon( "m1911_zm" );
-
-			}
-
 		}
 	}
+}
+
+set_player_perks()
+{
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_1"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_2"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_3"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_4"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_5"), true );
+	self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
 }
 
 hud_sph()
