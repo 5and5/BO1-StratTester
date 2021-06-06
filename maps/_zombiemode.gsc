@@ -1754,7 +1754,6 @@ onPlayerSpawned()
 				self thread hud_health_bar();
 				self thread insta_kill_rounds();				
 				
-				self thread set_player_perks();
 				self thread give_player_perks();
 				self thread give_player_weapons();
 				self thread set_player_weapon();
@@ -7220,8 +7219,6 @@ give_player_weapons()
 
 give_player_perks()
 {	
-	level waittill( "fade_introblack" );
-
 	if ( getDvar( "player_perk_1") == "" && getDvar( "player_perk_2") == "" && getDvar( "player_perk_3") == "" && getDvar( "player_perk_4") == "" && getDvar( "player_perk_5") == "" && getDvar( "player_perk_6") == "" )
 	{	
 		switch ( Tolower( GetDvar( #"mapname" ) ) ) 
@@ -7326,14 +7323,8 @@ give_player_perks()
 			break;
 		}
 	}
-}
-
-set_player_perks()
-{	
-	level waittill( "fade_introblack" );
-
-	if ( getDvar( "player_perk_1") != "" && getDvar( "player_perk_2") != "" && getDvar( "player_perk_3") != "" && getDvar( "player_perk_4") != "" && getDvar( "player_perk_5") != "" && getDvar( "player_perk_6") != "" )
-	{	
+	else
+	{
 		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_1"), true );
 		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_2"), true );
 		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_3"), true );

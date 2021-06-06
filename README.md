@@ -18,12 +18,18 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - Option to set box locations
 - Option to give weapon
 - Set perks on every map
+- Set weapons on every map
 
 
 Planned Features:
 - Tools for tracking/optimizing box hits
 - Current Spawn Zone Indicator
 - More!
+
+TODO:
+- fix the der riese box locations
+- add more weapons to give weapon
+- finish exclude list of open doors
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 
