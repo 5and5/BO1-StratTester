@@ -56,11 +56,6 @@
 			{
 				setDvar cg_fovScale_settings 1;
 			}
-
-			if(dvarString(open_windows) == "")
-			{
-				setDvar open_windows 0;
-			}
 			
 			if(dvarString(mulekick_enabled) == "")
 			{
@@ -75,6 +70,11 @@
 			if(dvarString(open_doors) == "")
 			{
 				setDvar open_doors 0;
+			}
+
+			if(dvarString(open_windows) == "")
+			{
+				setDvar open_windows 0;
 			}
 
 			if(dvarString(round_insta) == "")

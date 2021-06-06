@@ -6,14 +6,19 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 
 ## Current Features:
 - Toggleable Total Game Timer and Current Round Timer
-- Seconds Per Horde (measured every second)
+- Toggleable Seconds Per Horde (measured every second)
 - Toggleable Health Bar
 - 500,000 points on spawn
-- All Debris and Doors open 
-- (Most) Barriers removed from zombies spawns on spawn
-- Power on by default
 - Remove Perk Limit
 - Option to enable/disable Mule Kick without playing offline
+- Option to turn on power
+- Option to open most doors and barriers
+- Option to open windows
+- Option to set perks
+- Option to set box locations
+- Option to give weapon
+- Set perks on every map
+
 
 Planned Features:
 - Tools for tracking/optimizing box hits

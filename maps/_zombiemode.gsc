@@ -300,8 +300,10 @@ zombiemode_melee_miss()
 
 init_additionalprimaryweapon_machine_locations()
 {
-
-	if(getDvarInt("mulekick_enabled") == 0) { return; }
+	mulekick_enabled = getDvar("mulekick_enabled");
+	if( mulekick_enabled == "")
+		mulekick_enabled = "1";
+	if( mulekick_enabled == "0" ) { return; }
 
 	switch ( Tolower( GetDvar( #"mapname" ) ) )
 	{
@@ -7229,10 +7231,10 @@ give_player_perks()
 			break;
 
 		case "zombie_cod5_asylum":
-			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
+			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
+			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			break;
 
 		case "zombie_cod5_sumpf":
@@ -7510,7 +7512,7 @@ tra_hud()
 
 enable_traps_five()
 {
-
+	level waittill( "fade_introblack" );
 	traps_array = getentarray( "trigger_battery_trap_fix", "targetname" );
 	
 	for ( i = 0; i < traps_array.size; i++ )
