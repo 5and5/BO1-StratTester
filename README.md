@@ -29,7 +29,8 @@ Planned Features:
 TODO:
 - fix the der riese box locations
 - add more weapons to give weapon
-- finish exclude list of open doors
+- remove special zombies from shang
+- no drops
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 

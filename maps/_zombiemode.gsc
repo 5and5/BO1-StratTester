@@ -253,6 +253,7 @@ post_all_players_connected()
 	level thread open_doors();
 	level thread open_windows();
 	level thread turn_on_power();
+	level thread get_doors_nearby();
 
 	if ( level.script == "zombie_pentagon" )
 		level thread enable_traps_five();
@@ -6675,37 +6676,52 @@ open_doors()
 		{
 			doors = getentarray( "zombie_door", "targetname" );
 			for ( i = 0; i < doors.size; i++ )
-			{
-				if ( level.script == "zombie_cosmodrome" && i == 1 )
+			{	
+				if ( level.script == "zombie_theater" &&  doors[i].target == "alley_door2" )
+					continue;
+				else if ( level.script == "zombie_theater" && doors[i].target == "backstage_door" )
+					continue;
+				else if ( level.script == "zombie_theater" && doors[i].target == "vip_top_door" )
+					continue;
+				else if ( level.script == "zombie_cod5_asylum" && doors[i].target == "auto228" )
+					continue;
+				else if ( level.script == "zombie_cod5_asylum" && doors[i].target == "auto76" )
+					continue;
+				else if ( level.script == "zombie_cosmodrome" && i == 1 )
 					continue;
 				else if ( level.script == "zombie_cosmodrome" && i == 2 )
 					continue;
 				else if ( level.script == "zombie_cosmodrome" && i == 4 )
 					continue;
-				else if ( level.script == "zombie_temple" && i == 0 )
+				if ( level.script == "zombie_temple" && i == 0 )
 					continue;
-				else if ( level.script == "zombie_cod5_sumpf" && i == 4 )
+				else if ( level.script == "zombie_cod5_sumpf" && doors[i].target == "nw_hut_blocker" )
+					continue;
+				else if ( level.script == "zombie_cod5_sumpf" && doors[i].target == "attic_blocker" )
 					continue;
 				else
 				{
 					doors[i] notify( "trigger", get_players()[0], true );
 				}
+				wait( 0.05 );
 			}
 
 			debris = getentarray( "zombie_debris", "targetname" );
 			for ( i = 0; i < debris.size; i++ )
 			{
-
 				if ( level.script == "zombie_cod5_factory" && i == 1 )
+					continue;
+				else if ( level.script == "zombie_cod5_asylum" && debris[i].target == "north_upstairs_blocker" )
+					continue;
+				else if ( level.script == "zombie_cod5_sumpf" && debris[i].target == "upstairs_blocker" )
 					continue;
 				else 
 				{			
-
 					if ( level.script == "zombie_temple" )
 						wait( 0.05 );
 					debris[i] notify( "trigger", get_players()[0], true );
-
 				}
+				wait( 0.05 );
 			}	
 			break;
 		}
@@ -7777,4 +7793,41 @@ seconds_to_string(seconds) {
 		time += minutes + ":" + seconds;
 
 	return time;
+}
+
+get_doors_nearby()
+{
+	flag_wait( "all_players_spawned" );
+
+    players = get_players();
+
+    while(1)
+    {
+        zombie_doors = GetEntArray( "zombie_door", "targetname" );
+		debris = getentarray( "zombie_debris", "targetname" );
+		//targets = GetEntArray( self.target, "targetname" );
+        for( i = 0; i < zombie_doors.size; i++ )
+        {
+        	//zombie_doors[i] notify("trigger", players[0]);
+            if (Distance(zombie_doors[i].origin, players[0].origin) < 128)
+            {
+               	iprintln(zombie_doors[i].target);
+               	//iprintln(zombie_doors[i].origin);
+               	wait 0.5;
+            }
+
+			
+            //iprintln(zombie_doors[i].target);
+        }
+		for( i = 0; i < debris.size; i++ )
+        {
+		if (Distance(debris[i].origin, players[0].origin) < 128)
+            {
+               	iprintln(debris[i].target);
+               	//iprintln(debris[i].origin);
+               	wait 0.5;
+            }
+		}
+        wait 0.05;
+    }
 }
