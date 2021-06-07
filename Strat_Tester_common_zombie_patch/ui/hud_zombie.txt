@@ -1,0 +1,4 @@
+{
+    loadMenu { "ui/hud_zombie.menu" }
+    loadMenu { "ui/hud_practice.menu" }
+}
