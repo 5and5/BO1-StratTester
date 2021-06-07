@@ -203,8 +203,8 @@ post_all_players_connected()
 	level difficulty_init();
 
 	//TTS
-	level thread hud_zombies_stats();
-	level thread hud_sph();
+	//level thread hud_zombies_stats();
+	//level thread hud_sph();
 
 	//thread zombie_difficulty_ramp_up(); 
 
@@ -650,6 +650,159 @@ init_strings()
 
 	// POWER UPS
 	add_zombie_hint( "powerup_fire_sale_cost", &"ZOMBIE_FIRE_SALE_COST" );
+
+	// ZONE NAMES
+	switch(ToLower(GetDvar(#"mapname")))
+	{
+		case "zombie_theater":
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_FOYER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_FOYER2_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_CREMATORIUM_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_ALLEYWAY_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_WEST_BALCONY_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_STAGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_THEATER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_DRESSING_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_DINING_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_THEATER_VIP_ZONE");
+			break;
+		case "zombie_pentagon":
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_CONFERENCE_LEVEL1");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_HALLWAY_LEVEL1");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_WAR_ROOM_ZONE_TOP");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_WAR_ROOM_ZONE_NORTH");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_WAR_ROOM_ZONE_SOUTH");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_CONFERENCE_LEVEL2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_WAR_ROOM_ZONE_ELEVATOR");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_LABS_ELEVATOR");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_LABS_HALLWAY1");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_LABS_HALLWAY2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_LABS_ZONE3");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_LABS_ZONE2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_PENTAGON_LABS_ZONE1");
+			break;
+		case "zombie_cosmodrome":
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_CENTRIFUGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_CENTRIFUGE_ZONE2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_ACCESS_TUNNEL_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_STORAGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_STORAGE_ZONE2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_STORAGE_LANDER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_BASE_ENTRY_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_CENTRIFUGE2POWER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_BASE_ENTRY_ZONE2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_POWER_BUILDING");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_POWER_BUILDING_ROOF");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_ROOF_CONNECTOR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_NORTH_CATWALK_ZONE3");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_NORTH_PATH_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_UNDER_ROCKET_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COSMODROME_CONTROL_ROOM_ZONE");
+			break;
+		case "zombie_coast":
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_BEACH_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_START_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPBACK_FAR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_NEAR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPBACK_NEAR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPBACK_NEAR2_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPBACK_LEVEL3_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPFRONT_NEAR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPFRONT_BOTTOM_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPFRONT_FAR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPFRONT_STORAGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_SHIPFRONT_2_BEACH_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_BEACH_ZONE2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_RESIDENCE_ROOF_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_RESIDENCE1_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_LIGHTHOUSE1_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_LIGHTHOUSE2_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_CATWALK_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_START_CAVE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_START_BEACH_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COAST_REAR_LAGOON_ZONE");
+			break;
+		case "zombie_temple":
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_TEMPLE_START_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_PRESSURE_PLATE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_CAVE_TUNNEL_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_CAVES1_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_CAVES2_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_CAVES3_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_POWER_ROOM_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_CAVES_WATER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_WATERFALL_LOWER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_WATERFALL_TUNNEL_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_WATERFALL_TUNNEL_A_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_WATERFALL_UPPER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_TEMPLE_WATERFALL_UPPER1_ZONE");
+			break;
+		case "zombie_moon":
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_NML_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_BRIDGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_WATER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_CATA_LEFT_START_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_CATA_LEFT_MIDDLE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_GENERATOR_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_CATA_RIGHT_START_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_CATA_RIGHT_MIDDLE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_CATA_RIGHT_END_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_GENERATOR_EXIT_EAST_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_ENTER_FOREST_EAST_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_TOWER_ZONE_EAST");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_TOWER_ZONE_EAST2");
+			PrecacheString(&"REIMAGINED_ZOMBIE_MOON_FOREST_ZONE");
+			break;
+		case "zombie_cod5_prototype":
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_PROTOTYPE_START_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_PROTOTYPE_BOX_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_PROTOTYPE_UPSTAIRS_ZONE");
+			break;
+		case "zombie_cod5_asylum":
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_WEST_DOWNSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_WEST2_DOWNSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_NORTH_DOWNSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_SOUTH_UPSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_SOUTH2_UPSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_POWER_UPSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_KITCHEN_UPSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_NORTH_UPSTAIRS_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_ASYLUM_NORTH2_UPSTAIRS_ZONE");
+			break;
+		case "zombie_cod5_sumpf":
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_CENTER_BUILDING_UPSTAIRS");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_CENTER_BUILDING_UPSTAIRS_BUY");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_CENTER_BUILDING_COMBINED");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_NORTHWEST_OUTSIDE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_NORTHWEST_BUILDING");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_SOUTHWEST_OUTSIDE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_SOUTHWEST_BUILDING");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_NORTHEAST_OUTSIDE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_NORTHEAST_BUILDING");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_SOUTHEAST_OUTSIDE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_SUMPF_SOUTHEAST_BUILDING");
+			break;
+		case "zombie_cod5_factory":
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_RECEIVER_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_OUTSIDE_WEST_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_OUTSIDE_EAST_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_OUTSIDE_SOUTH_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_WNUEN_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_WNUEN_BRIDGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_BRIDGE_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_TP_EAST_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_TP_WEST_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_TP_SOUTH_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_WAREHOUSE_TOP_ZONE");
+			PrecacheString(&"REIMAGINED_ZOMBIE_COD5_FACTORY_WAREHOUSE_BOTTOM_ZONE");
+			break;
+
+		default:
+			// Precache custom map's zone names, if any
+			if(isdefined(level._zombiemode_precache_zone_strings))
+				level [[level._zombiemode_precache_zone_strings]]();
+			break;
+	}
 
 }
 
@@ -1619,8 +1772,9 @@ onPlayerConnect_clientDvars()
 		//self SetClientDvar("r_enablePlayerShadow", 1); 
 	}
 
-	self SetClientDvar("hud_enemy_counter_value", "0");
-	self SetClientDvar("hud_sph", "0");
+	self SetClientDvar("hud_enemy_counter_value", "");
+	self SetClientDvar("hud_sph", "");
+	self SetClientDvar("hud_zone_name", "");
 }
 
 
@@ -1684,6 +1838,8 @@ onPlayerSpawned()
 			"player_backSpeedScale", "1",
 			"player_strafeSpeedScale", "1");
 
+		self setClientDvar("hud_zone_name_on_game", 1);
+		self setClientDvar("hud_health_bar_on_game", 1);
 		self SetDepthOfField( 0, 0, 512, 4000, 4, 0 );
 
 		self cameraactivate(false);
@@ -1754,12 +1910,15 @@ onPlayerSpawned()
 
 				self thread watch_for_trade();
 
-				self thread hud_health_bar();
+				//self thread hud_health_bar();
 				self thread insta_kill_rounds();				
-				
 				self thread give_player_perks();
 				self thread give_player_weapons();
 				self thread set_player_weapon();
+				self thread zone_hud();
+				self thread health_bar_hud();
+				self thread hud_zombies_remaining();
+				self thread hud_sph();
 			}
 		}
 	}
@@ -6672,7 +6831,10 @@ set_sidequest_completed(id)
 }
 
 open_doors()
-{
+{	
+	if( getDvar( "open_doors" ) == "" )
+		setDvar( "open_doors", 1 );
+
 	while(1)
 	{
 		if( getDvarInt( "open_doors" ) == 1 )
@@ -6783,6 +6945,9 @@ custom_get_non_destroyed_chunks( barrier_chunks )
 
 open_windows()
 {	
+	if( getDvar( "open_windows" ) == "" )
+		setDvar( "open_windows", 1 );
+
 	while(1)
 	{
 		if( getDvarInt( "open_windows" ) == 1 )
@@ -6923,7 +7088,9 @@ theater_disable_crawlers( spawner )
 
 // turns on power and activates things around the map
 turn_on_power()
-{
+{	
+	if( getDvar( "turn_power_on" ) == "" )
+		setDvar( "turn_power_on", 1 );
 	level waittill( "fade_introblack" );
 
 	while(1)
@@ -7375,32 +7542,19 @@ set_player_weapon()
 
 hud_sph()
 {
-
 	level endon("end_game");
-
     level waittill ( "start_of_round" );
-	
-	//level thread timer_hud();
-	//level thread bo_hud();
-	//level thread tra_hud();
-	//level thread trade_hud();
 	
 	while(1)
 	{
-		
 		zombies_thus_far = level.global_zombies_killed_round;
 		hordes = zombies_thus_far / 24;
 		current_time = int(gettime() / 1000) - level.current_round_start_time;
 		level.round_seconds_per_horde = int(current_time / hordes * 100) / 100;
-		
-		players = getplayers();
-		for(i = 0; i < players.size; i++) {
-			players[i] setClientDvar("hud_sph", level.round_seconds_per_horde);
-		}
+		self setClientDvar("hud_sph", level.round_seconds_per_horde);
 
 		wait 1;
 	}
-
 }
 
 trade_hud()
@@ -7695,39 +7849,31 @@ round_time_watcher(roundTime) {
 
 hud_zombies_stats() {
 	//level thread hud_zombies_health();
-	level thread hud_zombies_remaining();
+	//level thread hud_zombies_remaining();
 	//level thread hud_zombies_speed();
 }
 
 hud_zombies_remaining() {
 	while(1)
 	{
-		players = get_players();
 		zombs = level.zombie_total + get_enemy_count();
 
 		if( zombs == 0 || is_true(flag("enter_nml")) || is_true(flag("round_restarting")) )
 		{
 			if(GetDvar("hud_enemy_counter_value") != "0")
 			{
-				for(i=0;i<players.size;i++)
-				{
-					players[i] SetClientDvar("hud_enemy_counter_value", "0");
-				}
+				self SetClientDvar("hud_enemy_counter_value", "0");
 			}
 		}
 		else
 		{
-
 			if(GetDvarInt("hud_enemy_counter_value") != zombs)
 			{
-				for(i=0;i<players.size;i++)
-				{
-					players[i] SetClientDvar("hud_enemy_counter_value", zombs);
-				}
+				self SetClientDvar("hud_enemy_counter_value", zombs);
 			}
 		}
 
-		wait 2;
+		wait 0.05;
 	}
 }
 
@@ -7864,5 +8010,119 @@ disable_special_zombies()
 		{
 			level.sonic_zombie_spawners[i] = "";
 		}
+	}
+}
+
+zone_hud()
+{
+	self endon("disconnect");
+
+	current_name = " ";
+
+	while(1)
+	{
+		wait_network_frame();
+
+		name = choose_zone_name(self get_current_zone(), current_name);
+
+		if(current_name == name)
+		{
+			continue;
+		}
+
+		current_name = name;
+
+		self send_message_to_csc("hud_anim_handler", "hud_zone_name_out");
+		wait .25;
+		self SetClientDvar("hud_zone_name", name);
+		self send_message_to_csc("hud_anim_handler", "hud_zone_name_in");
+	}
+}
+
+choose_zone_name(zone, current_name)
+{
+	if(self.sessionstate == "spectator")
+	{
+		zone = undefined;
+	}
+
+	if(IsDefined(zone))
+	{
+		if(level.script == "zombie_pentagon")
+		{
+			if(zone == "labs_elevator")
+			{
+				zone = "war_room_zone_elevator";
+			}
+		}
+		else if(level.script == "zombie_cosmodrome")
+		{
+			if(IsDefined(self.lander) && self.lander)
+			{
+				zone = undefined;
+			}
+		}
+		else if(level.script == "zombie_coast")
+		{
+			if(IsDefined(self.is_ziplining) && self.is_ziplining)
+			{
+				zone = undefined;
+			}
+		}
+		else if(level.script == "zombie_temple")
+		{
+			if(zone == "waterfall_tunnel_a_zone")
+			{
+				zone = "waterfall_tunnel_zone";
+			}
+		}
+		else if(level.script == "zombie_moon")
+		{
+			if(IsSubStr(zone, "airlock"))
+			{
+				return current_name;
+			}
+		}
+	}
+
+	name = " ";
+
+	if(IsDefined(zone))
+	{
+		name = "reimagined_" + level.script + "_" + zone;
+	}
+
+	return name;
+}
+
+send_message_to_csc(name, message)
+{
+	csc_message = name + ":" + message;
+
+	if(isdefined(self) && IsPlayer(self))
+		setClientSysState("client_systems", csc_message, self);
+	else
+	{
+		players = get_players();
+
+		for(i = 0; i < players.size; i++)
+		{
+			setClientSysState("client_systems", csc_message, players[i]);
+		}
+	}
+}
+
+health_bar_hud()
+{
+	health_bar_width_max = 110;
+
+	while (1)
+	{
+		health_ratio = self.health / self.maxhealth;
+
+		self SetClientDvar("hud_health_bar_value", self.health);
+		self SetClientDvar("hud_health_bar_width", health_bar_width_max * health_ratio);
+
+		wait 0.05;
 	}
 }

@@ -8,30 +8,35 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 [Download]()
 
 ## Current Features:
-- Toggleable Total Game Timer and Current Round Timer
-- Toggleable Seconds Per Horde (measured every second)
-- Toggleable Health Bar
+
+### General
 - 500,000 points on spawn
 - Remove Perk Limit
-- Option to enable/disable Mule Kick without playing offline
-- Option to turn on power
-- Option to open most doors and barriers
-- Option to open windows
-- Option to set perks
-- Option to set box locations
-- Option to give weapon
+- Special zombies disabled on Shangri-la
 - Set perks on every map
 - Set weapons on every map
+
+### HUD
+- Round Timer
+- Zombies remaining
+- Seconds Per Horde (measured every second)
+- Health Bar
+- Current Zone
+
+### Game Settings
+- Mule Kick without playing offline
+- Turn on power
+- Open most doors and barriers
+- Open windows
+- Set perks
+- Set box locations
+- Give weapons
 
 
 Planned Features:
 - Tools for tracking/optimizing box hits
-- Current Spawn Zone Indicator
-- More!
-
-TODO:
-- fix the der riese box locations
 - add more weapons to give weapon
+- More!
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 

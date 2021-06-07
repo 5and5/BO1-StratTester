@@ -26,7 +26,7 @@
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
 			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("hud_enemy_counter_value"))
-			visible				when(dvarInt(hud_zombies_stats) > 0)
+			visible				when(dvarInt(hud_enemy_counter_on) > 0)
 			decoration
 		}
 	}
@@ -34,7 +34,7 @@
 	menuDef 
 	{
 		name 				"sph"
-		rect 				-130 100 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
+		rect 				0 15 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
 		fullscreen 			0
 		visible 			1
 
@@ -42,14 +42,14 @@
 		{
 			name				"sph_text"
 			type				ITEM_TYPE_TEXT
-			rect 				0 0 0 0		//padding
+			rect 				4 2 0 0		//padding
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
 			exp 				text(locString("MOD_SPH") + dvarString("hud_sph"))
-			visible				1
+			visible				when(dvarInt(hud_sph_on) > 0)
 			decoration
 		}
 	}
@@ -57,29 +57,14 @@
 	menuDef 
 	{
 		name			"mod_timers"
-		rect 			-4 20 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
+		rect 			0 0 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
 		fullscreen		0
 		visible			1
 
 		itemDef
 		{
-			name		"game_timer"
-			rect 		0 0 0 0
-			forecolor 	1 1 1 1
-			type 		ITEM_TYPE_TEXT
-			textstyle	ITEM_TEXTSTYLE_SHADOWED
-			textscale 	TEXTSIZE_DEFAULT
-			textfont	UI_FONT_NORMAL
-			textalign	ITEM_ALIGN_TOP_RIGHT
-			exp			text(locString("MOD_GAME_TIME") + dvarString("hud_total_time"))
-			visible 	when(dvarInt(hud_timer) > 0)
-			visible 1	
-		}
-
-		itemDef
-		{
 			name		"round_timer"
-			rect 		0 12 0 0
+			rect 		-4 2 0 0
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED
@@ -87,8 +72,92 @@
 			textfont	UI_FONT_NORMAL
 			textalign	ITEM_ALIGN_TOP_RIGHT
 			exp			text(locString("MOD_ROUND_TIME") + dvarString("hud_round_time"))
-			visible 	when(dvarInt(hud_timer) > 1)
+			visible 	when(dvarInt(hud_timer) > 0)
 			visible		1	
+		}
+	}
+
+	menuDef
+	{
+		name				"zone_name"
+		rect				0 0 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+		fullscreen			0
+		visible				when(dvarBool("hud_zone_name_on") && dvarBool("hud_zone_name_on_game"))
+
+		itemDef
+		{
+			name				"zone_name_text"
+			type				ITEM_TYPE_TEXT
+			rect 				4 -112.5 0 0
+			exp					rect Y(-112.5 + (!dvarInt("hud_health_bar_on") * 16))
+			forecolor			1 1 1 1
+			textscale			TEXTSIZE_DEFAULT
+			textstyle			ITEM_TEXTSTYLE_SHADOWED
+			textfont			UI_FONT_NORMAL
+			textalign			ITEM_ALIGN_LEFT
+			exp					text(locString(toUpper(dvarString("hud_zone_name"))))
+			visible				1
+			decoration
+
+			state
+			{
+				name			"fadein"
+				forecolor 		1 1 1 1
+			}
+			
+			state
+			{
+				name 			"fadeout"
+				forecolor 		1 1 1 0
+			}
+		}
+	}
+
+	menuDef
+	{
+		name				"health_bar"
+		rect				0 -111.5 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+		fullscreen			0
+		visible				when(dvarBool("hud_health_bar_on") && dvarBool("hud_health_bar_on_game"))
+
+		itemDef
+		{
+			name				"health_bar_background_image"
+			type				ITEM_TYPE_IMAGE
+			style				WINDOW_STYLE_SHADER
+			rect				0 0 114 14
+			foreColor			0 0 0 0.5
+			background			"white"
+			visible				1
+			decoration
+		}
+
+		itemDef
+		{
+			name				"health_bar_image"
+			type				ITEM_TYPE_IMAGE
+			style				WINDOW_STYLE_SHADER
+			rect				2 2 110 10
+			exp					rect W(dvarInt("hud_health_bar_width"))
+			foreColor			1 1 1 0.85
+			background			"white"
+			visible				1
+			decoration
+		}
+
+		itemDef
+		{
+			name				"health_bar_value"
+			type				ITEM_TYPE_TEXT
+			rect 				57 13 0 0
+			foreColor			1 1 1 1
+			textScale			TEXTSIZE_SMALL
+			textStyle			ITEM_TEXTSTYLE_SHADOWED
+			textFont			UI_FONT_NORMAL
+			textalign			ITEM_ALIGN_CENTER
+			exp					text(dvarInt("hud_health_bar_value"))
+			visible				1
+			decoration
 		}
 	}
 
