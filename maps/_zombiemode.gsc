@@ -254,6 +254,8 @@ post_all_players_connected()
 	level thread open_windows();
 	level thread turn_on_power();
 	level thread get_doors_nearby();
+	level thread disable_powerup();
+	level thread disable_special_zombies();
 
 	if ( level.script == "zombie_pentagon" )
 		level thread enable_traps_five();
@@ -707,7 +709,7 @@ init_levelvars()
 	level.is_zombie_level			= true; 
 	level.laststandpistol			= "m1911_zm";		// so we dont get the uber colt when we're knocked out
 	level.first_round				= false;
-	level.round_number				= 100;
+	level.round_number				= 1;
 	level.round_start_time			= 0;
 	level.pro_tips_start_time		= 0;
 	level.intermission				= false;
@@ -3981,10 +3983,12 @@ chalk_round_over()
 
 round_think()
 {
-	round_number = getDvarInt( "round_number" );
+	round_number = getDvar( "round_number" );
 	if( round_number == "" )
+	{
 		round_number = 100;
-	level.round_number = round_number;
+	}
+	level.round_number = int(round_number);
 
 	for(i = 0; i < level.round_number; i++) {
 		if(level.zombie_vars["zombie_spawn_delay"] > .08) {
@@ -3996,7 +4000,6 @@ round_think()
 	}
 
 	round_pause( getDvarInt( "round_start_delay" ) );
-	
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
 	level.zombie_move_speed = 105;
@@ -7830,4 +7833,36 @@ get_doors_nearby()
 		}
         wait 0.05;
     }
+}
+
+disable_powerup()
+{	
+	if( getDvar( "disable_powerups" ) == "")
+		setDvar( "disable_powerups", false );
+	while(1)
+	{	
+		powerups = getDvar( "disable_powerups" );
+		if ( powerups )
+			level.mutators["mutator_noPowerups"] = true;
+		else
+			level.mutators["mutator_noPowerups"] = false;
+		
+		wait 0.1;
+	}
+}
+
+disable_special_zombies()
+{	
+	flag_wait( "all_players_spawned" );
+	if( level.script == "zombie_temple" )
+	{	
+		for( i = 0; i < level.napalm_zombie_spawners.size; i++)
+		{
+			level.napalm_zombie_spawners[i] = "";
+		}
+		for( i = 0; i < level.sonic_zombie_spawners.size; i++)
+		{
+			level.sonic_zombie_spawners[i] = "";
+		}
+	}
 }

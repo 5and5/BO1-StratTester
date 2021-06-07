@@ -4,6 +4,9 @@ This is a mod for creating, testing, and learning new strategies in Call of Duty
 
 This mod is meant to be an all-encompassing mod, with loads of features and options to give yourself the loadout and map setup you need to practice your strategies.
 
+## Download
+[Download]()
+
 ## Current Features:
 - Toggleable Total Game Timer and Current Round Timer
 - Toggleable Seconds Per Horde (measured every second)
@@ -29,8 +32,6 @@ Planned Features:
 TODO:
 - fix the der riese box locations
 - add more weapons to give weapon
-- remove special zombies from shang
-- no drops
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 
