@@ -35,6 +35,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 
 Planned Features:
 - Tools for tracking/optimizing box hits
+- Move box on more maps
 - add more weapons to give weapon
 - More!
 
@@ -56,9 +57,9 @@ When you've made the changes, submit a pull request to the repo to be reviewed.
 
 # Credits
 ## Coders
-TTS4life
-5and5
-Iveez
+- TTS4life
+- 5and5
+- Iveez
 
 ## Others
 Iveez - Initial mod made for practicing strats

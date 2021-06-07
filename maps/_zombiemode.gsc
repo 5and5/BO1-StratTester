@@ -203,7 +203,7 @@ post_all_players_connected()
 	level difficulty_init();
 
 	//TTS
-	level thread hud_zombies_stats();
+	//level thread hud_zombies_stats();
 	// level thread hud_sph();
 
 	//thread zombie_difficulty_ramp_up(); 
@@ -4207,7 +4207,7 @@ round_think()
 		level.global_zombies_killed_round = 0;
 		level.current_round_start_time = int(gettime() / 1000);
 
-		level thread hud_sph();
+		//level thread hud_sph();
 
 		//This makes it so starting on a particular round makes the spawn delay
 		//Be consistent with the round you skip to. -TTS
@@ -7545,13 +7545,8 @@ set_player_weapon()
 
 hud_sph()
 {
-<<<<<<< HEAD
-
-	level endon("end_of_round");
-=======
 	level endon("end_game");
     level waittill ( "start_of_round" );
->>>>>>> 5f5dbc7cb95d384b173e0751203ceb8fbbf9b384
 	
 	while(1)
 	{
