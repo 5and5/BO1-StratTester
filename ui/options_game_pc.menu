@@ -270,7 +270,7 @@
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_BOX_LOCATION_OPTIONS", when(dvarString("ui_options_game_popup") == "initial_box_locations") )
 
-		CHOICE_DVARSTRINGLIST_VIS( 1, "@MENU_ZOMBIE_THEATER_CAPS", zombie_theater_initial_box_location, {
+		CHOICE_DVARSTRINGLIST_VIS( 1, "@MENU_ZOMBIE_THEATER_CAPS", boxlocation, {
 			"@MPUI_RANDOM_CAPS"; "random";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_THEATER_CREMATORIUM"; "crematorium_chest";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_THEATER_START"; "start_chest";
@@ -282,14 +282,14 @@
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_THEATER_THEATER"; "theater_chest"
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations"))
 
-		CHOICE_DVARSTRINGLIST_VIS( 2, "@MENU_ZOMBIE_PENTAGON_CAPS", zombie_pentagon_initial_box_location, {
+		CHOICE_DVARSTRINGLIST_VIS( 2, "@MENU_ZOMBIE_PENTAGON_CAPS", boxlocation, {
 			"@MPUI_RANDOM_CAPS"; "random";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_PENTAGON_START3"; "start_chest3";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_PENTAGON_START2"; "start_chest2";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_PENTAGON_START"; "start_chest"
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations"))
 
-		CHOICE_DVARSTRINGLIST_VIS( 3, "@MENU_ZOMBIE_COAST_CAPS", zombie_coast_initial_box_location, {
+		CHOICE_DVARSTRINGLIST_VIS( 3, "@MENU_ZOMBIE_COAST_CAPS", boxlocation, {
 			"@MPUI_RANDOM_CAPS"; "random";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_COAST_RESIDENCE"; "residence_chest";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_COAST_SHIPHOUSE"; "shiphouse_chest";
@@ -299,14 +299,14 @@
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_COAST_LIGHTHOUSE"; "lighthouse_chest"
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations"))
 
-		CHOICE_DVARSTRINGLIST_VIS( 4, "@MENU_ZOMBIE_TEMPLE_CAPS", zombie_temple_initial_box_location, {
+		CHOICE_DVARSTRINGLIST_VIS( 4, "@MENU_ZOMBIE_TEMPLE_CAPS", boxlocation, {
 			"@MPUI_RANDOM_CAPS"; "random";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_TEMPLE_CAVES1"; "caves1_chest";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_TEMPLE_BRIDGE"; "bridge_chest";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_TEMPLE_POWER"; "power_chest"
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations"))
 
-		CHOICE_DVARSTRINGLIST_VIS( 5, "@MENU_ZOMBIE_MOON_CAPS", zombie_moon_initial_box_location, {
+		CHOICE_DVARSTRINGLIST_VIS( 5, "@MENU_ZOMBIE_MOON_CAPS", boxlocation, {
 			"@MPUI_RANDOM_CAPS"; "random";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_MOON_START"; "start_chest";
 			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_MOON_FOREST"; "forest_chest";
@@ -315,11 +315,11 @@
 		
 		CHOICE_DVARSTRINGLIST_VIS( 6, "@MOD_ZOMBIE_COD5_FACTORY_CAPS", boxlocation, {
 			"@MOD_POWER_BOX"; "power";
-			"@MOD_HALLWAY_BOX"; "trench";
-			"@MOD_THOMPSON_BOX"; "tommy";
-			"@MOD_CATWALK_BOX"; "catwalk";
-			"@MOD_TYPE100_BOX"; "type100";
-			"@MOD_MP40_BOX"; "mp40"
+			"@MOD_HALLWAY_BOX"; "chest4";
+			"@MOD_THOMPSON_BOX"; "chest5";
+			"@MOD_CATWALK_BOX"; "chest3";
+			"@MOD_TYPE100_BOX"; "chest2";
+			"@MOD_MP40_BOX"; "chest1"
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations"))
 
 
