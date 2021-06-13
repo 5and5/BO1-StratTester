@@ -14,6 +14,8 @@ init()
 	level thread add_limited_tesla_gun();
 	level thread watch_for_new_box_location();
 
+	level thread get_box_location_names();
+
 	level.movebox = false;
 
 	PreCacheShader( "minimap_icon_mystery_box" );
@@ -22,13 +24,28 @@ init()
 	level._zombiemode_check_firesale_loc_valid_func = ::default_check_firesale_loc_valid_func;
 }
 
+get_box_location_names() {
+	level endon("death");
+	level waittill("fade_introblack");
+
+	while(1) {
+		iprintln("chests: ");
+		for(i = 0; i < level.chests.size; i++) {
+			iprintln(i + ": " + level.chests[i].script_noteworthy);
+			wait(5);
+		}
+		wait(2);
+	}
+	
+}
+
 watch_for_new_box_location()	// much faster move box location
 {
 	level waittill( "fade_introblack" );
 
 	for ( ; ; )
 	{
-		if (getDvar(#"boxlocation") != "")
+		if (getDvar(level.script + "_boxlocation") != "")
 		{			
 			level.chests[level.chest_index] hide_current_chest();
 			level.chest_accessed = 0;
@@ -36,7 +53,7 @@ watch_for_new_box_location()	// much faster move box location
 			level.chests[level.chest_index] show_chest();
 			level.chests[level.chest_index] hide_rubble();
 		}
-		wait(0.5);
+		wait(1);
 	}
 }
 
@@ -44,13 +61,13 @@ choose_next_chest_location()	// sets the correct chest index based off the dvar
 {
 	for (i = 0; i < level.chests.size; i++)
 	{
-		if (level.chests[i].script_noteworthy == GetDvar(#"boxlocation"))
+		if (level.chests[i].script_noteworthy == GetDvar(level.script + "_boxlocation"))
 		{
 			level.chest_index = i;
 			break;
 		}
 	}
-	SetDvar("boxlocation", "");
+	SetDvar(level.script + "_boxlocation", "");
 }
 
 hide_current_chest()
