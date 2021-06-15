@@ -536,6 +536,13 @@ LANG_ENGLISH		"TELEPORTER AREA"
 REFERENCE			INITIAL_MAGICBOX_ZOMBIE_MOON_BRIDGE
 LANG_ENGLISH		"SPAWN"
 
+/////////////////////////
+//  PROTOTYPE BOX LOCATIONS 
+/////////////////////////
+
+REFERENCE           INITIAL_MAGICBOX_ZOMBIE_PROTOTYPE
+LANG_ENGLISH        "DID YOU REALLY THINK THIS WOULD DO ANYTHING?"
+
 //////////////////////////
 // ASYLUM BOX NAMES     //
 //////////////////////////
