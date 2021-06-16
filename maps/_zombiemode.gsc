@@ -253,7 +253,7 @@ post_all_players_connected()
 	level thread open_doors();
 	level thread open_windows();
 	level thread turn_on_power();
-	level thread get_doors_nearby();
+	// level thread get_doors_nearby();
 	level thread disable_powerup();
 	level thread disable_special_zombies();
 
@@ -861,7 +861,7 @@ init_levelvars()
 	// used to a check in last stand for players to become zombies
 	level.is_zombie_level			= true; 
 	level.laststandpistol			= "m1911_zm";		// so we dont get the uber colt when we're knocked out
-	level.first_round				= false;
+	level.first_round				= true;
 	level.round_number				= 1;
 	level.round_start_time			= 0;
 	level.pro_tips_start_time		= 0;
@@ -4145,23 +4145,18 @@ round_think()
 	round_number = getDvar( "round_number" );
 	if( round_number == "" )
 	{
-		round_number = 100;
+		round_number = 1;
 	}
 	level.round_number = int(round_number);
 
-	for(i = 0; i < level.round_number; i++) {
-		if(level.zombie_vars["zombie_spawn_delay"] > .08) {
-			level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
-		}			
-		else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
-			level.zombie_vars["zombie_spawn_delay"] = .08;
-		}
+	if(level.round_number != 1) {
+		level.first_round = false;
 	}
 
 	round_pause( getDvarInt( "round_start_delay" ) );
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
-	level.zombie_move_speed = 105;
+	// level.zombie_move_speed = 105;
 	level.dog_health = 1600;
 	level.dog_round_count = 5;
 	level.game_started = 1;
@@ -4198,6 +4193,27 @@ round_think()
 
 		bbPrint( "zombie_rounds: round %d player_count %d", level.round_number, players.size );
 
+		//This makes it so starting on a particular round makes the spawn delay
+		//Be consistent with the round you skip to. -TTS
+		level.zombie_vars["zombie_spawn_delay"] = 2;
+		level.zombie_move_speed = 1;
+		timer = level.zombie_vars["zombie_spawn_delay"];
+		for(i = 1; i < level.round_number; i++) {
+			if(level.zombie_vars["zombie_spawn_delay"] > .08) {
+				level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
+			}			
+			else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
+				level.zombie_vars["zombie_spawn_delay"] = .08;
+			}
+
+			level.zombie_move_speed = i * level.zombie_vars["zombie_move_speed_multiplier"];
+
+		}
+
+		iprintln("move speed: " + level.zombie_move_speed);
+
+
+
 		level.round_start_time = GetTime();
 		level thread [[level.round_spawn_func]]();
 
@@ -4209,18 +4225,8 @@ round_think()
 
 		//level thread hud_sph();
 
-		//This makes it so starting on a particular round makes the spawn delay
-		//Be consistent with the round you skip to. -TTS
-		level.zombie_vars["zombie_spawn_delay"] = 2;
-		timer = level.zombie_vars["zombie_spawn_delay"];
-		for(i = 0; i < level.round_number; i++) {
-			if(level.zombie_vars["zombie_spawn_delay"] > .08) {
-				level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
-			}			
-			else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
-				level.zombie_vars["zombie_spawn_delay"] = .08;
-			}
-		}
+
+		iprintln("Round " + level.round_number + ": " + level.zombie_vars["zombie_spawn_delay"]);
 
 		[[level.round_wait_func]]();
 
@@ -7962,11 +7968,12 @@ get_doors_nearby()
 		//targets = GetEntArray( self.target, "targetname" );
         for( i = 0; i < zombie_doors.size; i++ )
         {
+			
         	//zombie_doors[i] notify("trigger", players[0]);
             if (Distance(zombie_doors[i].origin, players[0].origin) < 128)
             {
                	iprintln(zombie_doors[i].target);
-               	//iprintln(zombie_doors[i].origin);
+               	iprintln(zombie_doors[i].origin);
                	wait 0.5;
             }
 
