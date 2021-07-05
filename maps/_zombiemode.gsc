@@ -6890,6 +6890,8 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_cod5_sumpf" && debris[i].target == "upstairs_blocker" )
 					continue;
+				else if ( level.script == "zombie_temple" && debris[i].target == "cave03_to_power_door" )
+					continue;
 				else 
 				{			
 					if ( level.script == "zombie_temple" )
@@ -7177,6 +7179,7 @@ turn_on_power()
 			{
 
 				// activate zipline
+				wait 3;
 				zipPowerTrigger = getent("zip_lever_trigger", "targetname");
 				zipPowerTrigger notify( "trigger" );
 
