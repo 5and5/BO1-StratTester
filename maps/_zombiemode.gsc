@@ -7109,7 +7109,7 @@ turn_on_power()
 			if ( level.script == "zombie_theater" )
 			{
 
-				level.ignore_spawner_func = ::theater_disable_crawlers;
+				//level.ignore_spawner_func = ::theater_disable_crawlers;
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
