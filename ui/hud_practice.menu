@@ -34,7 +34,7 @@
 	menuDef 
 	{
 		name 				"sph"
-		rect 				0 15 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
+		rect 				0 0 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
 		fullscreen 			0
 		visible 			1
 
@@ -43,6 +43,7 @@
 			name				"sph_text"
 			type				ITEM_TYPE_TEXT
 			rect 				4 2 0 0		//padding
+			exp					rect Y( 2 + (dvarInt(hud_enemy_counter_on) ) * 15 )
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
@@ -65,6 +66,7 @@
 		{
 			name		"round_timer"
 			rect 		-4 2 0 0
+			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9))
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED

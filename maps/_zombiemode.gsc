@@ -3663,6 +3663,8 @@ round_pause( delay )
 
 	level.countdown_hud = create_counter_hud();
 	level.countdown_hud SetValue( delay );
+	level.countdown_hud.horzAlign = "center";
+	level.countdown_hud.vertAlign = "center";
 	level.countdown_hud.color = ( 1, 1, 1 );
 	level.countdown_hud.alpha = 1;
 	level.countdown_hud FadeOverTime( 2.0 );
@@ -3692,7 +3694,7 @@ round_pause( delay )
 	wait( 1.0 );
 
 	level.countdown_hud destroy_hud();
-	iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
+	//iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
 }
 
 
@@ -4144,9 +4146,8 @@ round_think()
 {
 	round_number = getDvar( "round_number" );
 	if( round_number == "" )
-	{
-		round_number = 1;
-	}
+		round_number = 100;
+
 	level.round_number = int(round_number);
 
 	if(level.round_number != 1) {
@@ -4210,7 +4211,7 @@ round_think()
 
 		}
 
-		iprintln("move speed: " + level.zombie_move_speed);
+		//iprintln("move speed: " + level.zombie_move_speed);
 
 
 
@@ -4226,7 +4227,7 @@ round_think()
 		//level thread hud_sph();
 
 
-		iprintln("Round " + level.round_number + ": " + level.zombie_vars["zombie_spawn_delay"]);
+		//iprintln("Round " + level.round_number + ": " + level.zombie_vars["zombie_spawn_delay"]);
 
 		[[level.round_wait_func]]();
 
