@@ -3662,11 +3662,11 @@ round_pause( delay )
 	}
 
 	level.countdown_hud = create_counter_hud();
-	level.countdown_hud SetValue( delay );
 	level.countdown_hud.horzAlign = "center";
 	level.countdown_hud.vertAlign = "center";
 	level.countdown_hud.color = ( 1, 1, 1 );
 	level.countdown_hud.alpha = 1;
+	level.countdown_hud SetValue( delay );
 	level.countdown_hud FadeOverTime( 2.0 );
 	wait( 2.0 );
 

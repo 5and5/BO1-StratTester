@@ -204,7 +204,7 @@ post_all_players_connected()
 
 	//TTS
 	//level thread hud_zombies_stats();
-	//level thread hud_sph();
+	// level thread hud_sph();
 
 	//thread zombie_difficulty_ramp_up(); 
 
@@ -4207,6 +4207,8 @@ round_think()
 		level.global_zombies_killed_round = 0;
 		level.current_round_start_time = int(gettime() / 1000);
 
+		//level thread hud_sph();
+
 		//This makes it so starting on a particular round makes the spawn delay
 		//Be consistent with the round you skip to. -TTS
 		level.zombie_vars["zombie_spawn_delay"] = 2;
@@ -4224,6 +4226,7 @@ round_think()
 
 		level.first_round = false;
 		level notify( "end_of_round" );
+		level.current_round_end_time = int(gettime() / 1000);
 		
 		level thread maps\_zombiemode_audio::change_zombie_music( "round_end" );
 		
@@ -7550,6 +7553,8 @@ hud_sph()
 		zombies_thus_far = level.global_zombies_killed_round;
 		hordes = zombies_thus_far / 24;
 		current_time = int(gettime() / 1000) - level.current_round_start_time;
+		if( level.zombie_total + get_enemy_count() == 0 )
+			current_time = level.current_round_end_time - level.current_round_start_time;
 		level.round_seconds_per_horde = int(current_time / hordes * 100) / 100;
 		self setClientDvar("hud_sph", level.round_seconds_per_horde);
 
