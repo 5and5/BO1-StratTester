@@ -845,6 +845,13 @@ vision_set_init()
 //-------------------------------------------------------------------------------
 moon_round_think_func()
 {
+	level.game_started = 0;
+	round_number = getDvar( "round_number" );
+	if( round_number == "" )
+		round_number = 100;
+
+	level.round_number = int(round_number);
+
 	for( ;; )
 	{
 		maxreward = 50 * level.round_number;
@@ -932,7 +939,6 @@ moon_round_think_func()
 
 		}
 
-		
 		// DCS 062811: if used teleporter to advance round stay at old round number.
 		if(flag("teleporter_used"))
 		{
@@ -940,6 +946,12 @@ moon_round_think_func()
 			if ( level.prev_round_zombies != 0 && !flag("enter_nml") )
 			{
 				level.round_number = level.nml_last_round;	
+			}
+			else {
+				if(level.game_started == 0) {
+					round_pause(getDvarInt("round_start_delay"));
+					level.game_started = 1;
+				}
 			}
 		}
 		else
@@ -2219,4 +2231,47 @@ moon_speed_up()
 		self set_run_anim( "sprint" + var );                       
 		self.run_combatanim = level.scr_anim[self.animname]["sprint" + var];
 	}
+}
+
+round_pause( delay )
+{
+	if ( !IsDefined( delay ) )
+	{
+		delay = 30;
+	}
+
+	level.countdown_hud = create_counter_hud();
+	level.countdown_hud.horzAlign = "center";
+	level.countdown_hud.vertAlign = "center";
+	level.countdown_hud.color = ( 1, 1, 1 );
+	level.countdown_hud.alpha = 1;
+	level.countdown_hud SetValue( delay );
+	level.countdown_hud FadeOverTime( 2.0 );
+	wait( 2.0 );
+
+	level.countdown_hud.color = ( 0.21, 0, 0 );
+	level.countdown_hud FadeOverTime( 3.0 );
+	wait(3);
+
+	while (delay >= 1)
+	{
+		wait (1);
+		delay--;
+		level.countdown_hud SetValue( delay );
+	}
+
+	// Zero!  Play end sound
+	players = GetPlayers();
+	for (i=0; i<players.size; i++ )
+	{
+		players[i] playlocalsound( "zmb_perks_packa_ready" );
+	}
+
+	level.countdown_hud FadeOverTime( 1.0 );
+	level.countdown_hud.color = (1,1,1);
+	level.countdown_hud.alpha = 0;
+	wait( 1.0 );
+
+	level.countdown_hud destroy_hud();
+	//iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
 }
