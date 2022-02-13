@@ -249,6 +249,8 @@ post_all_players_connected()
 	}
 	
 	//levelthreads
+	level thread maps\_zombiemode_zone_manager::_debug_zones_tts();
+
 	level thread hud_game_time();
 	level thread open_doors();
 	level thread open_windows();
@@ -1919,6 +1921,9 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
+
+				wait(3);
+				self setblur(0, .1);
 			}
 		}
 	}

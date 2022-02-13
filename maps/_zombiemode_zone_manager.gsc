@@ -1,5 +1,7 @@
 #include common_scripts\utility; 
 #include maps\_utility; 
+#include maps\_zombiemode_utility; 
+
 
 //
 //	This manages which spawners are valid for the game.  The round_spawn function
@@ -838,3 +840,27 @@ _debug_zones()
 	}
 }
 // RAVEN END
+
+_debug_zones_tts() {
+	while(1) {
+		// zones = getArrayKeys(level.zones);
+		// for(i = 0; i < level.zones.size; i++) {
+		// 	iprintln("Zone : " + zones[i] + " exists");
+		// 	if(level.zones[zones[i]].active) {
+		// 		iprintln("zone is active");
+		// 	}
+		// 	else {
+		// 		iprintln("zone is not active");
+		// 	}
+		// 	wait(1);
+		// }
+		// players = get_players();
+		// for(i = 0; i < players.size; i++) {
+		// 	currZone = players[i] get_current_zone();
+		// 	// players[i] iprintln("player is currently in: " + currZone );
+		// }
+
+		// spawners = level. 
+
+	}
+}
