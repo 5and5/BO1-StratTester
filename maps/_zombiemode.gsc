@@ -1921,6 +1921,9 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
+
+				wait(3);
+				self setblur(0, .1);
 			}
 		}
 	}
