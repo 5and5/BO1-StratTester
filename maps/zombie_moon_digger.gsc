@@ -1144,6 +1144,12 @@ play_timer_vox( digger_name )
 		curr_time = GetTime();
 		time_used = (curr_time - digger_start_time)/1000.0;
 		time_left = (level.diggers_global_time - time_used); //4mins - time_used
+
+		//TTS - Remove vox to prevent ear rape
+		played180sec = true;
+		played120sec = true;
+		played60sec = true;
+		played30sec = true;
 		
 		if( time_left <= 180.0 && !played180sec)
 		{
