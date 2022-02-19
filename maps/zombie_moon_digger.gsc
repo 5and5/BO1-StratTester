@@ -8,7 +8,7 @@ any flags used to toggle the digger states
 ------------------------------------*/
 digger_init_flags()
 {
-	level.diggers_global_time = 240.0;
+	level.diggers_global_time = 5;
 	
 	flag_init("teleporter_digger_hacked");
 	flag_init("teleporter_digger_hacked_before_breached");
