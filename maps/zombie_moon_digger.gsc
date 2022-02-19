@@ -191,6 +191,9 @@ digger_activate(force_digger)
 		level thread play_timer_vox( force_digger );
 		return;
 	}
+
+	//TTS - don't want diggers happening normally
+	return;
 	
 	
 	non_active = [];
