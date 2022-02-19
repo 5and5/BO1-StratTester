@@ -228,6 +228,33 @@ main()
 
 	level.zombie_speed_up = ::moon_speed_up;
 	level.ai_astro_explode = ::moon_push_zombies_when_astro_explodes;
+
+	level thread digger_dvar_activate();
+}
+
+digger_dvar_activate() {
+	level endon("death");
+
+	setDvar("digger", "");
+
+	while(1) {
+		wait(1);
+		digger = getDvar("digger");
+
+		if(digger == "") {
+			continue;
+		}
+		
+		if(!flag("power_on")) {
+			iprintln("Cannot activate digger: Power is not on");
+			setDvar("digger", "");
+			continue;
+		}
+
+		maps\zombie_moon_digger::digger_activate(digger);
+		setDvar("digger", "");
+
+	}
 }
 
 moon_push_zombies_when_astro_explodes( position )

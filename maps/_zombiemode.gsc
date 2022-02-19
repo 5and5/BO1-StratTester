@@ -7106,9 +7106,10 @@ theater_disable_crawlers( spawner )
 // turns on power and activates things around the map
 turn_on_power()
 {	
+	level waittill( "fade_introblack" );
+	
 	if( getDvar( "turn_power_on" ) == "" )
 		setDvar( "turn_power_on", 1 );
-	level waittill( "fade_introblack" );
 
 	while(1)
 	{
