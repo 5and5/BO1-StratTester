@@ -76,7 +76,7 @@ main()
 
 	// Special zombie types, dogs and quads.
 	level.custom_ai_type = [];
-	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
+	// level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_quad::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_dogs::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_faller::faller_init );
@@ -164,7 +164,7 @@ main()
 	
 	level thread maps\zombie_moon_digger::digger_init();
 
-	level thread maps\zombie_moon_ai_astro::init();
+	// level thread maps\zombie_moon_ai_astro::init();
 	level thread maps\zombie_moon_ai_quad::init();
 
 	maps\zombie_moon_gravity::init();
@@ -228,6 +228,33 @@ main()
 
 	level.zombie_speed_up = ::moon_speed_up;
 	level.ai_astro_explode = ::moon_push_zombies_when_astro_explodes;
+
+	level thread digger_dvar_activate();
+}
+
+digger_dvar_activate() {
+	level endon("death");
+
+	setDvar("digger", "");
+
+	while(1) {
+		wait(1);
+		digger = getDvar("digger");
+
+		if(digger == "") {
+			continue;
+		}
+		
+		if(!flag("power_on")) {
+			iprintln("Cannot activate digger: Power is not on");
+			setDvar("digger", "");
+			continue;
+		}
+
+		maps\zombie_moon_digger::digger_activate(digger);
+		setDvar("digger", "");
+
+	}
 }
 
 moon_push_zombies_when_astro_explodes( position )

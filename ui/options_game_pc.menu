@@ -215,6 +215,8 @@
 		FRAME_CHOICE_BUTTON_VIS( 29, "@MOD_BOX_LOCATION_OPTIONS", setdvar ui_options_game_popup "initial_box_locations"; open mature_content_pc_disable_warning, 1)	
 		FRAME_CHOICE_BUTTON_VIS( 30, "@MOD_PERK_OPTIONS", setdvar ui_options_game_popup "perk_options"; open mature_content_pc_disable_warning, 1)	
 		FRAME_CHOICE_BUTTON_VIS( 31, "@MOD_GAME_OPTIONS", setdvar ui_options_game_popup "game_options"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 32, "@MOD_MAP_OPTIONS", setdvar ui_options_game_popup "map_options"; open mature_content_pc_disable_warning, 1)	
+
 
 
 		//CHOICE_DVARFLOATLIST_VIS( 26, "@MENU_LANGUAGE", ui_language, { "@MENU_ENGLISH" 0 "@MENU_FRENCH" 1 "@MENU_GERMAN" 2 "@MENU_ITALIAN" 3 "@MENU_SPANISH" 4 "@MENU_BRITISH" 5 "@MENU_RUSSIAN" 6 "@MENU_POLISH" 7 "@MENU_KOREAN" 8 "@MENU_TAIWANESE" 9 "@MENU_JAPANESE" 10 "@MENU_CHINESE" 11 "@MENU_THAI" 12 }, uiScript verifyLanguage, when( dvarint( developer ) ) )
@@ -467,6 +469,15 @@
 		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_WINDOWS_OPEN", open_windows, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		//CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_DISABLE_POWERUPS", disable_powerups, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_GIVE_WEAPON", weapon_to_give, { "None"; "";"Sallys"; "m1911_upgraded_zm"; "Ray Gun"; "ray_gun_zm"; "CZ's"; "cz75dw_zm"; "Crossbow"; "crossbow_explosive_upgraded_zm"; "Thundergun"; "thundergun_zm"; "Wunder Waffe"; "tesla_gun_zm";}, ;, when(dvarString("ui_options_game_popup") == "game_options"))
+
+		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_PERK_OPTIONS", when(dvarString("ui_options_game_popup") == "perk_options") )
+
+		CHOICE_DVARSTRINGLIST_VIS( 1, "@MOD_ACTIVATE_DIGGER", digger, {
+			"@MOD_TUNNEL_11"; "hangar";
+			"@MOD_TUNNEL_6"; "teleporter";
+			"@MOD_BIODOME"; "biodome";
+		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
+
 
 		#undef CHOICE_TEXT_OFFSET_X
 		#define CHOICE_TEXT_OFFSET_X		-58
