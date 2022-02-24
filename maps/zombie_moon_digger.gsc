@@ -196,27 +196,27 @@ digger_activate(force_digger)
 	return;
 	
 	
-	non_active = [];
-	for(i=0;i<level.diggers.size;i++)
-	{
-		if(!flag("start_" + level.diggers[i] + "_digger"))
-		{
-			non_active[non_active.size] = level.diggers[i];
-		}
-	}	
+	// non_active = [];
+	// for(i=0;i<level.diggers.size;i++)
+	// {
+	// 	if(!flag("start_" + level.diggers[i] + "_digger"))
+	// 	{
+	// 		non_active[non_active.size] = level.diggers[i];
+	// 	}
+	// }	
 	
-	if(non_active.size > 0)
-	{
-		digger_to_activate = random(non_active);
+	// if(non_active.size > 0)
+	// {
+	// 	digger_to_activate = random(non_active);
 	
-		flag_set("start_" + digger_to_activate + "_digger");
+	// 	flag_set("start_" + digger_to_activate + "_digger");
 	
-		level thread send_clientnotify( digger_to_activate, false );
-		level thread play_digger_start_vox( digger_to_activate );
-		wait(1);
+	// 	level thread send_clientnotify( digger_to_activate, false );
+	// 	level thread play_digger_start_vox( digger_to_activate );
+	// 	wait(1);
 		
-		level thread play_timer_vox( digger_to_activate );
-	}
+	// 	level thread play_timer_vox( digger_to_activate );
+	// }
 }
 
 
