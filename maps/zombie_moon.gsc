@@ -920,6 +920,9 @@ moon_round_think_func()
 
 		level notify( "start_of_round" );
 
+		level.global_zombies_killed_round = 0;
+		level.current_round_start_time = int(gettime() / 1000);
+
 		// returning from earth: restore the zombie total if there were zombies remaining when you left
 		if(flag("teleporter_used"))
 		{
@@ -934,6 +937,7 @@ moon_round_think_func()
 
 		level.first_round = false;
 		level notify( "end_of_round" );
+		level.current_round_end_time = int(gettime() / 1000);
 		flag_set("between_rounds");
 		
 		UploadStats();
