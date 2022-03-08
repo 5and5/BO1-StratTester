@@ -8009,13 +8009,16 @@ disable_powerup()
 		setDvar( "disable_powerups", false );
 	while(1)
 	{	
-		powerups = getDvar( "disable_powerups" );
-		if ( powerups )
-			level.mutators["mutator_noPowerups"] = true;
-		else
+		powerups = getDvarInt( "disable_powerups" );
+		if ( powerups ) {
+			//Some places explicity check for "1" when comparing for true
+			level.mutators["mutator_noPowerups"] = "1";
+		}
+		else {
 			level.mutators["mutator_noPowerups"] = false;
+		}
 		
-		wait 0.1;
+		wait 1;
 	}
 }
 
