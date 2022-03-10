@@ -202,10 +202,6 @@ post_all_players_connected()
 	maps\_zombiemode_score::init();
 	level difficulty_init();
 
-	//TTS
-	//level thread hud_zombies_stats();
-	// level thread hud_sph();
-
 	//thread zombie_difficulty_ramp_up(); 
 
 	// DCS 091610: clear up blood patches when set to mature.
@@ -259,8 +255,10 @@ post_all_players_connected()
 	level thread disable_powerup();
 	level thread disable_special_zombies();
 
-	if ( level.script == "zombie_pentagon" )
+	if ( level.script == "zombie_pentagon" ) {
 		level thread enable_traps_five();
+		level thread maps\_zombiemode_zone_manager::window_watcher();
+	}
 	
 	chests = getentarray( "treasure_chest_use", "targetname" );
 	for ( i = 0; i < chests.size; i++ )
@@ -7838,10 +7836,6 @@ update_time(time, timer) {
 	}
 }
 
-	
-
-
-
 round_time() {
 
 	level.round_time = 0;
@@ -7868,13 +7862,8 @@ round_time_watcher(roundTime) {
 
 }
 
-hud_zombies_stats() {
-	//level thread hud_zombies_health();
-	//level thread hud_zombies_remaining();
-	//level thread hud_zombies_speed();
-}
-
 hud_zombies_remaining() {
+	
 	while(1)
 	{
 		zombs = level.zombie_total + get_enemy_count();
