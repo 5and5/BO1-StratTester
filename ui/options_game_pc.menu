@@ -108,7 +108,7 @@
 
 			if(dvarString(round_number) == "")
 			{
-				setDvar round_number 1;
+				setDvar round_number 100;
 			}
 			if(dvarString(round_start_delay) == "")
 			{
