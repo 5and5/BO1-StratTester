@@ -3228,9 +3228,6 @@ init_gib_tags()
 	level.gib_tags = tags;
 }
 
-
-//
-//
 zombie_can_drop_powerups( zombie )
 {
 	if( level.mutators["mutator_noPowerups"] )

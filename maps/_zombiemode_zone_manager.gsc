@@ -673,7 +673,8 @@ create_spawner_list( zkeys )
 //	level.enemy_dog_spawns = [];
 	level.enemy_dog_locations = [];
 	level.zombie_rise_spawners = [];
-
+	level.spawners_to_remove = [];
+	
 	for( z=0; z<zkeys.size; z++ )
 	{
 		zone = level.zones[ zkeys[z] ];
@@ -681,49 +682,77 @@ create_spawner_list( zkeys )
 		if ( zone.is_enabled && zone.is_active )
 		{
 			//DCS: check to see if zone is setup for random spawning.
-			if(IsDefined(	level.random_spawners) && level.random_spawners == true)
+			if(IsDefined(level.random_spawners) && level.random_spawners == true)
 			{
 				
-					if(!IsDefined(level.spawners_to_remove))
-					{
-						disabled_window1 = 4;
-						disabled_window2 = 0;
+				window_option1 = GetDvar("zombie_pentagon_disabled_window1");
+				window_option2 = GetDvar("zombie_pentagon_disabled_window2");
 
-						level.spawners_to_remove = [];
-						level.spawners_to_remove[0] = disabled_window1;
-						level.spawners_to_remove[1] = disabled_window2;
-					}
-
-			if(IsDefined(zone.num_spawners) && zone.spawners.size > zone.num_spawners )
+				if(window_option1 == "conference_ne")
 				{
-					j = 0;
-					while(zone.spawners.size > zone.num_spawners)
-					{
-						//i = RandomIntRange(0, zone.spawners.size);
-						i = level.spawners_to_remove[j];
-						//iprintln(i);
-						zone.spawners = array_remove(zone.spawners, zone.spawners[i], true);
-						j++;
-					}
-					array = [];
-					keys = GetArrayKeys(zone.spawners);
-					for(i=0;i<zone.spawners.size;i++)
-					{
-						array[i] = zone.spawners[keys[i]];
-					}
-					zone.spawners = array;
+					level.spawners_to_remove[level.spawners_to_remove.size] = 4;
+				}
+				else if(window_option1 == "conference_nw")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 2;
+				}
+				else if(window_option1 == "conference_se")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 5;
+				}
+				else if(window_option1 == "conference_sw")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 3;
+				}
+				else if(window_option1 == "hallway_e")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 0;
+				}
+				else if(window_option1 == "hallway_w")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 1;
 				}
 
-
-
-				/*if(IsDefined(zone.num_spawners) && zone.spawners.size > zone.num_spawners )
+				if(window_option2 == "conference_ne")
 				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 4;
+				}
+				else if(window_option2 == "conference_nw")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 2;
+				}
+				else if(window_option2 == "conference_se")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 5;
+				}
+				else if(window_option2 == "conference_sw")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 3;
+				}
+				else if(window_option2 == "hallway_e")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 0;
+				}
+				else if(window_option2 == "hallway_w")
+				{
+					level.spawners_to_remove[level.spawners_to_remove.size] = 1;
+				}
+				
+
+				if(IsDefined(zone.num_spawners) && zone.spawners.size > zone.num_spawners )
+				{
+					if(isDefined(level.spawners_to_remove)) {
+						for(i = 0; i < level.spawners_to_remove.size; i++) {
+							zone.spawners = array_remove(zone.spawners, zone.spawners[level.spawners_to_remove[i]]);
+						}
+					}					
+					//remove more windows if we're still too big
 					while(zone.spawners.size > zone.num_spawners)
 					{
 						i = RandomIntRange(0, zone.spawners.size);
 						zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
 					}	
-				}*/
+				}
 			}				
 
 			// Add spawners
@@ -755,6 +784,28 @@ create_spawner_list( zkeys )
 		}
 	}
 }
+
+window_watcher() {
+	
+	level endon("death");
+	
+	window1 = GetDvar("zombie_pentagon_disabled_window1");
+	window2 = GetDvar("zombie_pentagon_disabled_window2");
+	
+	while(1) {
+		if(GetDvar("zombie_pentagon_disabled_window1") != window1 || GetDvar("zombie_pentagon_disabled_window2") != window2) 
+		{
+			iprintln("Changing windows");
+			window1 = GetDvar("zombie_pentagon_disabled_window1");
+			window2 = GetDvar("zombie_pentagon_disabled_window2");
+
+			reinit_zone_spawners();
+		}
+		wait(1);
+	}
+}
+
+
 
 // RAVEN BEGIN: bhackbarth  Debug zone info
 _init_debug_zones()
@@ -842,7 +893,7 @@ _debug_zones()
 // RAVEN END
 
 _debug_zones_tts() {
-	while(1) {
+	// while(1) {
 		// zones = getArrayKeys(level.zones);
 		// for(i = 0; i < level.zones.size; i++) {
 		// 	iprintln("Zone : " + zones[i] + " exists");
@@ -862,5 +913,5 @@ _debug_zones_tts() {
 
 		// spawners = level. 
 
-	}
+	// }
 }

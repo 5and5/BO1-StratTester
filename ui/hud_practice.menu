@@ -1,5 +1,47 @@
 #include "ui/menudef.h"
 
+/*
+	Items are grouped together using a menuDef. A menudef typically has a name, a rect, a fullscreen option and a visible option
+	menuDef {
+		name "my_cool_menu_def"
+		rect x-pos y-pos width height x-alignment y-alignment
+		fullscreen 0|1
+		visible (boolean expression)
+	}
+
+	within these menuDefs are itemDefs, these contain options and parameter specific to a hud element
+	itemDef {
+		name "my_cool_item_def"
+		rect x-pos y-pos width height x-alignment y-alignment
+		fullsceen (bool (expression)))
+		visible (bool or boolean expression)
+		forecolor r g b a ?
+		textscale (float)
+		textstyle (enum ?)
+		text font (enum ?)
+		textalign (enum ? )
+		background (texture name ?) 
+		exp (can be a variety of functions, multiple are allowed per itemDef)
+		visible (boolean)
+	}
+
+	multiple exp's (expressions?) can belong to one itemDef, and typically have the following functions
+		W(float) - dynamically calculate width
+		H(float) - dynamically calculate height
+		X(float) - dynamically calculate X-pos
+		Y(float) - dynamically calculate y-pos
+		text(string) - dynamically alter text
+
+	some formatting functions:
+		locString() - Grab localized string from key (key MUST start with "<str_filename>_" 
+			where <str_filename> is the name of the .str file that holds the key/value pair)
+		toUpper() - Capitalize first letter of each word in a string
+		dvarString() - get dvar value as a string
+		dvarBool() - get dvar value as a bool
+		dvarInt() - get dvar value as an int
+
+*/
+
 {
 	assetGlobalDef
 	{
@@ -10,8 +52,8 @@
 
 	menuDef
 	{
-		name				"enemy_counter"
-		rect				0 0 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP
+		name				"practice_stats"
+		rect				0 50 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x-pos y-pos width height horizontal_alignment vertical_alignmnet
 		fullscreen			0
 		visible				1 
 
@@ -25,31 +67,23 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
-			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("hud_enemy_counter_value"))
+			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("hud_enemy_counter_value"))	
 			visible				when(dvarInt(hud_enemy_counter_on) > 0)
 			decoration
 		}
-	}
-
-	menuDef 
-	{
-		name 				"sph"
-		rect 				0 0 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x y fx? fx? alignment params
-		fullscreen 			0
-		visible 			1
 
 		itemDef 
 		{
 			name				"sph_text"
 			type				ITEM_TYPE_TEXT
-			rect 				4 2 0 0		//padding
+			rect 				4 2 0 0		
 			exp					rect Y( 2 + (dvarInt(hud_enemy_counter_on) ) * 15 )
+			exp 				text(locString("MOD_SPH") + dvarString("hud_sph"))		//multiple exp's (expressions?) can be defined for different functions
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
-			exp 				text(locString("MOD_SPH") + dvarString("hud_sph"))
 			visible				when(dvarInt(hud_sph_on) > 0)
 			decoration
 		}
@@ -162,52 +196,4 @@
 			decoration
 		}
 	}
-
-    // menuDef
-	// {
-	// 	name				"health_bar"
-	// 	rect				4 -111.5 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
-	// 	fullscreen			0
-	// 	visible				1
-
-	// 	itemDef
-	// 	{
-	// 		name				"health_bar_background_image"
-	// 		type			B	ITEM_TYPE_IMAGE
-	// 		style				WINDOW_STYLE_SHADER
-	// 		rect				0 0 114 14
-	// 		foreColor			0 0 0 0.5
-	// 		background			"white"
-	// 		visible				1
-	// 		decoration
-	// 	}
-
-	// 	itemDef
-	// 	{
-	// 		name				"health_bar_image"
-	// 		type				ITEM_TYPE_IMAGE
-	// 		style				WINDOW_STYLE_SHADER
-	// 		rect				2 2 110 10
-	// 		exp					rect W(dvarInt("hud_health_bar_width"))
-	// 		foreColor			1 1 1 0.85
-	// 		background			"white"
-	// 		visible				1
-	// 		decoration
-	// 	}
-
-	// 	itemDef
-	// 	{
-	// 		name				"health_bar_value"
-	// 		type				ITEM_TYPE_TEXT
-	// 		rect 				57 13 0 0
-	// 		foreColor			1 1 1 1
-	// 		textScale			TEXTSIZE_SMALL
-	// 		textStyle			ITEM_TEXTSTYLE_SHADOWED
-	// 		textFont			UI_FONT_NORMAL
-	// 		textalign			ITEM_ALIGN_CENTER
-	// 		exp					text(dvarInt("hud_health_bar_value"))
-	// 		visible				1
-	// 		decoration
-	// 	}
-	// }
 }
