@@ -276,7 +276,7 @@
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_ROUND_OPTIONS", when(dvarString("ui_options_game_popup") == "round_options") )
 		
-		CHOICE_DVARFLOATLIST_VIS( 3, "@MOD_ROUND_NUMBER", round_number, { "1" 1 "10" 10 "20" 20 "30" 30 "40" 40 "50" 50 "70" 70 "100" 100}, ;, when(dvarString("ui_options_game_popup") == "round_options"))
+		CHOICE_DVARFLOATLIST_VIS( 3, "@MOD_ROUND_NUMBER", round_number, { "1" 1 "10" 10 "20" 20 "30" 30 "40" 40 "50" 50 "70" 70 "100" 100 "150" 150 "163" 163 "200" 200}, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARFLOATLIST_VIS( 4, "@MOD_ROUND_START_DELAY", round_start_delay, {  "3" 3 "5" 5 "10" 10 "20" 20 "30" 30 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_ROUND_INSTA", round_insta, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_DISABLE_POWERUPS", disable_powerups, { "@MOD_ON"; "0"; "@MOD_OFF"; "1" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
