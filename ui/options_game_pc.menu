@@ -129,6 +129,11 @@
 				setDvar zombie_pentagon_disabled_window2 "hallway_e";
 			}
 
+			if(dvarString(director_active) == "") 
+			{
+				setDvar director_active = 0;
+			}
+
 			
 
 			LOCAL_CLOSE_ALL_BUT( options_game )
@@ -280,7 +285,7 @@
 		CHOICE_DVARFLOATLIST_VIS( 4, "@MOD_ROUND_START_DELAY", round_start_delay, {  "3" 3 "5" 5 "10" 10 "20" 20 "30" 30 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_ROUND_INSTA", round_insta, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_DISABLE_POWERUPS", disable_powerups, { "@MOD_ON"; "0"; "@MOD_OFF"; "1" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-
+ 
 
 		// BOX LOCATIONS OPTIONS
 
@@ -614,6 +619,14 @@
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_CONFERENCE_SW"; "conference_sw";
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_HALLWAY_E"; "hallway_e"
 		}, ;, when(dvarString("zombie_pentagon_disabled_window1") == "hallway_w" && dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_pentagon"))
+
+		CHOICE_DVARFLOATLIST_VIS(1, "@MOD_DIRECTOR_ACTIVE", director_active, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
+		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_coast"  ) )
+
+
+
 
 
 		#undef CHOICE_TEXT_OFFSET_X
