@@ -133,8 +133,19 @@
 			{
 				setDvar director_active 0;
 			}
+			if(dvarString(novas_active) == "") {
+				setDvar novas_active 0;
+			}
+			if(dvarString(digger_t6) == "") {
+				setDvar digger_t6 0;
+			}
+			if(dvarString(digger_t11) == "") {
+				setDvar digger_t11 0;
+			}
+			if(dvarString(digger_bio) == "") {
+				setDvar digger_bio 0;
+			}
 
-			setDvar novas_active 0;
 
 			
 
@@ -488,10 +499,19 @@
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_PERK_OPTIONS", when(dvarString("ui_options_game_popup") == "perk_options") )
 
-		CHOICE_DVARSTRINGLIST_VIS( 1, "@MOD_ACTIVATE_DIGGER", digger, {
-			"@MOD_TUNNEL_11"; "hangar";
-			"@MOD_TUNNEL_6"; "teleporter";
-			"@MOD_BIODOME"; "biodome";
+		CHOICE_DVARSTRINGLIST_VIS( 1, "@MOD_ACTIVATE_BIO_DIGGER", digger_bio, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
+		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
+
+		CHOICE_DVARSTRINGLIST_VIS( 2, "@MOD_ACTIVATE_T11_DIGGER", digger_t11, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
+		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
+
+		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_ACTIVATE_T6_DIGGER", digger_t6, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
 
 		CHOICE_DVARSTRINGLIST_VIS( 3, "@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_1", zombie_pentagon_disabled_window1, {
