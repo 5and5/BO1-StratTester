@@ -7168,7 +7168,7 @@ turn_on_power()
 			}
 			else if ( level.script == "zombie_moon" )
 			{
-
+				flag_wait("teleporter_used");
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 

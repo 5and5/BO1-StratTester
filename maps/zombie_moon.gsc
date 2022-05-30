@@ -76,7 +76,9 @@ main()
 
 	// Special zombie types, dogs and quads.
 	level.custom_ai_type = [];
-	// level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
+	if(getDvarInt("astro_active") == 1) {
+		level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
+	}
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_quad::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_dogs::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_faller::faller_init );
