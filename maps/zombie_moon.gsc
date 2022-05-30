@@ -242,7 +242,6 @@ digger_dvar_activate() {
 	flag_wait("power_on");
 	while(1) {
 		wait(1);
-		iprintln("waiting...");
 
 		if(getDvarInt("digger_bio")) {
 			maps\zombie_moon_digger::digger_activate("biodome");

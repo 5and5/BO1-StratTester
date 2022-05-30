@@ -38,6 +38,7 @@ main()
 	level.box_hits = 0;
 	level.trap_hits = 0;
 
+	level.max_perks = 8;
 
 	level.zombie_visionset = "zombie_neutral";
 
