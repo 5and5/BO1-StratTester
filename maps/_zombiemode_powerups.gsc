@@ -393,7 +393,7 @@ get_valid_powerup()
 	while( 1 )
 	{
 		// Carpenter needs 5 destroyed windows
-		if( powerup == "carpenter" && get_num_window_destroyed() < 5 )
+		if( powerup == "carpenter" && ( get_num_window_destroyed() < 5 || getDvarInt("disable_carpenter") == 1) )
 		{	
 			powerup = get_next_powerup();
 		}
@@ -401,7 +401,8 @@ get_valid_powerup()
 		// Don't bring up fire_sale if the box hasn't moved or it it's already on
 		else if( powerup == "fire_sale" && 
 				 ( level.zombie_vars["zombie_powerup_fire_sale_on"] == true || 
-				   level.chest_moves < 1 ) )
+				   level.chest_moves < 1 ||
+				   getDvarInt("disable_firesale") == 1) )
 		{
 			powerup = get_next_powerup();
 		}
@@ -416,7 +417,7 @@ get_valid_powerup()
 		{
 			powerup = get_next_powerup();
 		}
-		else if( powerup == "minigun" && minigun_no_drop() ) // don't drop unless life bought in solo, or power has been turned on
+		else if( powerup == "minigun" && ( minigun_no_drop() || getDvarInt("disable_death_machine") ) ) // don't drop unless life bought in solo, or power has been turned on
 		{			
 			powerup = get_next_powerup();
 		}
