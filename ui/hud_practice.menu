@@ -96,11 +96,26 @@
 		fullscreen		0
 		visible			1
 
+		itemDef 
+		{
+			name		"strat_tester_version"
+			rect 		-4 2 0 0
+			forecolor 	1 1 1 1
+			type 		ITEM_TYPE_TEXT
+			textstyle	ITEM_TEXTSTYLE_SHADOWED
+			textscale 	TEXTSIZE_TITLE
+			textfont	UI_FONT_EXTRABIG
+			textalign	ITEM_ALIGN_TOP_RIGHT
+			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9))
+			exp			text("Strat Tester " + dvarString("strat_tester_version"));
+			visible		1	
+		}
+
 		itemDef
 		{
 			name		"round_timer"
 			rect 		-4 2 0 0
-			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9))
+			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + 25)
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED

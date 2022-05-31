@@ -9,6 +9,10 @@
 
 main()
 {
+
+	level.strat_tester_version = "2.0";
+	setDvar("strat_tester_version", level.strat_tester_version);
+
 	level.player_too_many_weapons_monitor = false;
 	level.player_too_many_weapons_monitor_func = ::player_too_many_weapons_monitor;
 	level._dontInitNotifyMessage = 1;
