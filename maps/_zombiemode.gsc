@@ -7328,6 +7328,10 @@ give_player_weapons()
 {	
 	level waittill( "fade_introblack" );
 
+	if(getDvarInt("give_weapons") == 0) {
+		return;
+	}
+
 	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
 	{
 	case "zombie_cod5_prototype":

@@ -9,12 +9,12 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 
 ## Current Features:
 
+*Note* Some settings require a "Restart Level" to take effect.
+
 ### General
 - 500,000 points on spawn
 - Remove Perk Limit
-- Special zombies disabled on Shangri-la
-- Set perks on every map
-- Set weapons on every map
+- Perks reserved on down
 
 ### HUD
 - Round Timer
@@ -23,21 +23,36 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - Health Bar
 - Current Zone
 
+### Round Settings
+- Set various starting rounds
+- Set a delay to navigate to where you need to start the round at game start
+- Toggle whether round has insta-kill like behavior or not (useful if you want to practice on rounds lower than 163)
+- Set the number of zombies per horde (useful for getting accurate SPH's on maps like COTD or Moon where there are only 23 normal zombies per horde due to a persistent boss holding the 24th slot).
+
+### Box Settings
+- Allow the box to roam from a particular location
+- Set a specific box location to practice hitting from
+
+### Perks & Drops
+- Choose what perks you spawn in with between all, none, or a typical high-round game perk setup
+    - If setup set of perks is not to your liking, simply go with 'none' and go buy your own
+- Toggle whether powerups spawn or not
+- Toggle whether Carpenters, Fire Sales, or Death Machines spawn at an individual level
+
 ### Game Settings
-- Mule Kick without playing offline
-- Turn on power
-- Open most doors and barriers
-- Open windows
-- Set perks
-- Set box locations
-- Give weapons
+- Enable/disable graphic content on the fly
+- Enable/disbale Mule Kick on a map
+- Turn on/off the power at start
+- Open doors on start (this tries to keep some common high-round doors closed, so you can leave this on unless you're testing a certain strategy that requires a more unique door setup)
+- Destroy all barriers on spawn 
+- Give weapons needed to perform a high-round game (typically the wonder-weapon, tactical grenade, and other weapons typically used in a high round game).
 
-
-Planned Features:
-- Tools for tracking/optimizing box hits
-- Move box on more maps
-- add more weapons to give weapon
-- More!
+### Map Options
+- Set specific windows on Five
+- Force activate a specific excavator
+- Disable Astro
+- Disable George Romero
+- Disable nova crawlers on Kino, Moon & Five
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 
