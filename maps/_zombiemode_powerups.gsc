@@ -2868,14 +2868,14 @@ tesla_powerup_active()
 //
 print_powerup_drop( powerup, type )
 {
-	if( type == "random" )
-	{
-		iprintln(powerup + " was a random Drop"); 
-	}
-	else
-	{
-		iprintln(powerup + " was because you hit point threshold " + level.last_score_drop);
-	}
+	// if( type == "random" )
+	// {
+	// 	iprintln(powerup + " was a random Drop"); 
+	// }
+	// else
+	// {
+	// 	iprintln(powerup + " was because you hit point threshold " + level.last_score_drop);
+	// }
 }
 
 
