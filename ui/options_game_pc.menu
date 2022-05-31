@@ -506,7 +506,7 @@
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_CONFERENCE_SW"; "conference_sw";
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_HALLWAY_E"; "hallway_e";
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_HALLWAY_W"; "hallway_w"
-		}, ;, when(dvarString("zombie_pentagon_disabled_window2") == "conference_ne" && dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_pentagon")))
+		}, ;, when(dvarString("zombie_pentagon_disabled_window2") == "conference_ne" && dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_pentagon"))
 
 		CHOICE_DVARSTRINGLIST_VIS( 3, "@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_1", zombie_pentagon_disabled_window1, {
 			"@MPUI_RANDOM_CAPS"; "random";
@@ -542,7 +542,7 @@
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_CONFERENCE_SE"; "conference_se";
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_CONFERENCE_SW"; "conference_sw";
 			"@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_HALLWAY_W"; "hallway_w"
-		}, ;, when(dvarString("zombie_pentagon_disabled_window2") == "hallway_e" && dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_pentagon")))
+		}, ;, when(dvarString("zombie_pentagon_disabled_window2") == "hallway_e" && dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_pentagon"))
 
 		CHOICE_DVARSTRINGLIST_VIS( 3, "@REIMAGINED_ZOMBIE_PENTAGON_DISABLE_WINDOW_1", zombie_pentagon_disabled_window1, {
 			"@MPUI_RANDOM_CAPS"; "random";
