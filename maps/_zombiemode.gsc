@@ -1920,6 +1920,7 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
+				self thread zombies_per_horde();
 
 				wait(3);
 				self setblur(0, .1);
@@ -8131,6 +8132,9 @@ send_message_to_csc(name, message)
 
 health_bar_hud()
 {
+	self endon("death");
+	self endon("disconnect");
+
 	health_bar_width_max = 110;
 
 	while (1)
@@ -8141,5 +8145,21 @@ health_bar_hud()
 		self SetClientDvar("hud_health_bar_width", health_bar_width_max * health_ratio);
 
 		wait 0.05;
+	}
+}
+
+zombies_per_horde() {
+	self endon("death");
+	self endon("disconnect");
+	
+	oldZph = undefined;
+	while(1) {
+		zph = getDvarInt("zombies_per_horde");
+
+		if(zph != oldZph) {
+			level.zombie_ai_limit = zph;
+			oldZph = zph;
+		}
+		wait(1);
 	}
 }
