@@ -76,7 +76,9 @@ main()
 
 	// Special zombie types, dogs and quads.
 	level.custom_ai_type = [];
-	// level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
+	if(getDvarInt("astro_active") == 1) {
+		level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
+	}
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_quad::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_dogs::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_faller::faller_init );
@@ -235,25 +237,25 @@ main()
 digger_dvar_activate() {
 	level endon("death");
 
-	setDvar("digger", "");
+	setDvar("digger_bio", 0);
+	setDvar("digger_t6", 0);
+	setDvar("digger_t11", 0);
 
+	flag_wait("power_on");
 	while(1) {
 		wait(1);
-		digger = getDvar("digger");
 
-		if(digger == "") {
-			continue;
-		}
-		
-		if(!flag("power_on")) {
-			iprintln("Cannot activate digger: Power is not on");
-			setDvar("digger", "");
-			continue;
+		if(getDvarInt("digger_bio")) {
+			maps\zombie_moon_digger::digger_activate("biodome");
 		}
 
-		maps\zombie_moon_digger::digger_activate(digger);
-		setDvar("digger", "");
+		if(getDvarInt("digger_t6")) {
+			maps\zombie_moon_digger::digger_activate("teleporter");
+		}
 
+		if(getDvarInt("digger_t11")) {
+			maps\zombie_moon_digger::digger_activate("hangar");
+		}
 	}
 }
 

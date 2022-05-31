@@ -760,7 +760,14 @@ create_spawner_list( zkeys )
 			{
 				if ( zone.spawners[x].is_enabled )
 				{
-					level.enemy_spawns[ level.enemy_spawns.size ] = zone.spawners[x];
+					if(getDvarInt("novas_active") == 0) {
+						if(zone.spawners[x].script_noteworthy != "quad_zombie_spawner") {
+							level.enemy_spawns[ level.enemy_spawns.size ] = zone.spawners[x];
+						} 
+					}
+					else {
+						level.enemy_spawns[ level.enemy_spawns.size ] = zone.spawners[x];
+					}
 				}
 			}
 

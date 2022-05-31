@@ -260,7 +260,29 @@ custom_add_weapons()
 
 coast_spawn_init_delay(director)
 {
-	
+	if(getDvarInt("director_active")) {
+		flag_wait( "begin_spawning" );
+		flag_clear( "spawn_zombies");
+		director_zomb = undefined;
+
+		while(!IsDefined(director_zomb))
+		{
+			zombs = GetAIArray ("axis");
+			for ( i = 0; i < zombs.size; i++ )
+			{
+				if(IsDefined(zombs[i].animname) && zombs[i].animname == "director_zombie")
+				{
+					director_zomb = zombs[i];
+				}
+			}
+			wait_network_frame();	
+		}
+		
+		director_zomb waittill_notify_or_timeout( "director_spawn_zombies", 30 );
+		//wait(30.0);
+		
+		flag_set( "spawn_zombies");
+	}
 }
 
 	

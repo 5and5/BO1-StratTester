@@ -3802,9 +3802,6 @@ zombie_death_event( zombie )
 	//Track all zombies killed
 	level.global_zombies_killed++;
 
-	//Track all zombies killed
-	level.global_zombies_killed++;
-
 	//Track for Round -TTS
 	level.global_zombies_killed_round++;
 

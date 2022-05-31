@@ -9,6 +9,10 @@
 
 main()
 {
+
+	level.strat_tester_version = "2.0";
+	setDvar("strat_tester_version", level.strat_tester_version);
+
 	level.player_too_many_weapons_monitor = false;
 	level.player_too_many_weapons_monitor_func = ::player_too_many_weapons_monitor;
 	level._dontInitNotifyMessage = 1;
@@ -38,6 +42,7 @@ main()
 	level.box_hits = 0;
 	level.trap_hits = 0;
 
+	level.max_perks = 8;
 
 	level.zombie_visionset = "zombie_neutral";
 
@@ -1919,6 +1924,7 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
+				self thread zombies_per_horde();
 
 				wait(3);
 				self setblur(0, .1);
@@ -7167,7 +7173,7 @@ turn_on_power()
 			}
 			else if ( level.script == "zombie_moon" )
 			{
-
+				flag_wait("teleporter_used");
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
@@ -7326,6 +7332,10 @@ give_player_weapons()
 {	
 	level waittill( "fade_introblack" );
 
+	if(getDvarInt("give_weapons") == 0) {
+		return;
+	}
+
 	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
 	{
 	case "zombie_cod5_prototype":
@@ -7422,13 +7432,19 @@ give_player_weapons()
 
 give_player_perks()
 {	
-	if ( getDvar( "player_perk_1") == "" && getDvar( "player_perk_2") == "" && getDvar( "player_perk_3") == "" && getDvar( "player_perk_4") == "" && getDvar( "player_perk_5") == "" && getDvar( "player_perk_6") == "" )
-	{	
-		switch ( Tolower( GetDvar( #"mapname" ) ) ) 
-		{
-		case "zombie_cod5_prototype":
-
-			break;
+	if(getdvar("set_perks") == "none") {
+		return;
+	}
+	else if(getDvar("set_perks") == "all") {
+		perks = get_perk_list();
+		for(i = 0; i < perks.size; i++) {
+			self maps\_zombiemode_perks::give_perk( perks[i], true );
+		}
+		return;
+	}
+	//set to "setup"
+	else {
+		switch ( Tolower( GetDvar( #"mapname" ) ) ) {
 
 		case "zombie_cod5_asylum":
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
@@ -7494,7 +7510,6 @@ give_player_perks()
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
 		break;
 
 		case "zombie_temple":
@@ -7508,33 +7523,30 @@ give_player_perks()
 			
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
 			break;
 
 		case "zombie_moon":
 			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-			if(isDefined(level.zombie_additionalprimaryweapon_machine_origin)) {
-				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-			}
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
 			break;
 		}
 	}
-	else
+
+	
+}
+
+get_perk_list() {
+	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
+
+	perks = [];
+	for ( i = 0; i < vending_triggers.size; i++ )
 	{
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_1"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_2"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_3"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_4"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_5"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
+		perks[perks.size] = vending_triggers[i].script_noteworthy;
 	}
+	return perks;
 }
 
 set_player_weapon()
@@ -8128,6 +8140,9 @@ send_message_to_csc(name, message)
 
 health_bar_hud()
 {
+	self endon("death");
+	self endon("disconnect");
+
 	health_bar_width_max = 110;
 
 	while (1)
@@ -8138,5 +8153,21 @@ health_bar_hud()
 		self SetClientDvar("hud_health_bar_width", health_bar_width_max * health_ratio);
 
 		wait 0.05;
+	}
+}
+
+zombies_per_horde() {
+	self endon("death");
+	self endon("disconnect");
+	
+	oldZph = undefined;
+	while(1) {
+		zph = getDvarInt("zombies_per_horde");
+
+		if(zph != oldZph) {
+			level.zombie_ai_limit = zph;
+			oldZph = zph;
+		}
+		wait(1);
 	}
 }
