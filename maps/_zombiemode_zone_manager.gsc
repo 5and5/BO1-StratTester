@@ -738,10 +738,6 @@ create_spawner_list( zkeys )
 					{
 						level.spawners_to_remove[level.spawners_to_remove.size] = 1;
 					}
-					
-					iprintln("Number of spawners before removing: " + zone.spawners.size);
-					iprintln("spawners_to_remove_size " + level.spawners_to_remove.size);
-
 
 					if(level.spawners_to_remove > 0) {
 						for(i = 0; i < level.spawners_to_remove.size; i++) {
@@ -754,9 +750,7 @@ create_spawner_list( zkeys )
 					// 	i = RandomIntRange(0, zone.spawners.size);
 					// 	zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
 					// }
-					
-					iprintln("Number of spawners after removing: " + zone.spawners.size );
-					
+										
 				}
 			}				
 
