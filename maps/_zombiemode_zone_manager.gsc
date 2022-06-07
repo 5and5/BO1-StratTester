@@ -684,74 +684,79 @@ create_spawner_list( zkeys )
 			//DCS: check to see if zone is setup for random spawning.
 			if(IsDefined(level.random_spawners) && level.random_spawners == true)
 			{
-				
-				window_option1 = GetDvar("zombie_pentagon_disabled_window1");
-				window_option2 = GetDvar("zombie_pentagon_disabled_window2");
-
-				if(window_option1 == "conference_ne")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 4;
-				}
-				else if(window_option1 == "conference_nw")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 2;
-				}
-				else if(window_option1 == "conference_se")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 5;
-				}
-				else if(window_option1 == "conference_sw")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 3;
-				}
-				else if(window_option1 == "hallway_e")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 0;
-				}
-				else if(window_option1 == "hallway_w")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 1;
-				}
-
-				if(window_option2 == "conference_ne")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 4;
-				}
-				else if(window_option2 == "conference_nw")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 2;
-				}
-				else if(window_option2 == "conference_se")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 5;
-				}
-				else if(window_option2 == "conference_sw")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 3;
-				}
-				else if(window_option2 == "hallway_e")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 0;
-				}
-				else if(window_option2 == "hallway_w")
-				{
-					level.spawners_to_remove[level.spawners_to_remove.size] = 1;
-				}
-				
-
 				if(IsDefined(zone.num_spawners) && zone.spawners.size > zone.num_spawners )
 				{
-					if(isDefined(level.spawners_to_remove)) {
+					window_option1 = GetDvar("zombie_pentagon_disabled_window1");
+					window_option2 = GetDvar("zombie_pentagon_disabled_window2");
+
+					if(window_option1 == "conference_ne")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 4;
+					}
+					else if(window_option1 == "conference_nw")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 2;
+					}
+					else if(window_option1 == "conference_se")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 5;
+					}
+					else if(window_option1 == "conference_sw")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 3;
+					}
+					else if(window_option1 == "hallway_e")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 0;
+					}
+					else if(window_option1 == "hallway_w")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 1;
+					}
+
+					if(window_option2 == "conference_ne")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 4;
+					}
+					else if(window_option2 == "conference_nw")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 2;
+					}
+					else if(window_option2 == "conference_se")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 5;
+					}
+					else if(window_option2 == "conference_sw")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 3;
+					}
+					else if(window_option2 == "hallway_e")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 0;
+					}
+					else if(window_option2 == "hallway_w")
+					{
+						level.spawners_to_remove[level.spawners_to_remove.size] = 1;
+					}
+					
+					iprintln("Number of spawners before removing: " + zone.spawners.size);
+					iprintln("spawners_to_remove_size " + level.spawners_to_remove.size);
+
+
+					if(level.spawners_to_remove > 0) {
 						for(i = 0; i < level.spawners_to_remove.size; i++) {
 							zone.spawners = array_remove(zone.spawners, zone.spawners[level.spawners_to_remove[i]]);
 						}
 					}					
 					//remove more windows if we're still too big
-					while(zone.spawners.size > zone.num_spawners)
-					{
-						i = RandomIntRange(0, zone.spawners.size);
-						zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
-					}	
+					// while(zone.spawners.size > zone.num_spawners)
+					// {
+					// 	i = RandomIntRange(0, zone.spawners.size);
+					// 	zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
+					// }
+					
+					iprintln("Number of spawners after removing: " + zone.spawners.size );
+					
 				}
 			}				
 

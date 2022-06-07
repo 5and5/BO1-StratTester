@@ -474,17 +474,17 @@
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_PERK_DROP_OPTIONS", when(dvarString("ui_options_game_popup") == "perk_drop_options") )
 
-		CHOICE_DVARSTRINGLIST_VIS( 2, "@MOD_ACTIVATE_BIO_DIGGER", digger_bio, {
+		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_ACTIVATE_BIO_DIGGER", digger_bio, {
 			"@MOD_ENABLED" 1
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
 
-		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_ACTIVATE_T11_DIGGER", digger_t11, {
+		CHOICE_DVARSTRINGLIST_VIS( 4, "@MOD_ACTIVATE_T11_DIGGER", digger_t11, {
 			"@MOD_ENABLED" 1
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
 
-		CHOICE_DVARSTRINGLIST_VIS( 4, "@MOD_ACTIVATE_T6_DIGGER", digger_t6, {
+		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_ACTIVATE_T6_DIGGER", digger_t6, {
 			"@MOD_ENABLED" 1
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("mapname") == "zombie_moon" && dvarString("ui_options_game_popup") == "map_options"))
@@ -627,7 +627,7 @@
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && ( dvarString("mapname") == "zombie_theater" || dvarString("mapname") == "zombie_moon" || dvarString("mapname") == "zombie_pentagon" ) ) )
 
-		CHOICE_DVARFLOATLIST_VIS(1, "@MOD_ASTRO_ACTIVE", astro_active, {
+		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_ASTRO_ACTIVE", astro_active, {
 			"@MOD_ENABLED" 1
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_moon"  ) )
