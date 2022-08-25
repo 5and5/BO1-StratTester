@@ -36,7 +36,6 @@ zombie_coast_adjust_percent()
 			if ( level.water_zombie_percent <= level.water_zombie_percent_min )
 			{
 				level.water_zombie_percent = level.water_zombie_percent_min;
-				iprintln("Breaking..." + level.water_zombie_percent);
 				break;
 			}
 		}
