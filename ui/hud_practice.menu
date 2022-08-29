@@ -91,6 +91,40 @@
 
 	menuDef 
 	{
+		name "sprintMeter"
+		fullScreen MENU_FALSE
+		visible MENU_TRUE
+		rect 62 -15 40 10 HORIZONTAL_ALIGN_LEFT VERTICAL_ALIGN_BOTTOM
+
+
+		itemDef 
+		{
+			name "sprintRect"
+			type			ITEM_TYPE_OWNERDRAW
+			visible MENU_TRUE
+			rect 0 0 62 10
+			background "white"
+			forecolor 0.0 0.0 0.0 0.8
+			backcolor 0.0 0.0 0.0 0.8
+			ownerdraw CG_PLAYER_SPRINT_BACK
+			decoration
+		}
+
+		itemDef 
+		{
+			name "sprintRect"
+			type			ITEM_TYPE_OWNERDRAW
+			visible MENU_TRUE
+			rect 1 1 60 8
+			background		"white"
+			forecolor 0.6 0.6 0.6 0.8
+			ownerdraw CG_PLAYER_SPRINT_METER
+			decoration
+		}
+	}
+
+	menuDef 
+	{
 		name			"mod_timers"
 		rect 			0 0 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
 		fullscreen		0
