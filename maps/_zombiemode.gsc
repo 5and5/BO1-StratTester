@@ -10,7 +10,7 @@
 main()
 {
 
-	level.strat_tester_version = "2.0.2";
+	level.strat_tester_version = "2.1";
 	setDvar("strat_tester_version", level.strat_tester_version);
 
 	level.player_too_many_weapons_monitor = false;
@@ -990,6 +990,11 @@ init_dvars()
 		SetDvar( "magic_box_explore_only", "1" );
 	}
 
+	if(GetDvar("round_number") == "") {
+		SetDvar("round_number", 100);
+		level.round_number = 100;
+	}
+
 	SetDvar( "revive_trigger_radius", "75" ); 
 	SetDvar( "player_lastStandBleedoutTime", "45" );
 
@@ -1761,7 +1766,8 @@ onPlayerConnect_clientDvars()
 		"miniscoreboardhide", "1",
 		"cg_drawSpectatorMessages", "0",
 		"ui_hud_hardcore", "0",
-		"playerPushAmount", "1" );
+		"playerPushAmount", "1",
+		"has_longersprint", "0" );
 
 	self SetDepthOfField( 0, 0, 512, 4000, 4, 0 );
 
