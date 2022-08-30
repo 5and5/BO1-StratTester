@@ -91,6 +91,43 @@
 
 	menuDef 
 	{
+		name "sprintMeter"
+		fullScreen MENU_FALSE
+		visible MENU_TRUE
+		rect 0 0 40 10 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
+
+
+		itemDef 
+		{
+			name "sprintRect"
+			type			ITEM_TYPE_OWNERDRAW
+			visible MENU_TRUE
+			rect 0 30 62 4
+			background "white"
+			forecolor 0.0 0.0 0.0 .8
+			backcolor 0.0 0.0 0.0 .8
+			ownerdraw CG_PLAYER_SPRINT_BACK
+			decoration
+			exp rect W(62 * (dvarInt("has_longersprint") + 1))
+			exp rect X(-62 * (dvarInt("has_longersprint") + 1) / 2)
+		}
+
+		itemDef 
+		{
+			name "sprintRect"
+			type			ITEM_TYPE_OWNERDRAW
+			visible MENU_TRUE
+			rect 1 31 60 2
+			background		"white"
+			forecolor 0.6 0.6 0.6 .8
+			ownerdraw CG_PLAYER_SPRINT_METER
+			decoration
+			exp rect X(-60 * (dvarInt("has_longersprint") + 1)  / 2)
+		}
+	}
+
+	menuDef 
+	{
 		name			"mod_timers"
 		rect 			0 0 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
 		fullscreen		0

@@ -4,7 +4,7 @@ This is a mod for creating, testing, and learning new strategies in Call of Duty
 
 This mod is meant to be an all-encompassing mod, with loads of features and options to give yourself the loadout and map setup you need to practice your strategies.
 
-## Download Common Zombie Patch
+## Download Common Zombie Patch (No longer maintained)
 [Download](https://www.mediafire.com/file/dn8iuwts71l42c6/BO1-Strat_Tester_Patch.zip/file)
 
 ## Current Features:
@@ -15,6 +15,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - 500,000 points on spawn
 - Remove Perk Limit
 - Perks reserved on down
+- Spawn in with some, all, or no perks
 
 ### HUD
 - Round Timer
@@ -22,10 +23,19 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - Seconds Per Horde (measured every second)
 - Health Bar
 - Current Zone
+- Sprint meter
+    - Sprint meter colors can be customized using the following commands or through the config (if you use the console commands, they are automatically written to config)
+        - `/cg_sprintMeterDisabledColor 0.8 0.1 0.1 0.2` - Color of the meter when you deplete your sprint and are recharing your sprint.
+        - `/cg_sprintMeterEmptyColor 0.7 0.5 -.2 0.8` - Color the bar when you are nearly out of sprint  
+        - `/cg_sprintMeterFullColor 0.8 0.8 0.8 0.8` - Color of the bar typically
+        - `/hud_fade_sprint 1.7` - Time it takes for the sprint meter to fade.
+    - Because the sprint meter is derived from the engine, and is the only way you can measure how much stamina you have within the confines of the game, some behavior may not work as desired (e.g. The bar will fade out when your sprint has grown more than what you would've had without Stamin-Up).
 
 ### Round Settings
 - Set various starting rounds
+    - If you want to start on a round that is not in the options, you can do so with `/round_number <number>` and restarting.
 - Set a delay to navigate to where you need to start the round at game start
+    - You can set a custom delay by typing `/round_start_delay <number>`
 - Toggle whether round has insta-kill like behavior or not (useful if you want to practice on rounds lower than 163)
 - Set the number of zombies per horde (useful for getting accurate SPH's on maps like COTD or Moon where there are only 23 normal zombies per horde due to a persistent boss holding the 24th slot).
 
@@ -50,6 +60,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 ### Map Options
 - Set specific windows on Five
 - Force activate a specific excavator
+    - You can also type `/digger tunnel6|tunnel11|biodome` to activate a specific excavator.
 - Disable Astro
 - Disable George Romero
 - Disable nova crawlers on Kino, Moon & Five
@@ -72,9 +83,9 @@ When you've made the changes, submit a pull request to the repo to be reviewed.
 
 # Credits
 ## Coders
-- TTS4life
-- 5and5
-- Iveez
+- TTS4life Programmer, maintainer
+- 5and5 Programmer
+- Iveez Box stuff
 
 ## Others
 Iveez - Initial mod made for practicing strats

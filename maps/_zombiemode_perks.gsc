@@ -1480,6 +1480,9 @@ give_perk( perk, bought )
 		self.preMaxHealth = self.maxhealth;
 		self SetMaxHealth( level.zombie_vars["zombie_perk_juggernaut_health_upgrade"] );
 	}
+	if(perk == "specialty_longersprint") {
+		self setClientDvar("has_longersprint", 1);
+	}
 	
 	// WW (02-03-11): Deadshot csc call
 	if( perk == "specialty_deadshot" )
@@ -1613,6 +1616,8 @@ perk_think( perk )
 		case "specialty_deadshot_upgrade":		
 			self ClearClientFlag(level._ZOMBIE_PLAYER_FLAG_DEADSHOT_PERK);
 			break;
+		case "specialty_longersprint":
+			self setClientDvar("has_longersprint", 0);
 	}
 	
 	self perk_hud_destroy( perk );
