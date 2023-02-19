@@ -10,7 +10,7 @@
 main()
 {
 
-	level.strat_tester_version = "2.1.1";
+	level.strat_tester_version = "2.1.2";
 	setDvar("strat_tester_version", level.strat_tester_version);
 
 	level.player_too_many_weapons_monitor = false;
