@@ -1863,7 +1863,11 @@ insta_kill_powerup( drop_item )
 
 check_for_instakill( player, mod, hit_location )
 {
-	if( level.mutators["mutator_noPowerups"] )
+	/* Check for `personal_instakill`, that var is only used for humangun, do not leave the function if it's true
+	There should not be issues with instakill working while someone has been shot with humangun, as the check does the verification per player, and also with the mutator we're not going to be getting an insta in the first place
+	~ Zi0 02/2023 */
+
+	if( level.mutators["mutator_noPowerups"] && !is_true( player.personal_instakill ) )
 	{
 		return;
 	}
