@@ -3854,7 +3854,7 @@ zombie_death_event( zombie )
 		attacker = zombie.attacker;
 		weapon = zombie.damageWeapon;
 
-		if (weapon == "tesla_gun_zm" || weapon == "tesla_gun_upgraded_zm")
+		if (zombie maps\_zombiemode_weap_tesla::enemy_killed_by_tesla())
 		{
 			level.num_tesla_kills++;
 		}
