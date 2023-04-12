@@ -624,8 +624,6 @@ powerup_drop(drop_point)
 	{
 		return;
 	}
-
-	get_players()[0] iprintln("drops");
 		
 	if( level.powerup_drop_count >= level.zombie_vars["zombie_powerup_drop_max_per_round"] )
 	{
