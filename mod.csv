@@ -18,6 +18,7 @@ rawfile,maps/_zombiemode_ai_faller.gsc
 rawfile,maps/_zombiemode_spawner.gsc
 rawfile,maps/_zombiemode_weap_nesting_dolls.gsc
 rawfile,maps/_zombiemode_weap_black_hole_bomb.gsc
+rawfile,maps/_zombiemode_weap_tesla.gsc
 
 
 //CLIENT SCRITPS
