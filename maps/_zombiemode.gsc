@@ -8270,5 +8270,4 @@ override_next_special_round()
 			level.prev_thief_round = level.next_thief_round;
 			break;
 	}
-	get_players()[0] iPrintLn(level.next_dog_round);
 }
