@@ -4191,8 +4191,13 @@ round_think()
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
 	// level.zombie_move_speed = 105;
+
+	// lveez - fix special round healths
 	level.dog_health = 1600;
 	level.dog_round_count = 5;
+	level.monkeys_encountered = 4;
+	ai_calculate_health(level.round_number);
+	
 	level.game_started = 1;
 	// lveez - if don't wait for this flag the next doc rounds gets reset
 	if (level.script == "zombie_pentagon")
@@ -8232,7 +8237,6 @@ zombies_per_horde() {
 
 override_next_special_round()
 {
-	get_players()[0] iPrintLn(level.next_special_round);
 	switch (level.next_special_round)
 	{
 		case 1: // 1 => 4/5 rounders like normal
