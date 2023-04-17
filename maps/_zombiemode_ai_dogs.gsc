@@ -451,7 +451,7 @@ dog_round_tracker()
 
 	while ( 1 )
 	{
-		level waittill ( "between_round_over" );
+		level waittill ( "between_round_over" );		
 
 		/#
 			if( GetDvarInt( #"force_dogs" ) > 0 )
@@ -856,6 +856,13 @@ dog_clip_monitor()
 special_dog_spawn( spawners, num_to_spawn )
 {
 	dogs = GetAISpeciesArray( "all", "zombie_dog" );
+
+	// lveez - this function gets called from somewhere outside of round logic (not sure where)
+	// so fix goes in here to stop spawns before round starts on der riese
+	if (!IsDefined(level.zombie_spawned))
+	{
+		return;
+	}
 
 	if ( IsDefined( dogs ) && dogs.size >= 9 )
 	{

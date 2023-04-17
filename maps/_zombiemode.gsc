@@ -3493,7 +3493,7 @@ round_spawning()
 	//	iPrintLn(spawn_point.targetname + " " + level.zombie_vars["zombie_spawn_delay"]);
 
 		// MM Mix in dog spawns...
-		if ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 && isdefined( level.game_started ) && level.game_started == 1 && isDefined(level.zombie_spawned) )
+		if ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 && isdefined( level.game_started ) && level.game_started == 1 )
 		{
 			spawn_dog = false;
 			if ( level.round_number > 30 )
@@ -4194,33 +4194,35 @@ round_think()
 	level.dog_health = 1600;
 	level.dog_round_count = 5;
 	level.game_started = 1;
-
 	// lveez - if don't wait for this flag the next doc rounds gets reset
 	if (level.script == "zombie_pentagon")
 	{
 		flag_wait( "power_on" );
 	}
 
-	if (getDvarInt("next_special_round") == 0)
-	{
-		level.next_dog_round = 666;
-		level.next_thief_round = 666;
-		level.next_monkey_round = 666;
-	}
-	else
-	{
-		level.next_dog_round = level.round_number + getDvarInt("next_special_round");
-		level.next_thief_round = level.round_number + getDvarInt("next_special_round");
-		level.next_monkey_round = level.round_number + getDvarInt("next_special_round");
-	}
-
-	level.prev_thief_round = level.next_thief_round;
-
-	// lveez - mixed rounds fix
+	// lveez - mixed rounds fix (if level variables become undefined
+	// between restarts this can be removed.)
 	level.zombie_spawned = undefined;
+
+	level.next_special_round = 0;
 
 	for( ;; )
 	{
+		// lveez - override special round if they changed option
+		if (getDvarInt("next_special_round") != level.next_special_round)
+		{
+			level.next_special_round = getDvarInt("next_special_round");
+			override_next_special_round();
+		}
+
+		// lveez - update next special round
+		if (flag("dog_round") || flag("thief_round") || flag("monkey_round"))
+		{
+			override_next_special_round();
+		}
+
+		// lveez - moved notify here so that the dog rounds update
+		level notify( "between_round_over" );
 
 		//////////////////////////////////////////
 		//designed by prod DT#36173
@@ -4304,8 +4306,6 @@ round_think()
 		level chalk_round_over();
 
 		level.round_number++;
-
-		level notify( "between_round_over" );
 	}
 }
 
@@ -8228,4 +8228,47 @@ zombies_per_horde() {
 		}
 		wait(1);
 	}
+}
+
+override_next_special_round()
+{
+	get_players()[0] iPrintLn(level.next_special_round);
+	switch (level.next_special_round)
+	{
+		case 1: // 1 => 4/5 rounders like normal
+			level.next_dog_round = level.round_number + randomintrange(3,5);
+			level.next_thief_round = level.round_number + randomintrange(3,5);
+			level.next_monkey_round = level.round_number + randomintrange(3,5);
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 2: // 2 => 4 rounders
+			level.next_dog_round = level.round_number + 3;
+			level.next_thief_round = level.round_number + 3;
+			level.next_monkey_round = level.round_number + 3;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 3: // 3 => 5 rounders
+			level.next_dog_round = level.round_number + 4;
+			level.next_thief_round = level.round_number + 4;
+			level.next_monkey_round =  level.round_number + 4;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 4: // 4 => every round
+			level.next_dog_round = level.round_number;
+			level.next_thief_round = level.round_number;
+			level.next_monkey_round =level.round_number;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		default:
+			level.next_dog_round = 10000;
+			level.next_thief_round = 10000;
+			level.next_monkey_round = 10000;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+	}
+	get_players()[0] iPrintLn(level.next_dog_round);
 }
