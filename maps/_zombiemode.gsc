@@ -4229,6 +4229,8 @@ round_think()
 		// lveez - moved notify here so that the dog rounds update
 		level notify( "between_round_over" );
 
+		// get_players()[0] iPrintLn(level.next_dog_round);
+
 		//////////////////////////////////////////
 		//designed by prod DT#36173
 		maxreward = 50 * level.round_number;

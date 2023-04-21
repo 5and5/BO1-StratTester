@@ -451,7 +451,7 @@ dog_round_tracker()
 
 	while ( 1 )
 	{
-		level waittill ( "between_round_over" );		
+		level waittill ( "between_round_over" );
 
 		/#
 			if( GetDvarInt( #"force_dogs" ) > 0 )
@@ -463,8 +463,11 @@ dog_round_tracker()
 		if ( level.round_number == level.next_dog_round )
 		{
 			level.music_round_override = true;
-			old_spawn_func = level.round_spawn_func;
-			old_wait_func  = level.round_wait_func;
+			if (!flag("dog_round"))
+			{
+				old_spawn_func = level.round_spawn_func;
+				old_wait_func  = level.round_wait_func;
+			}
 			dog_round_start();
 			level.round_spawn_func = ::dog_round_spawning;
 
