@@ -38,6 +38,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
     - You can set a custom delay by typing `/round_start_delay <number>`
 - Toggle whether round has insta-kill like behavior or not (useful if you want to practice on rounds lower than 163)
 - Set the number of zombies per horde (useful for getting accurate SPH's on maps like COTD or Moon where there are only 23 normal zombies per horde due to a persistent boss holding the 24th slot).
+- Select the frequency of special rounds between every round, every 4 rounds every 5 rounds, or every 4/5 rounds (vanilla)
 
 ### Box Settings
 - Allow the box to roam from a particular location
@@ -85,9 +86,11 @@ When you've made the changes, submit a pull request to the repo to be reviewed.
 ## Coders
 - TTS4life Programmer, maintainer
 - 5and5 Programmer
-- Iveez Box stuff
+- lveez Programmer
 
 ## Others
-Iveez - Initial mod made for practicing strats
+lveez - Initial mod made for practicing strats
+
 Porterico - Initial mod for Five Windows being set
+
 JBleezy - Reimagined/Code references
