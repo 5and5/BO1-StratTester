@@ -3854,6 +3854,11 @@ zombie_death_event( zombie )
 		attacker = zombie.attacker;
 		weapon = zombie.damageWeapon;
 
+		if (zombie maps\_zombiemode_weap_tesla::enemy_killed_by_tesla())
+		{
+			level.num_tesla_kills++;
+		}
+
 		bbPrint( "zombie_kills: round %d zombietype zombie damagetype %s damagelocation %s playername %s playerweapon %s playerx %f playery %f playerz %f zombiex %f zombiey %f zombiez %f",
 				level.round_number, damagemod, damageloc, attacker.playername, weapon, attacker.origin, zombie.origin );
 	}

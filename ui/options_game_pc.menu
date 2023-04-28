@@ -37,6 +37,11 @@
 				setDvar hud_sph_on 0;
 			}
 
+			if (dvarString(hud_tesla_on) == "")
+			{
+				setDvar hud_tesla_on 0;
+			}
+
 			if(dvarString(hud_enemy_counter_on) == "")
 			{
 				setDvar hud_enemy_counter_on 0;
@@ -109,6 +114,10 @@
 			if(dvarString(round_number) == "")
 			{
 				setDvar round_number 100;
+			}
+			if(dvarString(next_special_round) == "")
+			{
+				setDvar next_special_round 0;
 			}
 			if(dvarString(round_start_delay) == "")
 			{
@@ -316,7 +325,7 @@
 		CHOICE_DVARFLOATLIST_VIS( 3, "@MOD_ROUND_START_DELAY", round_start_delay, {  "3" 3 "5" 5 "10" 10 "20" 20 "30" 30 "45" 45 "60" 60 "90" 90 "120" 120 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARSTRINGLIST_VIS( 4, "@MOD_ROUND_INSTA", round_insta, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_ZOMBIES_PER_HORDE", zombies_per_horde, { "24" 24 "23" 23 "22" 22 "21" 21 "20" 20 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-
+		CHOICE_DVARFLOATLIST_VIS( 6, "@MOD_SPECIAL_ROUND", next_special_round, { "@MOD_OFF" 0 "4/5" 1 "4" 2 "5" 3 "EVERY ROUND" 4 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
 		
  
 
@@ -635,7 +644,10 @@
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_moon"  ) )
 
-
+		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_TESLA", hud_tesla_on, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
+		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_cod5_factory"  ) )
 
 
 

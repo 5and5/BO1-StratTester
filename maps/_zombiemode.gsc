@@ -1785,6 +1785,7 @@ onPlayerConnect_clientDvars()
 
 	self SetClientDvar("hud_enemy_counter_value", "");
 	self SetClientDvar("hud_sph", "");
+	self setClientDvar("hud_tesla_kills", "");
 	self SetClientDvar("hud_zone_name", "");
 }
 
@@ -1930,11 +1931,26 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
+				self thread hud_tesla_kills();
 				self thread zombies_per_horde();
+				self thread tesla_watcher();
 
 				wait(3);
 				self setblur(0, .1);
 			}
+		}
+	}
+}
+
+tesla_watcher()
+{
+	level.tesla_shots = 0;
+	for ( ;; )
+	{
+		self waittill( "weapon_fired", weapon );
+		if (weapon == "tesla_gun_zm" || weapon == "tesla_gun_upgraded_zm")
+		{
+			level.tesla_shots++;
 		}
 	}
 }
@@ -3538,6 +3554,8 @@ round_spawning()
 		{
 			level.zombie_total--;
 			ai thread round_spawn_failsafe();
+			// lveez - this fixes loads of dogs spawns at first round start on riese
+			level.zombie_spawned = 1;
 			count++; 
 		}
 
@@ -4173,15 +4191,45 @@ round_think()
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
 	// level.zombie_move_speed = 105;
+
+	// lveez - fix special round healths
 	level.dog_health = 1600;
 	level.dog_round_count = 5;
+	level.monkeys_encountered = 4;
+	ai_calculate_health(level.round_number);
+	
 	level.game_started = 1;
-	level.next_dog_round = 666;
-	level.next_monkey_round = 666;
-	level.next_doc_round = 666;
+	// lveez - if don't wait for this flag the next doc rounds gets reset
+	if (level.script == "zombie_pentagon")
+	{
+		flag_wait( "power_on" );
+	}
+
+	// lveez - mixed rounds fix (if level variables become undefined
+	// between restarts this can be removed.)
+	level.zombie_spawned = undefined;
+
+	level.next_special_round = 0;
 
 	for( ;; )
 	{
+		// lveez - override special round if they changed option
+		if (getDvarInt("next_special_round") != level.next_special_round)
+		{
+			level.next_special_round = getDvarInt("next_special_round");
+			override_next_special_round();
+		}
+
+		// lveez - update next special round
+		if (flag("dog_round") || flag("thief_round") || flag("monkey_round"))
+		{
+			override_next_special_round();
+		}
+
+		// lveez - moved notify here so that the dog rounds update
+		level notify( "between_round_over" );
+
+		// get_players()[0] iPrintLn(level.next_dog_round);
 
 		//////////////////////////////////////////
 		//designed by prod DT#36173
@@ -4240,7 +4288,8 @@ round_think()
 		level.current_round_start_time = int(gettime() / 1000);
 
 		//level thread hud_sph();
-
+		level.num_tesla_kills = 0;
+		level.tesla_shots = 0;
 
 		//iprintln("Round " + level.round_number + ": " + level.zombie_vars["zombie_spawn_delay"]);
 
@@ -4264,8 +4313,6 @@ round_think()
 		level chalk_round_over();
 
 		level.round_number++;
-
-		level notify( "between_round_over" );
 	}
 }
 
@@ -7139,15 +7186,15 @@ turn_on_power()
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
-				wait ( 5 );
-				level.next_thief_round = 1;
-
+				flag_set("power_on");
 			}	
 			else if ( level.script == "zombie_cosmodrome" )
 			{
 
 				trig = getent( "use_elec_switch" , "targetname" );
 				trig notify( "trigger" );
+				flag_set( "power_on" );
+				flag_set( "perk_bought" );
 
 				// open up pack a punch
 				upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
@@ -7590,6 +7637,18 @@ hud_sph()
 		level.round_seconds_per_horde = int(current_time / hordes * 100) / 100;
 		self setClientDvar("hud_sph", level.round_seconds_per_horde);
 
+		wait 1;
+	}
+}
+
+hud_tesla_kills()
+{
+	level endon("end_game");
+    level waittill ( "start_of_round" );
+
+	for ( ;; )
+	{
+		self setClientDvar("hud_tesla_kills", level.num_tesla_kills/level.tesla_shots);
 		wait 1;
 	}
 }
@@ -8175,5 +8234,46 @@ zombies_per_horde() {
 			oldZph = zph;
 		}
 		wait(1);
+	}
+}
+
+override_next_special_round()
+{
+	switch (level.next_special_round)
+	{
+		case 1: // 1 => 4/5 rounders like normal
+			level.next_dog_round = level.round_number + randomintrange(3,5);
+			level.next_thief_round = level.round_number + randomintrange(3,5);
+			level.next_monkey_round = level.round_number + randomintrange(3,5);
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 2: // 2 => 4 rounders
+			level.next_dog_round = level.round_number + 3;
+			level.next_thief_round = level.round_number + 3;
+			level.next_monkey_round = level.round_number + 3;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 3: // 3 => 5 rounders
+			level.next_dog_round = level.round_number + 4;
+			level.next_thief_round = level.round_number + 4;
+			level.next_monkey_round =  level.round_number + 4;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 4: // 4 => every round
+			level.next_dog_round = level.round_number;
+			level.next_thief_round = level.round_number;
+			level.next_monkey_round =level.round_number;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		default:
+			level.next_dog_round = 10000;
+			level.next_thief_round = 10000;
+			level.next_monkey_round = 10000;
+			level.prev_thief_round = level.next_thief_round;
+			break;
 	}
 }

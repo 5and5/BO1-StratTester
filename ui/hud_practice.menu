@@ -87,6 +87,23 @@
 			visible				when(dvarInt(hud_sph_on) > 0)
 			decoration
 		}
+
+		itemDef 
+		{
+			name				"tesla_text"
+			type				ITEM_TYPE_TEXT
+			rect 				4 2 0 0		
+			exp					rect Y( 2 + (dvarInt(hud_enemy_counter_on)) * 15 + (dvarInt(hud_sph_on)) * 15 )
+			exp 				text(locString("MOD_TESLA") + dvarString("hud_tesla_kills"))		//multiple exp's (expressions?) can be defined for different functions
+			forecolor			1 1 1 1
+			textscale			TEXTSIZE_DEFAULT
+			textstyle			ITEM_TEXTSTYLE_SHADOWED
+			textfont			UI_FONT_NORMAL
+			textalign			ITEM_ALIGN_TOP_LEFT
+			visible				when(dvarInt(hud_tesla_on) > 0)
+			decoration
+		}
+		
 	}
 
 	menuDef 
