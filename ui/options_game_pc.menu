@@ -175,6 +175,9 @@
 			if(dvarString(drawprint) == "") {
 				setDvar drawsprint 0;
 			}
+			if(dvarString(hud_zone_health_bar) == "") {
+				setDvar hud_zone_health_bar "none";
+			}
 			
 			LOCAL_CLOSE_ALL_BUT( options_game )
 			
