@@ -4,7 +4,22 @@ This is a mod for creating, testing, and learning new strategies in Call of Duty
 
 This mod is meant to be an all-encompassing mod, with loads of features and options to give yourself the loadout and map setup you need to practice your strategies.
 
-## Download Common Zombie Patch (No longer maintained)
+## Installing
+
+For those who prefer a video guide, [click here](https://www.youtube.com/watch?v=rTJs7evNRXo&ab_channel=TTS4life)
+
+1. Install the latest version of [Game_Mod](https://github.com/Nukem9/LinkerMod/releases) for BO1 and install by dragging the zip file's contents into your root folder of BO1 (where the executable is). **Note: This will place and `iw_43.iwd` into your `main` folder, potentially overwriting your custom camos. Rename your `iw_43.iwd` to `iw_99.iwd` to not overwrite your camos!**
+1. Head to the [Releases](https://github.com/5and5/BO1-StratTester/releases) page and download the latest version's zip file
+1. Create a `mods` folder in the root folder of your BO1 game if not already created
+1. drag the `Strat Tester` folder into your `mods` folder. 
+1. Launch Black Ops using the `BO_Mods.bat` file in the root folder of your BO1 (comes with installing Game_Mod)
+    - If you see the `MODS` menu option on the TV, you successfully installed Game_Mod 4 steps ago, otherwise, review the installation process and that you booted the game using the `.bat` file. Launching through Steam does not give you the `MODS` option on the TV.
+1. Select `MODS` on the TV, and click on `Strat Tester`
+1. Enjoy! Everytime you want to strat tester you will need to start from Step 5. Installing new versions will have you start at step 2. 
+
+## Download Common Zombie Patch Version
+### _**Note this version is not actively maintained and missing features compared to the latest version.**_
+
 [Download](https://www.mediafire.com/file/dn8iuwts71l42c6/BO1-Strat_Tester_Patch.zip/file)
 
 ## Current Features:
@@ -57,6 +72,7 @@ This mod is meant to be an all-encompassing mod, with loads of features and opti
 - Open doors on start (this tries to keep some common high-round doors closed, so you can leave this on unless you're testing a certain strategy that requires a more unique door setup)
 - Destroy all barriers on spawn 
 - Give weapons needed to perform a high-round game (typically the wonder-weapon, tactical grenade, and other weapons typically used in a high round game).
+- Show average amount of zombies killed by each Wunderwaffe shot (Der Riese only)
 
 ### Map Options
 - Set specific windows on Five
@@ -72,25 +88,27 @@ Missing a crucial feature for you to get better at the game? We are open to requ
 
 To contribute to the project, you need to first clone the repo. (If you are on Windows you need somme form of git client, such as GitHub Desktop)
 
-First, you'll want to fork and/or clone the project. 
+First, you'll want to fork and then clone the project. 
 
-```git clone https://github.com/5and5/BO1-Strat_Tester.git```
+```git clone https://github.com/<your-github-user>/BO1-Strat_Tester.git```
 
 Then, you need to make sure you have game_mod installed on your BO1 client. Put the BO1-Strat_Tester folder into a folder called `mods` in the root of your BO1 directory.
 
-You may also need to compile the mod in order to see some of the menu changes. To do so, download the BO1 Mod Tools in the Tools section of your Steam Library.
+You can edit the code to implement whatever featuers you desire using your favorite editor, then testing the changes by executing `/map_restart`. Every time that command is executed, all scripts get re-compiled. For UI changes to take effect, you will need to build the FastFile for the mod. To do so, download the BO1 Mod Tools in the Tools section of your Steam Library. In the mod builder tab. Make sure the drop down menu has Strat Tester selected. Then, in Build Mod, check `Link FastFile`, then click Build Mod. You will need to reload the mod using the `MODS` option on the TV for changes to appear in the menu (Note: if you are having issues building the mod, make sure `BO1-Strat_Tester` is the name of the folder for the mod.)
 
-When you've made the changes, submit a pull request to the repo to be reviewed.
+When you've made your changes, submit a pull request to the repo to be reviewed/tested.
 
 # Credits
-## Coders
-- TTS4life Programmer, maintainer
-- 5and5 Programmer
-- lveez Programmer
+## Direct Contributors
+- TTS4life 
+
+- 5and5 
+
+- lveez 
+
+- Zi0MiX 
 
 ## Others
-lveez - Initial mod made for practicing strats
-
 Porterico - Initial mod for Five Windows being set
 
 JBleezy - Reimagined/Code references
