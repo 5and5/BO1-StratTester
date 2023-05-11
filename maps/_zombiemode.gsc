@@ -1724,6 +1724,7 @@ onPlayerConnect()
 		player.entity_num = player GetEntityNumber(); 
 		player thread onPlayerSpawned(); 
 		player thread onPlayerDisconnect(); 
+		player thread player_perk_monitor();
 		player thread player_revive_monitor();
 
 		player freezecontrols( true );
@@ -2292,6 +2293,31 @@ player_prevent_damage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	return false;
 }
 
+/* Keep track of perks a player currently has */
+player_perk_monitor()
+{
+	level endon("end_game");
+	self endon("disconnect");
+
+	perks_on_map = get_perk_list();
+
+	while (true)
+	{
+		if (self maps\_laststand::player_is_in_laststand())
+			self waittill("finished_awarding_perks");
+
+		for (p = 0; p < perks_on_map.size; p++)
+		{
+			if (self hasperk(perks_on_map[p]))
+				self.perk_controller[perks_on_map[p]] = true;
+			else
+				self.perk_controller[perks_on_map[p]] = false;
+		}
+
+		wait 0.1;
+	}
+}
+
 //
 //	Keep track of players going down and getting revived
 player_revive_monitor()
@@ -2307,7 +2333,7 @@ player_revive_monitor()
         
 		bbPrint( "zombie_playerdeaths: round %d playername %s deathtype revived x %f y %f z %f", level.round_number, self.playername, self.origin );
 
-		self thread give_player_perks();
+		self thread give_player_perks(true);
 
 		//self laststand_giveback_player_perks();
 
@@ -7483,17 +7509,25 @@ give_player_weapons()
 	}
 }
 
-give_player_perks()
+give_player_perks(player_revived)
 {	
-	if(getdvar("set_perks") == "none") {
-		return;
+	perks = get_perk_list();
+
+	if(getdvar("set_perks") == "none") 
+	{
+		if (is_true(player_revived))
+		{
+			for (p = 0; p < perks.size; p++)
+			{
+				if (is_true(self.perk_controller[perks[p]]))
+					self maps\_zombiemode_perks::give_perk(perks[p], true);
+			}
+		}
 	}
 	else if(getDvar("set_perks") == "all") {
-		perks = get_perk_list();
 		for(i = 0; i < perks.size; i++) {
 			self maps\_zombiemode_perks::give_perk( perks[i], true );
 		}
-		return;
 	}
 	//set to "setup"
 	else {
@@ -7588,7 +7622,7 @@ give_player_perks()
 		}
 	}
 
-	
+	self notify("finished_awarding_perks");
 }
 
 get_perk_list() {
