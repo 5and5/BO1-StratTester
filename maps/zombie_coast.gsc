@@ -203,6 +203,9 @@ main()
 	
 	//level thread rock_wall_barricade();
 
+	level.strattester_tactical_dolls = maps\_zombiemode_weap_nesting_dolls::player_give_nesting_dolls;
+	level.strattester_tactical_fallback = level.strattester_tactical_dolls;
+
 	// KEEP AT END!!! DCS
 	if(GetDvarInt( #"zombie_unlock_all") > 0)
 	{
