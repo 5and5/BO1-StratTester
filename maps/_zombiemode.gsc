@@ -1735,7 +1735,7 @@ onPlayerConnect()
 
 		player thread watchTakenDamage();
 
-		player maps\_strattester_player::spawn_strattester_player();
+		player thread maps\_strattester_player::spawn_strattester_player();
 
 		player.score = 0; 
 		player.score_total = player.score; 

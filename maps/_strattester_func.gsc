@@ -9,7 +9,8 @@ stub()
 debug_print(content)
 {
     debug_mode = true;
-    iPrintLn("DEBUG: " + content);
+    if (debug_mode)
+        iPrintLn("DEBUG: " + content);
 }
 
 initialize_weapon_dvars_for_player(wpn_array)
@@ -43,20 +44,6 @@ get_weapon_settings(wpn_array)
         /* Save weapon */
         weapon_settings[wpn_array[i]] = weapon;
     }
-
-    debug_print("tact: " + weapon_settings["tact"]);
-
-    /* Handle tactical weapons separately */
-    if (isDefined(weapon_settings["tact"]))
-    {
-        options = array("0", "1", "2", "3", "4");
-        if (!is_in_array(options, weapon_settings["tact"]))
-            weapon_settings["tact"] = "666";
-        weapon_settings["tact"] = int(weapon_settings["tact"]);
-        weapon_settings["tact"] = get_tactical_pointer(weapon_settings["tact"]);
-    }
-    else
-        weapon_settings["tact"] = get_tactical_pointer(666);
 
     return weapon_settings;
 }
@@ -104,6 +91,18 @@ get_weapon_default(array_index)
     }
 }
 
+set_tacticals(tactical_id)
+{
+    level endon("end_game");
+    self endon("disconnect");
+
+	level waittill("fade_introblack");
+    options = array("0", "1", "2", "3", "4");
+    if (!is_in_array(options, tactical_id))
+        tactical_id = "666";
+    self.strattester.tactical = get_tactical_pointer(int(tactical_id));
+}
+
 get_tactical_pointer(tactical_id)
 {
     /* IDS:
@@ -112,7 +111,8 @@ get_tactical_pointer(tactical_id)
         3 - Dolls
         4 - QED
     */
-    debug_print("tactical pointer of id " + tactical_id);
+    debug_print("tactical pointer of id " + tactical_id + " isint=" + !isString(tactical_id));
+
     if (tactical_id == 0)
         return ::stub;
     if (isDefined(level.strattester_tactical_black_hole) && tactical_id == 2)
@@ -124,6 +124,7 @@ get_tactical_pointer(tactical_id)
     /* This will trigger in case wrong ID is used but map has no monkeys */
     if (isDefined(level.strattester_tactical_fallback))
         return level.strattester_tactical_fallback;
+    debug_print("all_failed");
     return maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey;
 }
 
@@ -159,4 +160,14 @@ strattester_give_weapon(weapon)
         self giveWeapon(weapon);
 
     self giveMaxAmmo(weapon);
+}
+
+strattester_give_tacticals(func)
+{
+    level endon("end_game");
+    self endon("disconnect");
+
+    level waittill("start_of_round");
+    debug_print("awarding tacticals");
+    self [[func]]();
 }

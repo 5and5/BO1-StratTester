@@ -23,7 +23,7 @@ give_player_weapons()
 	self strattester_give_weapon(self.strattester.weapon2);
 	if (self hasperk("specialty_additionalprimaryweapon"))
 		self strattester_give_weapon(self.strattester.weapon3);
-	self [[self.strattester.tactical]]();
+	self thread strattester_give_tacticals(self.strattester.tactical);
 
     self switchToWeapon(self.strattester.weapon1);
 }

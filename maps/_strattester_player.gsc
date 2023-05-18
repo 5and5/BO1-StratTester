@@ -26,6 +26,6 @@ spawn_strattester_player()
     else
         self.strattester.weapon3 = get_weapon_default(2);
 
-    self.strattester.tactical = weapons_array["tact"];
+    self thread set_tacticals(weapons_array["tact"]);
 }
 
