@@ -1006,6 +1006,7 @@ init_dvars()
 	/* Remove that once implemented!!! */
 	setDvar("st_award_melee", "1");
 	setDvar("st_award_mines", "1");
+	setDvar("st_award_tacticals", "1");
 }
 
 
