@@ -96,7 +96,6 @@ set_tacticals(tactical_id)
     level endon("end_game");
     self endon("disconnect");
 
-	level waittill("fade_introblack");
     options = array("0", "1", "2", "3", "4");
     if (!is_in_array(options, tactical_id))
         tactical_id = "666";
