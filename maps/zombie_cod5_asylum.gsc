@@ -10,7 +10,9 @@
 
 main()
 {
-	maps\zombie_cod5_asylum_fx::main();	
+	maps\zombie_cod5_asylum_fx::main();
+
+	level thread maps\zombie_cod5_asylum_strattester::strattester_init();
 
 	// viewmodel arms for the level
 	PreCacheModel( "viewmodel_usa_pow_arms" ); // Dempsey
@@ -123,8 +125,6 @@ main()
 	maps\createart\zombie_cod5_asylum_art::main();
 
 	level.has_pack_a_punch = false;
-
-	level.strattester_mine_pointer = maps\_zombiemode_betty::bouncing_betty_setup;
 }
 
 //*****************************************************************************

@@ -10,6 +10,8 @@ main()
 {
 	// This has to be first for CreateFX -- Dale
 	maps\zombie_cod5_factory_fx::main();
+
+	level thread zombie_cod5_factory::strattester_init();
 	
 	// viewmodel arms for the level
 	PreCacheModel( "viewmodel_usa_pow_arms" ); // Dempsey
@@ -181,8 +183,6 @@ main()
 	
 	//DCS: get betties working.
 	maps\_zombiemode_betty::init();	
-	
-	level.strattester_mine_pointer = maps\_zombiemode_betty::bouncing_betty_setup;
 }
 
 precache_player_model_override()

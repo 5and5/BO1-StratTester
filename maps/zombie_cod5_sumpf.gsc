@@ -13,6 +13,8 @@ main()
 	//Needs to be first for CreateFX
 	maps\zombie_cod5_sumpf_fx::main();
 
+	level thread maps\zombie_cod5_sumpf_strattester::strattester_init();
+
 	// viewmodel arms for the level
 	PreCacheModel( "viewmodel_usa_pow_arms" ); // Dempsey
 	PreCacheModel( "viewmodel_rus_prisoner_arms" ); // Nikolai
@@ -116,8 +118,6 @@ main()
 	SetSavedDvar( "r_lightGridContrast", .1 );
 	
 	VisionSetNaked("zombie_sumpf", 0);
-
-	level.strattester_mine_pointer = maps\_zombiemode_betty::bouncing_betty_setup;
 }
 
 setup_water_physics()

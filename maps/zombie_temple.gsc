@@ -19,6 +19,8 @@ main()
 	
 	level thread maps\zombie_temple_ffotd::main_start();
 
+	level thread maps\zombie_temple_strattester::strattester_init();
+
 	// set excludes on chests so we can have a random start
 	level.random_pandora_box_start = true;
 
@@ -158,8 +160,6 @@ main()
 	level thread maps\zombie_temple_ffotd::main_end();
 	
 	level thread maps\zombie_temple_sq::start_temple_sidequest();
-
-	level.strattester_mine_pointer = maps\_zombiemode_spikemore::spikemore_setup;
 }
 
 init_client_flags()

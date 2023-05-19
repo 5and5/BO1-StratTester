@@ -8,6 +8,8 @@ main()
 	// first for createFX (why?)
 	maps\zombie_cod5_prototype_fx::main();
 
+	level thread zombie_cod5_prototype_strattester::strattester_init();
+
 	// viewmodel arms for the level
 	PreCacheModel( "viewmodel_usa_pow_arms" ); // Dempsey
 	PreCacheModel( "viewmodel_rus_prisoner_arms" ); // Nikolai
@@ -79,8 +81,6 @@ main()
 	level thread pistol_rank_setup();
 
 	level.has_pack_a_punch = false;
-
-	level.strattester_mine_pointer = maps\_strattester_func::stub;
 }
 
 precache_player_model_override()
