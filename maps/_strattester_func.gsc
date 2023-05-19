@@ -38,7 +38,7 @@ get_weapon_settings(wpn_array)
         /* Pull weapon from settings */
 
         /* Pull default weapons */
-        if (weapon == "")
+        if (weapon == "" || (!isDefined(level.zombie_weapons[weapon]) && !maps\_zombiemode_weapons::is_weapon_upgraded(weapon)))
             weapon = get_weapon_default(i);
 
         /* Save weapon */
@@ -46,6 +46,17 @@ get_weapon_settings(wpn_array)
     }
 
     return weapon_settings;
+}
+
+get_tactical_setting()
+{
+    dvar = "st_" + self.entity_num + "_tact";
+    if (is_in_array(array("0", "1", "2", "3", "4"), getDvar(dvar)))
+        tactical_id = getDvar(dvar);
+    else
+        tactical_id = get_weapon_default(3);
+
+    return int(tactical_id);
 }
 
 get_weapon_default(array_index)
@@ -84,22 +95,11 @@ get_weapon_default(array_index)
             break;
         default:
             a = array("", "", "", "0");
-
-        if (isDefined(array_index) && isDefined(a[array_index]))
-            return a[array_index];
-        return "";
     }
-}
 
-set_tacticals(tactical_id)
-{
-    level endon("end_game");
-    self endon("disconnect");
-
-    options = array("0", "1", "2", "3", "4");
-    if (!is_in_array(options, tactical_id))
-        tactical_id = "666";
-    self.strattester.tactical = get_tactical_pointer(int(tactical_id));
+    if (isDefined(array_index) && isDefined(a[array_index]))
+        return a[array_index];
+    return "";
 }
 
 get_tactical_pointer(tactical_id)
@@ -110,7 +110,8 @@ get_tactical_pointer(tactical_id)
         3 - Dolls
         4 - QED
     */
-    debug_print("tactical pointer of id " + tactical_id + " isint=" + !isString(tactical_id));
+
+    // debug_print("tactical pointer of id " + tactical_id + " isint=" + !isString(tactical_id));
 
     if (tactical_id == 0)
         return ::stub;
@@ -123,7 +124,6 @@ get_tactical_pointer(tactical_id)
     /* This will trigger in case wrong ID is used but map has no monkeys */
     if (isDefined(level.strattester_tactical_fallback))
         return level.strattester_tactical_fallback;
-    debug_print("all_failed");
     return maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey;
 }
 
@@ -167,6 +167,6 @@ strattester_give_tacticals(func)
     self endon("disconnect");
 
     level waittill("start_of_round");
-    debug_print("awarding tacticals");
+    // debug_print("awarding tacticals");
     self [[func]]();
 }
