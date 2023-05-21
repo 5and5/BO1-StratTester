@@ -4200,7 +4200,7 @@ round_think()
 	
 	level.game_started = 1;
 	// lveez - if don't wait for this flag the next doc rounds gets reset
-	if (level.script == "zombie_pentagon")
+	if (level.script == "zombie_pentagon" && getDvarInt( "turn_power_on" ) == 1)
 	{
 		flag_wait( "power_on" );
 	}
