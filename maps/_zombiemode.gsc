@@ -4211,6 +4211,8 @@ round_think()
 
 	level.next_special_round = 0;
 
+	override_next_special_round();
+
 	for( ;; )
 	{
 		// lveez - override special round if they changed option
