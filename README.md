@@ -18,9 +18,9 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 1. Enjoy! Everytime you want to strat tester you will need to start from Step 5. Installing new versions will have you start at step 2. 
 
 ## Download Common Zombie Patch Version
-### _**Note this version is not actively maintained and missing features compared to the latest version.**_
+### _**Note this may not contain features on the latest version.**_
 
-[Download](https://www.mediafire.com/file/dn8iuwts71l42c6/BO1-Strat_Tester_Patch.zip/file)
+[Download Version 2.3](https://www.mediafire.com/file/dn8iuwts71l42c6/BO1-Strat_Tester_Patch.zip/file)
 
 ## Current Features:
 
@@ -31,6 +31,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Remove Perk Limit
 - Perks reserved on down
 - Spawn in with some, all, or no perks
+- Remove out of playable area death barriers 
 
 ### HUD
 - Round Timer
@@ -40,7 +41,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Current Zone
 - Sprint meter
     - Sprint meter colors can be customized using the following commands or through the config (if you use the console commands, they are automatically written to config)
-        - `/cg_sprintMeterDisabledColor 0.8 0.1 0.1 0.2` - Color of the meter when you deplete your sprint and are recharing your sprint.
+        - `/cg_sprintMeterDisabledColor 0.8 0.1 0.1 0.2` - Color of the meter when you deplete your sprint and are recharging your sprint.
         - `/cg_sprintMeterEmptyColor 0.7 0.5 -.2 0.8` - Color the bar when you are nearly out of sprint  
         - `/cg_sprintMeterFullColor 0.8 0.8 0.8 0.8` - Color of the bar typically
         - `/hud_fade_sprint 1.7` - Time it takes for the sprint meter to fade.
@@ -81,6 +82,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Disable Astro
 - Disable George Romero
 - Disable nova crawlers on Kino, Moon & Five
+- Disable special zombies on Shang
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 
