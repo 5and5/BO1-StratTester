@@ -10,7 +10,7 @@
 main()
 {
 
-	level.strat_tester_version = "2.2.1";
+	level.strat_tester_version = "2.3";
 	setDvar("strat_tester_version", level.strat_tester_version);
 
 	level.player_too_many_weapons_monitor = false;
@@ -8159,7 +8159,10 @@ disable_powerup()
 }
 
 disable_special_zombies()
-{	
+{
+	if(getDvarInt("shang_special_zombies") == 1)
+		return;
+
 	flag_wait( "all_players_spawned" );
 	if( level.script == "zombie_temple" )
 	{	

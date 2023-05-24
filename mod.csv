@@ -6,20 +6,23 @@ menufile,ui/hud_zombie.txt
 
 //GENERAL SCRITPS
 rawfile,maps/_zombiemode.gsc
-rawfile,maps/_zombiemode_weapons.gsc
+rawfile,maps/_zombiemode_ai_director.gsc
+rawfile,maps/_zombiemode_ai_dogs.gsc
+rawfile,maps/_zombiemode_blockers.gsc
+rawfile,maps/_zombiemode_equipment.gsc
 rawfile,maps/_zombiemode_perks.gsc
 rawfile,maps/_zombiemode_powerups.gsc
-rawfile,maps/_zombiemode_zone_manager.gsc
-rawfile,maps/_zombiemode_traps.gsc
 rawfile,maps/_zombiemode_spawner.gsc
-rawfile,maps/_weaponobjects.gsc
-rawfile,maps/_zombiemode_ai_dogs.gsc
-rawfile,maps/_zombiemode_ai_faller.gsc
-rawfile,maps/_zombiemode_spawner.gsc
-rawfile,maps/_zombiemode_weap_nesting_dolls.gsc
 rawfile,maps/_zombiemode_weap_black_hole_bomb.gsc
-rawfile,maps/_zombiemode_weap_tesla.gsc
+rawfile,maps/_zombiemode_weap_nesting_dolls.gsc
+rawfile,maps/_zombiemode_weapons.gsc
+rawfile,maps/_zombiemode_zone_manager.gsc
 
+//MAP SPECIFIC SCRITPS
+rawfile,maps/zombie_coast.gsc
+rawfile,maps/zombie_coast_water.gsc
+rawfile,maps/zombie_moon.gsc
+rawfile,maps/zombie_moon_digger.gsc
 
 //CLIENT SCRITPS
 rawfile,clientscripts/_zombiemode_ffotd.csc
