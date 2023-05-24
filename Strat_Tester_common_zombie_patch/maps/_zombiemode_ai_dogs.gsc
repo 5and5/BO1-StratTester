@@ -463,8 +463,11 @@ dog_round_tracker()
 		if ( level.round_number == level.next_dog_round )
 		{
 			level.music_round_override = true;
-			old_spawn_func = level.round_spawn_func;
-			old_wait_func  = level.round_wait_func;
+			if (!flag("dog_round"))
+			{
+				old_spawn_func = level.round_spawn_func;
+				old_wait_func  = level.round_wait_func;
+			}
 			dog_round_start();
 			level.round_spawn_func = ::dog_round_spawning;
 
@@ -675,6 +678,8 @@ dog_death()
 {
 	self waittill( "death" );
 
+	level.global_zombies_killed_round++;
+
 	if( get_enemy_count() == 0 && level.zombie_total == 0 )
 	{
 
@@ -854,6 +859,13 @@ dog_clip_monitor()
 special_dog_spawn( spawners, num_to_spawn )
 {
 	dogs = GetAISpeciesArray( "all", "zombie_dog" );
+
+	// lveez - this function gets called from somewhere outside of round logic (not sure where)
+	// so fix goes in here to stop spawns before round starts on der riese
+	if (!IsDefined(level.zombie_spawned))
+	{
+		return;
+	}
 
 	if ( IsDefined( dogs ) && dogs.size >= 9 )
 	{

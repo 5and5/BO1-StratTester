@@ -81,7 +81,6 @@ init_equipment_upgrade()
 get_equipment_hint( equipment_name )
 {
 	AssertEx( IsDefined( level.zombie_equipment[equipment_name] ), equipment_name + " was not included or is not registered with the equipment system." );
-
 	return level.zombie_equipment[equipment_name].hint;
 }
 

@@ -49,10 +49,12 @@ init()
 	level._effect["powerup_grabbed_caution"]		= LoadFX( "misc/fx_zombie_powerup_caution_grab" );
 	level._effect["powerup_grabbed_wave_caution"] 	= loadfx( "misc/fx_zombie_powerup_caution_wave" );
 
-	if( level.mutators["mutator_noPowerups"] )
-	{
-		return;
-	}
+	//TTS - Prevent drops from not being initialized
+	// if drops disabled at map load
+	// if( level.mutators["mutator_noPowerups"] )
+	// {
+	// 	return;
+	// }
 	
 	init_powerups();
 
@@ -391,7 +393,7 @@ get_valid_powerup()
 	while( 1 )
 	{
 		// Carpenter needs 5 destroyed windows
-		if( powerup == "carpenter" && get_num_window_destroyed() < 5 )
+		if( powerup == "carpenter" && ( get_num_window_destroyed() < 5 || getDvarInt("disable_carpenter") == 1) )
 		{	
 			powerup = get_next_powerup();
 		}
@@ -399,7 +401,8 @@ get_valid_powerup()
 		// Don't bring up fire_sale if the box hasn't moved or it it's already on
 		else if( powerup == "fire_sale" && 
 				 ( level.zombie_vars["zombie_powerup_fire_sale_on"] == true || 
-				   level.chest_moves < 1 ) )
+				   level.chest_moves < 1 ||
+				   getDvarInt("disable_firesale") == 1) )
 		{
 			powerup = get_next_powerup();
 		}
@@ -414,7 +417,7 @@ get_valid_powerup()
 		{
 			powerup = get_next_powerup();
 		}
-		else if( powerup == "minigun" && minigun_no_drop() ) // don't drop unless life bought in solo, or power has been turned on
+		else if( powerup == "minigun" && ( minigun_no_drop() || getDvarInt("disable_death_machine") ) ) // don't drop unless life bought in solo, or power has been turned on
 		{			
 			powerup = get_next_powerup();
 		}
@@ -523,6 +526,7 @@ get_num_window_destroyed()
 watch_for_drop()
 {
 	flag_wait( "begin_spawning" );
+	level.last_score_drop = 0;
 
 	players = get_players();
 	score_to_drop = ( players.size * level.zombie_vars["zombie_score_start_"+players.size+"p"] ) + level.zombie_vars["zombie_powerup_drop_increment"];
@@ -543,6 +547,7 @@ watch_for_drop()
 		if (curr_total_score > score_to_drop )
 		{
 			level.zombie_vars["zombie_powerup_drop_increment"] *= 1.14;
+			level.last_score_drop = score_to_drop;
 			score_to_drop = curr_total_score + level.zombie_vars["zombie_powerup_drop_increment"];
 			level.zombie_vars["zombie_drop_item"] = 1;
 		}
@@ -597,6 +602,7 @@ include_zombie_powerup( powerup_name )
 {
 	if( "1" == GetDvar( #"mutator_noPowerups") )
 	{
+		iprintln("Powerup " + powerup_name + " not added to list");
 		return;
 	}
 	if( !IsDefined( level.zombie_include_powerups ) )
@@ -629,6 +635,7 @@ powerup_drop(drop_point)
 	
 	if( !isDefined(level.zombie_include_powerups) || level.zombie_include_powerups.size == 0 )
 	{
+		iprintln("Strat Test Error: Unable to drop powerup, include powerup size is 0");
 		return;
 	}
 
@@ -1856,7 +1863,11 @@ insta_kill_powerup( drop_item )
 
 check_for_instakill( player, mod, hit_location )
 {
-	if( level.mutators["mutator_noPowerups"] )
+	/* Check for `personal_instakill`, that var is only used for humangun, do not leave the function if it's true
+	There should not be issues with instakill working while someone has been shot with humangun, as the check does the verification per player, and also with the mutator we're not going to be getting an insta in the first place
+	~ Zi0 02/2023 */
+
+	if( level.mutators["mutator_noPowerups"] && !is_true( player.personal_instakill ) )
 	{
 		return;
 	}
@@ -2861,35 +2872,14 @@ tesla_powerup_active()
 //
 print_powerup_drop( powerup, type )
 {
-	/#
-		if( !IsDefined( level.powerup_drop_time ) )
-		{
-			level.powerup_drop_time = 0;
-			level.powerup_random_count = 0;
-			level.powerup_score_count = 0;
-		}
-
-		time = ( GetTime() - level.powerup_drop_time ) * 0.001;
-		level.powerup_drop_time = GetTime();
-
-		if( type == "random" )
-		{
-			level.powerup_random_count++;
-		}
-		else
-		{
-			level.powerup_score_count++;
-		}
-
-		println( "========== POWER UP DROPPED ==========" );
-		println( "DROPPED: " + powerup );
-		println( "HOW IT DROPPED: " + type );
-		println( "--------------------" );
-		println( "Drop Time: " + time );
-		println( "Random Powerup Count: " + level.powerup_random_count );
-		println( "Random Powerup Count: " + level.powerup_score_count );
-		println( "======================================" );
-#/
+	// if( type == "random" )
+	// {
+	// 	iprintln(powerup + " was a random Drop"); 
+	// }
+	// else
+	// {
+	// 	iprintln(powerup + " was because you hit point threshold " + level.last_score_drop);
+	// }
 }
 
 

@@ -527,7 +527,7 @@ director_zombie_manager()
 {
 	// check for one start boss spawner before anything else
 	start_boss = getent( "start_boss_spawner", "script_noteworthy" );
-	if ( isDefined( start_boss ) )
+	if ( isDefined( start_boss ) && getDvarInt("director_active") )
 	{
 		while ( true )
 		{
@@ -548,7 +548,9 @@ director_zombie_manager()
 			spawner = director_zombie_pick_best_spawner();
 			if( isDefined( spawner ) )
 			{
-				spawner director_zombie_spawn();
+				if(getDvarInt("director_active")) {
+					spawner director_zombie_spawn();
+				}
 			}
 			wait( 10 );
 		}
@@ -768,6 +770,7 @@ director_watch_damage()
 	self notify( "director_exit" );
 
 	self.defeated = true;
+	self.solo_last_stand = false;
 
 	self notify( "disable_activation" );
 	self notify( "disable_buff" );
@@ -800,8 +803,7 @@ director_watch_damage()
 		self waittill_notify_or_timeout( "stumble_done", 7.2 );
 	}
 
-	//if ( isdefined( level.director_should_drop_special_powerup ) && [[level.director_should_drop_special_powerup]]() )
-	if(true)
+	if ( isdefined( level.director_should_drop_special_powerup ) && [[level.director_should_drop_special_powerup]]() )
 	{
 		level thread maps\_zombiemode_powerups::specific_powerup_drop( "tesla", self.origin );
 	}
@@ -996,6 +998,11 @@ director_zombie_update()
 			wait_network_frame();
 			continue;
 		}
+		else if ( is_true( self.solo_last_stand ) )
+		{
+			wait_network_frame();
+			continue;
+		}
 		else if ( !is_true( self.following_player ) )
 		{
 			self thread maps\_zombiemode_spawner::find_flesh();
@@ -1147,6 +1154,13 @@ director_zombie_choose_run()
 			self waittill_notify_or_timeout( "transition_done", 1.74 );
 			//self waittill( "transition_done" );
 			self.sprint2walk = undefined;
+
+			if ( is_true( self.director_zombified ) )
+			{
+				self setmodel( "c_zom_george_romero_light_fb" );
+				self.director_zombified = undefined;
+				self notify( "sprint2walk_done" );
+			}
 		}
 
 		if( self.is_activated )
@@ -1474,7 +1488,14 @@ director_zombie_check_for_buff()
 
 		if ( is_true( self.is_transition ) )
 		{
-			wait( 1 );
+			wait( 2 );
+			continue;
+		}
+
+		if ( is_true( self.is_traversing ) )
+		{
+			self waittill( "zombie_end_traverse" );
+			wait( 2 );
 			continue;
 		}
 
@@ -1875,6 +1896,7 @@ director_sprint2walk()
 
 director_sprint2walk_watcher( animname )
 {
+	self endon( "sprint2walk_done" );
 	self endon( "death" );
 
 	self waittillmatch( animname, "swap_fx" );
@@ -2033,6 +2055,11 @@ director_zombie_sprint_watcher( animname )
 	self endon( "death" );
 
 	self waittillmatch( animname, "scream_a" );
+
+	if ( level.round_number < 6 )
+	{
+		return;
+	}
 	
 	origin = self GetEye();
 	zombies = get_array_of_closest( origin, GetAiSpeciesArray( "axis", "all" ), undefined, undefined, level.director_speed_buff_range );
@@ -2229,7 +2256,7 @@ director_nuke_damage()
 		return;
 	}
 
-	if ( is_true( self.leaving_level ) )
+	if ( is_true( self.leaving_level ) || is_true( self.entering_level ) || is_true( self.defeated ) )
 	{
 		return;
 	}
@@ -2705,6 +2732,18 @@ director_calmed( delay, humangun )
 		self.is_activated = false;
 		self notify( "director_calmed" );
 		
+		if ( is_true( humangun ) )
+		{
+			if ( is_true( self.performing_activation ) )
+			{
+				self.performing_activation = false;
+			}
+
+			if ( is_true( self.ground_hit ) )
+			{
+				self.ground_hit = false;
+			}
+		}
 		
 		if ( !is_true( self.in_water ) )
 		{
@@ -2775,6 +2814,7 @@ director_melee_anim( attack_anim )
 		time = getAnimLength( attack_anim );
 		wait( time );
 		self.is_melee = undefined;
+		self.failsafe = 0;
 	}
 }
 
@@ -2857,20 +2897,34 @@ director_non_attacker( damage, weapon )
 }
 
 //-----------------------------------------------------------------------------------------------
+// clear the flag in case animscripted is ever interrupted
+//-----------------------------------------------------------------------------------------------
+director_animscripted_timeout( time )
+{
+	self endon( "death" );
+
+	wait_network_frame();
+	wait( time );
+	self.finish_anim = undefined;
+}
+
+//-----------------------------------------------------------------------------------------------
 // plays a one off anim
 //-----------------------------------------------------------------------------------------------
 director_animscripted( director_anim, director_notify, finish_anim )
 {
 	if ( !is_true( self.finish_anim ) )
 	{
+		time = getAnimLength( director_anim );
+
 		if ( is_true( finish_anim ) )
 		{
 			self.finish_anim = true;
+			self thread director_animscripted_timeout( time );
 		}
 
 		self.is_animscripted = true;
 
-		time = getAnimLength( director_anim );
 		self animscripted( director_notify, self.origin, self.angles, director_anim, "normal", %body, 1, 0.1 );
 		wait( time );
 
