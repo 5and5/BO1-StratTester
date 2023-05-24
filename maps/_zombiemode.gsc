@@ -7501,9 +7501,9 @@ give_player_weapons()
 	case "zombie_moon":
 		self takeWeapon( "m1911_zm" );
 		self giveWeapon( "bowie_knife_zm" );
-		self giveWeapon( "microwavegun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "microwavegun_upgraded_zm" ) );
+		self giveWeapon( "microwavegundw_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "microwavegundw_upgraded_zm" ) );
 		self giveWeapon( "m1911_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
-		self switchToWeapon( "microwavegun_upgraded_zm");
+		self switchToWeapon( "microwavegundw_upgraded_zm");
 		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
 		break;
 	}
