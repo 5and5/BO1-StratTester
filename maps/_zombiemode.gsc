@@ -6962,6 +6962,10 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_cod5_sumpf" && doors[i].target == "attic_blocker" )
 					continue;
+				else if ( level.script == "zombie_coast" && doors[i].target == "pf23_auto1" ) // light house to beach
+					continue;
+				else if ( level.script == "zombie_coast" && doors[i].target == "pf23_auto2" ) // flopper to beach
+					continue;
 				else if ( level.script == "zombie_moon" && doors[i].target == "pf1344_auto365") // one window
 					continue;
 				else
@@ -6982,6 +6986,10 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_temple" && debris[i].target == "cave03_to_power_door" )
 					continue;
+				else if ( level.script == "zombie_coast" && debris[i].target == "shipfront_bottom_debris" ) // beach to jug
+					continue;
+				else if ( level.script == "zombie_coast" && debris[i].target == "beach_debris" ) // cave
+					continue;
 				else 
 				{			
 					if ( level.script == "zombie_temple" )
@@ -6999,7 +7007,7 @@ open_doors()
 					moon_doors[i] notify( "trigger", get_players()[0], true );
 				}
 			}
-			
+
 			break;
 		}
 		wait 0.1;
