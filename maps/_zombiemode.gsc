@@ -1909,18 +1909,9 @@ onPlayerSpawned()
 				self thread player_monitor_travel_dist();	
 
 				self thread player_grenade_watcher();
-
 				
-				//Practice Stuff
-				if ( level.script == "zombie_cod5_factory" )
-					self.score = 651000;
-				else if ( level.script == "zombie_temple" )
-					self.score = 505000;
-				else
-					self.score = 500000;
-
+				self.score = 500000;
 				level.chest_moves = 1;
-
 				self thread watch_for_trade();
 
 				//self thread hud_health_bar();
@@ -1935,8 +1926,14 @@ onPlayerSpawned()
 				self thread hud_tesla_kills();
 				self thread zombies_per_horde();
 				self thread tesla_watcher();
+				
+				wait(2);
+				self.score = 500000;
+				if ( level.script == "zombie_cod5_factory" )
+					self.score = 650000;
 
-				wait(3);
+				wait(1);
+					
 				self setblur(0, .1);
 			}
 		}
