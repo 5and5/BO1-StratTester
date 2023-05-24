@@ -7483,7 +7483,9 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_zm" );
 		self switchToWeapon( "thundergun_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
-			break;
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
+		break;
 
 	case "zombie_pentagon":
 		self takeWeapon( "m1911_zm" );
@@ -7492,6 +7494,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self switchToWeapon( "crossbow_explosive_upgraded_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;	
 
 	case "zombie_cosmodrome":
@@ -7500,6 +7504,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self switchToWeapon( "thundergun_upgraded_zm");
 		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;
 
 	case "zombie_coast":
@@ -7509,6 +7515,8 @@ give_player_weapons()
 		self switchToWeapon( "sniper_explosive_upgraded_zm");
 		//self giveWeapon( "ray_gun_upgraded_zm", 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self maps\_zombiemode_weap_nesting_dolls::player_give_nesting_dolls();
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;
 
 	case "zombie_temple":
