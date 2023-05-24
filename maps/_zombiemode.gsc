@@ -6962,6 +6962,8 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_cod5_sumpf" && doors[i].target == "attic_blocker" )
 					continue;
+				else if ( level.script == "zombie_moon" && doors[i].target == "pf1344_auto365") // one window
+					continue;
 				else
 				{
 					doors[i] notify( "trigger", get_players()[0], true );
@@ -6987,7 +6989,17 @@ open_doors()
 					debris[i] notify( "trigger", get_players()[0], true );
 				}
 				wait( 0.05 );
-			}	
+			}
+
+			if( level.script == "zombie_moon" )
+			{
+				moon_doors = getentarray( "zombie_airlock_buy", "targetname" );
+				for(i = 0; i < moon_doors.size; i++)
+				{
+					moon_doors[i] notify( "trigger", get_players()[0], true );
+				}
+			}
+			
 			break;
 		}
 		wait 0.1;
