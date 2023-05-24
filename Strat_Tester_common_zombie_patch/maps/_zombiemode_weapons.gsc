@@ -12,7 +12,9 @@ init()
 //	init_weapon_cabinet();
 	treasure_chest_init();
 	level thread add_limited_tesla_gun();
-	level thread opc();
+	level thread watch_for_new_box_location();
+
+	// level thread get_box_location_names();
 
 	level.movebox = false;
 
@@ -22,47 +24,67 @@ init()
 	level._zombiemode_check_firesale_loc_valid_func = ::default_check_firesale_loc_valid_func;
 }
 
+get_box_location_names() {
+	level endon("death");
+	level waittill("fade_introblack");
+
+	while(1) {
+		iprintln("chests: ");
+		for(i = 0; i < level.chests.size; i++) {
+			iprintln(i + ": " + level.chests[i].script_noteworthy);
+			wait(5);
+		}
+		wait(2);
+	}
+}
+
+watch_for_new_box_location()	// much faster move box location
+{
+	level waittill( "fade_introblack" );
+
+	for ( ; ; )
+	{
+		if (getDvar(level.script + "_boxlocation") != "")
+		{			
+			// iprintln("dvar set to: " + getDvar(level.script + "_boxlocation"));
+			level.chests[level.chest_index] hide_current_chest();
+			level.chest_accessed = 0;
+			choose_next_chest_location();
+			level.chests[level.chest_index] show_chest();
+			level.chests[level.chest_index] hide_rubble();
+			// iprintln("moving box to: " + level.chests[level.chest_index].script_noteworthy);
+		}
+		wait(1);
+	}
+}
+
+choose_next_chest_location()	// sets the correct chest index based off the dvar
+{
+	for (i = 0; i < level.chests.size; i++)
+	{
+		if (level.chests[i].script_noteworthy == GetDvar(level.script + "_boxlocation"))
+		{
+			level.chest_index = i;
+			break;
+		}
+	}
+	SetDvar(level.script + "_boxlocation", "");
+}
+
+hide_current_chest()
+{
+	while ( (self._box_open && isdefined(self._box_open)) || flag("moving_chest_now") )	// wait for box to close before moving it -> could cause bugs if you hide it when open
+	{
+		wait(0.05);
+	}
+	self setvisibletoall();
+	self hide_chest();
+	self show_rubble();
+}
+
 default_check_firesale_loc_valid_func()
 {
 	return true;
-}
-
-opc()
-{
-	for ( ; ; )
-	{
-	level waittill( "connecting", player );
-	player thread check_for_box_location();
-	}
-}
-
-check_for_box_location()
-{
-
-	self endon( "disconnect" );
-
-	self waittill( "spawned_player" );
-	
-
-	for ( ; ; )
-	{
-
-		if (getDvar(#"boxlocation") != "")
-		{
-			// self iPrintLn("moving box");
-			chest = level.chests[ level.chest_index ];	
-			level.movebox = true;
-			chest notify( "trigger" );
-			chest waittill( "chest_accessed" );
-			level.movebox = false;
-			wait(15);
-
-
-		}
-		wait(1);
-
-	}
-
 }
 
 add_zombie_weapon( weapon_name, upgrade_name, hint, cost, weaponVO, weaponVOresp, ammo_cost )
@@ -267,7 +289,7 @@ init_weapons()
 	//Z2 Weapons disabled for now
 	// Pistols
 	add_zombie_weapon( "m1911_zm",					"m1911_upgraded_zm",					&"ZOMBIE_WEAPON_M1911",					50,		"pistol",			"",		undefined );
-	//add_zombie_weapon( "python_zm",					"python_upgraded_zm",					&"ZOMBIE_WEAPON_PYTHON",				2200,	"pistol",			"",		undefined );
+	add_zombie_weapon( "python_zm",					"python_upgraded_zm",					&"ZOMBIE_WEAPON_PYTHON",				2200,	"pistol",			"",		undefined );
 	add_zombie_weapon( "cz75_zm",					"cz75_upgraded_zm",						&"ZOMBIE_WEAPON_CZ75",					50,		"pistol",			"",		undefined );
 
 	//	Weapons - SMGs
@@ -279,7 +301,7 @@ init_weapons()
 	add_zombie_weapon( "spectre_zm",				"spectre_upgraded_zm",					&"ZOMBIE_WEAPON_SPECTRE",				50,		"smg",				"",		undefined );
 
 	//	Weapons - Dual Wield
-	//add_zombie_weapon( "cz75dw_zm",					"cz75dw_upgraded_zm",					&"ZOMBIE_WEAPON_CZ75DW",				50,		"dualwield",		"",		undefined );
+	add_zombie_weapon( "cz75dw_zm",					"cz75dw_upgraded_zm",					&"ZOMBIE_WEAPON_CZ75DW",				50,		"dualwield",		"",		undefined );
 
 	//	Weapons - Shotguns
 	add_zombie_weapon( "ithaca_zm",					"ithaca_upgraded_zm",					&"ZOMBIE_WEAPON_ITHACA",				1500,		"shotgun",			"",		undefined );
@@ -293,12 +315,12 @@ init_weapons()
 	//	Weapons - Burst Rifles
 	add_zombie_weapon( "m16_zm",					"m16_gl_upgraded_zm",					&"ZOMBIE_WEAPON_M16",					1200,		"burstrifle",		"",		undefined );
 	add_zombie_weapon( "g11_lps_zm",				"g11_lps_upgraded_zm",					&"ZOMBIE_WEAPON_G11",					900,		"burstrifle",		"",		undefined );
-	//add_zombie_weapon( "famas_zm",					"famas_upgraded_zm",					&"ZOMBIE_WEAPON_FAMAS",					50,		"burstrifle",		"",		undefined );
+	add_zombie_weapon( "famas_zm",					"famas_upgraded_zm",					&"ZOMBIE_WEAPON_FAMAS",					50,		"burstrifle",		"",		undefined );
 
 	//	Weapons - Assault Rifles
-	//add_zombie_weapon( "aug_acog_zm",				"aug_acog_mk_upgraded_zm",				&"ZOMBIE_WEAPON_AUG",					1200,	"assault",			"",		undefined );
-	//add_zombie_weapon( "galil_zm",					"galil_upgraded_zm",					&"ZOMBIE_WEAPON_GALIL",					100,	"assault",			"",		undefined );
-	//add_zombie_weapon( "commando_zm",				"commando_upgraded_zm",					&"ZOMBIE_WEAPON_COMMANDO",				100,	"assault",			"",		undefined );
+	add_zombie_weapon( "aug_acog_zm",				"aug_acog_mk_upgraded_zm",				&"ZOMBIE_WEAPON_AUG",					1200,	"assault",			"",		undefined );
+	add_zombie_weapon( "galil_zm",					"galil_upgraded_zm",					&"ZOMBIE_WEAPON_GALIL",					100,	"assault",			"",		undefined );
+	add_zombie_weapon( "commando_zm",				"commando_upgraded_zm",					&"ZOMBIE_WEAPON_COMMANDO",				100,	"assault",			"",		undefined );
 	add_zombie_weapon( "fnfal_zm",					"fnfal_upgraded_zm",					&"ZOMBIE_WEAPON_FNFAL",					100,	"burstrifle",			"",		undefined );
 
 	//	Weapons - Sniper Rifles
@@ -948,6 +970,14 @@ init_starting_chest_location()
 		level.chests = array_swap(level.chests,0,level.chest_index);
 		level.chest_index = 0;
 	}
+
+	if (!IsDefined(level.pandora_show_func))
+	{
+		level.pandora_show_func = ::default_pandora_show_func;
+	}
+
+	level.chests[level.chest_index] thread [[ level.pandora_show_func ]]();
+
 }
 
 
@@ -1543,338 +1573,6 @@ default_box_move_logic()
 		//END PI CHANGE
 	}
 
-	player = get_players()[ 0 ];
-
-	if (GetDvar(#"boxlocation") != "")
-	{
-
-		if ( level.script == "zombie_cod5_factory" )
-		{
-			if (GetDvar(#"boxlocation") == "power")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "start_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "mp40")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest1")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-				}
-			else if (GetDvar(#"boxlocation") == "type100")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest2")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "catwalk")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest3")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "trench")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{	
-
-					if (level.chests[i].script_noteworthy == "chest4")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "tommy")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest5")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-
-		}
-
-		if ( level.script == "zombie_temple" )
-		{
-
-			if (GetDvar(#"boxlocation") == "power")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "power_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "mule")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "bridge_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "spawn")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "blender_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "ak")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "caves1_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-
-		}
-
-		if ( level.script == "zombie_cosmodrome" )
-		{
-
-			if (GetDvar(#"boxlocation") == "mule")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest1")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "pap")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest6")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "spawn")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest2")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "speed")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "chest5")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "stam")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "storage_area_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "power")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "start_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "phd")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "base_entry_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-			else if (GetDvar(#"boxlocation") == "stamlander")
-			{
-
-				for (i = 0; i < level.chests.size; i++)
-				{
-
-					if (level.chests[i].script_noteworthy == "warehouse_lander_chest")
-					{
-
-						level.chest_index = i;
-						break;
-
-					}
-
-				}
-
-			}
-
-		}
-
-		SetDvar( "boxlocation", "" );
-
-	}
-
 }
 
 //
@@ -1883,18 +1581,12 @@ default_box_move_logic()
 treasure_chest_move( player_vox )
 {
 
-	if (GetDvar(#"boxlocation") == "")
-	{
-		level waittill("weapon_fly_away_start");
-	}
+	level waittill("weapon_fly_away_start");
 	players = get_players();
 	
 	array_thread(players, ::play_crazi_sound);
 
-	if (GetDvar(#"boxlocation") == "")
-	{
-		level waittill("weapon_fly_away_end");
-	}
+	level waittill("weapon_fly_away_end");
 	self.chest_lid thread treasure_chest_lid_close(false);
 	self setvisibletoall();
 
