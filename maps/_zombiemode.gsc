@@ -7455,6 +7455,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_zm" );
 		self switchToWeapon( "cz75dw_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("betty_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;
 
 	case "zombie_cod5_sumpf":
@@ -7463,6 +7465,8 @@ give_player_weapons()
 		self giveWeapon( "cz75dw_zm" );
 		self switchToWeapon( "tesla_gun_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("betty_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		// if(isDefined(level.additional_primaryweaponmachine_origin))
 		// 	self giveWeapon( "ray_gun_zm" );}
 		break;
@@ -7474,6 +7478,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self switchToWeapon( "tesla_gun_upgraded_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("betty_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		// if(isDefined(level.additional_primaryweaponmachine_origin))
 		// 	self giveWeapon( "m1911_upgraded_zm", 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
 		break;
