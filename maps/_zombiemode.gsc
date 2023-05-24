@@ -8159,7 +8159,10 @@ disable_powerup()
 }
 
 disable_special_zombies()
-{	
+{
+	if(getDvarInt("shang_special_zombies") == 1)
+		return;
+
 	flag_wait( "all_players_spawned" );
 	if( level.script == "zombie_temple" )
 	{	
