@@ -4226,7 +4226,7 @@ round_think()
 	
 	level.game_started = 1;
 	// lveez - if don't wait for this flag the next doc rounds gets reset
-	if (level.script == "zombie_pentagon")
+	if (level.script == "zombie_pentagon" && getDvarInt( "turn_power_on" ) == 1)
 	{
 		flag_wait( "power_on" );
 	}
@@ -4236,6 +4236,8 @@ round_think()
 	level.zombie_spawned = undefined;
 
 	level.next_special_round = 0;
+
+	override_next_special_round();
 
 	for( ;; )
 	{

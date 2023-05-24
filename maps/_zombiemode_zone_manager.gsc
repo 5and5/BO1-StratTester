@@ -689,68 +689,83 @@ create_spawner_list( zkeys )
 					window_option1 = GetDvar("zombie_pentagon_disabled_window1");
 					window_option2 = GetDvar("zombie_pentagon_disabled_window2");
 
+					// lveez - use spawner.target to identify the window,
+					// the index of the spawner can change.
 					if(window_option1 == "conference_ne")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 4;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2775";
 					}
 					else if(window_option1 == "conference_nw")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 2;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2770";
 					}
 					else if(window_option1 == "conference_se")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 5;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2779";
 					}
 					else if(window_option1 == "conference_sw")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 3;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2769";
 					}
 					else if(window_option1 == "hallway_e")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 0;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2774";
 					}
 					else if(window_option1 == "hallway_w")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 1;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2773";
 					}
 
 					if(window_option2 == "conference_ne")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 4;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2775";
 					}
 					else if(window_option2 == "conference_nw")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 2;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2770";
 					}
 					else if(window_option2 == "conference_se")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 5;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2779";
 					}
 					else if(window_option2 == "conference_sw")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 3;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2769";
 					}
 					else if(window_option2 == "hallway_e")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 0;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2774";
 					}
 					else if(window_option2 == "hallway_w")
 					{
-						level.spawners_to_remove[level.spawners_to_remove.size] = 1;
+						level.spawners_to_remove[level.spawners_to_remove.size] = "auto2773";
 					}
 
-					if(level.spawners_to_remove > 0) {
-						for(i = 0; i < level.spawners_to_remove.size; i++) {
-							zone.spawners = array_remove(zone.spawners, zone.spawners[level.spawners_to_remove[i]]);
+					if(level.spawners_to_remove.size > 0) 
+					{
+						for (i = 0; i < zone.spawners.size; i++)
+						{
+							if (zone.spawners[i].target == level.spawners_to_remove[0])
+							{
+								zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
+							}
+							if (level.spawners_to_remove.size == 2)
+							{
+								if (zone.spawners[i].target == level.spawners_to_remove[1])
+								{
+									zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
+								}
+							}
 						}
-					}					
-					//remove more windows if we're still too big
-					// while(zone.spawners.size > zone.num_spawners)
-					// {
-					// 	i = RandomIntRange(0, zone.spawners.size);
-					// 	zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
-					// }
-										
+					}		
+					else	// if set to random run original code
+					{
+						while(zone.spawners.size > zone.num_spawners)
+						{
+							i = RandomIntRange(0, zone.spawners.size);
+							zone.spawners = array_remove(zone.spawners, zone.spawners[i]);
+						}
+					}						
 				}
 			}				
 
