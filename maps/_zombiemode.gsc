@@ -7505,6 +7505,7 @@ give_player_weapons()
 		self giveWeapon( "m1911_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
 		self switchToWeapon( "microwavegundw_upgraded_zm");
 		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
+		self maps\_zombiemode_equipment::equipment_give( "equip_hacker_zm" );
 		break;
 	}
 }
