@@ -1864,7 +1864,7 @@ onPlayerSpawned()
 		
 		if ( is_true( level.player_out_of_playable_area_monitor ) )
 		{
-			self thread player_out_of_playable_area_monitor();
+			// self thread player_out_of_playable_area_monitor();
 		}
 
 		if ( is_true( level.player_too_many_weapons_monitor ) )
@@ -7411,9 +7411,11 @@ give_player_weapons()
 {	
 	level waittill( "fade_introblack" );
 
-	if(getDvarInt("give_weapons") == 0) {
+	if(getDvar("give_weapons") == "")
+		setDvar("give_weapons", 1);
+
+	if(getDvarInt("give_weapons") == 0)
 		return;
-	}
 
 	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
 	{
