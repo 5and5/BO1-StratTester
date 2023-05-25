@@ -86,6 +86,39 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
 
+# Cheats
+
+### List of Useful Cheats
+
+- `/god` godmode
+- `/demigod` godmode but you still get hit
+- `/noclip` flying
+- `/give ammo` refills ammo
+- `/timescale 10` changes the speed of the game (10 is max)
+- `/ai_disableSpawn 1` stops zombies from spawning
+- `/fast_restart` restart map
+- `/where` print "x y z" coordinates
+- `/setviewpos x y z` teleport to "x y z" coordinates
+
+### List of Useful Binds
+Add to the strat tester config (Call of Duty Black Ops\players\mods\Strat Tester\config.cfg)
+
+- `bind F1 "god"` binds godmode to F1
+- `bind F2 "noclip"` binds noclip to F2
+- `bind F3 "give ammo"` binds max ammo to F3
+- `bind F4 "toggle timescale 5 1"` binds 5x timescale toggle to F4
+- `bind F8 "give m16_gl_upgraded_zm"` binds give upgraded m16 to F8
+
+### List of Weapon Commands
+Remove the "upgraded" for none papped version
+
+- `/give explosive_bolt_upgraded_zm` Upgraded crossbow
+- `/give ray_gun_upgraded_zm` Upgraded raygun
+- `/give m1911_upgraded_zm` Upgraded m1911
+- `/give m16_gl_upgraded_zm` Upgraded m16
+- `/give ithaca_upgraded_zm` Upgraded steakout
+- `/give m14_upgraded_zm` Upgraded m14
+
 # Contributing
 
 To contribute to the project, you need to first clone the repo. (If you are on Windows you need somme form of git client, such as GitHub Desktop)
