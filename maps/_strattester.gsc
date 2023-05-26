@@ -16,9 +16,9 @@ spawn_strattester_player()
     self.strattester.weapon3 = weapons_array["wpn3"];
     self.strattester.tactical = maps\_strattester_weapons::get_tactical_pointer(tactical_id);
 
-    debug_print("weapon1: " + self.strattester.weapon1);
-    debug_print("weapon2: " + self.strattester.weapon2);
-    debug_print("weapon3: " + self.strattester.weapon3);
+    // debug_print("weapon1: " + self.strattester.weapon1);
+    // debug_print("weapon2: " + self.strattester.weapon2);
+    // debug_print("weapon3: " + self.strattester.weapon3);
 }
 
 stub()

@@ -65,6 +65,9 @@ get_weapon_settings(wpn_array)
         if (weapon == "" || (!isDefined(level.zombie_weapons[weapon]) && !maps\_zombiemode_weapons::is_weapon_upgraded(weapon)))
             weapon = get_weapon_default(i);
 
+        if (is_in_array(array("zombie_cod5_prototype", "zombie_cod5_asylum", "zombie_cod5_sumpf"), level.script))
+            weapon = get_base_name_of_weapon(weapon);
+
         /* Save weapon */
         weapon_settings[wpn_array[i]] = weapon;
     }
@@ -173,10 +176,11 @@ strattester_give_weapon(weapon)
 {
     if (!isDefined(level.zombie_weapons[weapon]) && !maps\_zombiemode_weapons::is_weapon_upgraded(weapon))
     {
-        maps\_strattester::debug_print("Can't find weapon: " + weapon);
+        // maps\_strattester::debug_print("Can't find weapon: " + weapon);
         return;
     }
 
+    maps\_strattester::debug_print("weapon: " + weapon);
     if (isSubStr(weapon, "upgraded"))
         self giveWeapon(weapon, 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options(weapon));
     else
@@ -193,4 +197,16 @@ strattester_give_tacticals(func)
     level waittill("start_of_round");
     // maps\_strattester::debug_print("awarding tacticals");
     self [[func]]();
+}
+
+get_base_name_of_weapon(upgraded_weapon)
+{
+    keys = getArrayKeys(level.zombie_weapons);
+    for (i = 0; i < keys.size; i++)
+    {
+        if (isDefined(level.zombie_weapons[keys[i]].upgrade_name) && (level.zombie_weapons[keys[i]].upgrade_name == upgraded_weapon))
+            return level.zombie_weapons[keys[i]].weapon_name;
+    }
+
+    return upgraded_weapon;
 }
