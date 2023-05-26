@@ -198,6 +198,11 @@
 				setDvar st_award_tacticals 1;
 			}
 
+			if (dvarString(st_use_cfg_weapons) == "")
+			{
+				setDvar st_use_cfg_weapons 1;
+			}
+
 			
 			
 			LOCAL_CLOSE_ALL_BUT( options_game )
@@ -519,6 +524,10 @@
 			"@MOD_DISABLED"; "0" 
 		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
 		CHOICE_DVARSTRINGLIST_VIS(4, "@MOD_GIVE_WEAPON_TACTICAL", st_award_tacticals, { 
+			"@MOD_ENABLED"; "1"; 
+			"@MOD_DISABLED"; "0" 
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
+		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_GIVE_CONFIG_WEAPONS", st_use_cfg_weapons, { 
 			"@MOD_ENABLED"; "1"; 
 			"@MOD_DISABLED"; "0" 
 		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))

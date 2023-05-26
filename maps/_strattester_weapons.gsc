@@ -56,8 +56,11 @@ get_weapon_settings(wpn_array)
         weapon = "";
 
         /* Pull weapon from the config */
-        dvar = "st_" + self.entity_num + "_" + wpn_array[i];
-        weapon = getDvar(dvar);
+        if (getDvar("st_use_cfg_weapons") == "1")
+        {
+            dvar = "st_" + self.entity_num + "_" + wpn_array[i];
+            weapon = getDvar(dvar);
+        }
 
         /* Pull weapon from settings */
 
