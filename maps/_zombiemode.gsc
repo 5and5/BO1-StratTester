@@ -1002,11 +1002,6 @@ init_dvars()
 
 	// HACK: To avoid IK crash in zombiemode: MikeA 9/18/2009	
 	//setDvar( "ik_enable", "0" );
-
-	/* Remove that once implemented!!! */
-	setDvar("st_award_melee", "1");
-	setDvar("st_award_mines", "1");
-	setDvar("st_award_tacticals", "1");
 }
 
 

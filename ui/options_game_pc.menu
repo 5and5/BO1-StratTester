@@ -47,7 +47,8 @@
 				setDvar hud_enemy_counter_on 0;
 			}
 
-			if(dvarString(magic_chest_moveable) == "") {
+			if(dvarString(magic_chest_moveable) == "") 
+			{
 				setDvar magic_box_moveable 1;
 			}
 
@@ -182,6 +183,21 @@
 				setDvar shang_special_zombies 0;
 			}
 
+			if (dvarString(st_award_melee) == "")
+			{
+				setDvar st_award_melee 1;
+			}
+
+			if (dvarString(st_award_mines) == "")
+			{
+				setDvar st_award_mines 1;
+			}
+
+			if (dvarString(st_award_tacticals) == "")
+			{
+				setDvar st_award_tacticals 1;
+			}
+
 			
 			
 			LOCAL_CLOSE_ALL_BUT( options_game )
@@ -277,7 +293,8 @@
 		FRAME_CHOICE_BUTTON_VIS( 29, "@MOD_BOX_LOCATION_OPTIONS", setdvar ui_options_game_popup "initial_box_locations"; open mature_content_pc_disable_warning, 1)	
 		FRAME_CHOICE_BUTTON_VIS( 30, "@MOD_PERK_DROP_OPTIONS", setdvar ui_options_game_popup "perk_drop_options"; open mature_content_pc_disable_warning, 1)	
 		FRAME_CHOICE_BUTTON_VIS( 31, "@MOD_GAME_OPTIONS", setdvar ui_options_game_popup "game_options"; open mature_content_pc_disable_warning, 1)	
-		FRAME_CHOICE_BUTTON_VIS( 32, "@MOD_MAP_OPTIONS", setdvar ui_options_game_popup "map_options"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 32, "@MOD_WEAPON_OPTIONS", setdvar ui_options_game_popup "weapon_options"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 33, "@MOD_MAP_OPTIONS", setdvar ui_options_game_popup "map_options"; open mature_content_pc_disable_warning, 1)
 
 
 
@@ -487,12 +504,24 @@
 		CHOICE_DVARSTRINGLIST_VIS(3, "@MOD_POWER_ON", turn_power_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		CHOICE_DVARSTRINGLIST_VIS(4, "@MOD_DOORS_OPEN", open_doors, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_WINDOWS_OPEN", open_windows, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_GIVE_WEAPON", give_weapons, { 
+
+		// WEAPON OPTIONS
+		CHOICE_DVARSTRINGLIST_VIS(1, "@MOD_GIVE_WEAPON", give_weapons, { 
 			"@MOD_ENABLED"; "1"; 
 			"@MOD_DISABLED"; "0" 
-		}, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-
-		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_PERK_DROP_OPTIONS", when(dvarString("ui_options_game_popup") == "perk_drop_options") )
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
+		CHOICE_DVARSTRINGLIST_VIS(2, "@MOD_GIVE_WEAPON_MELEE", st_award_melee, { 
+			"@MOD_ENABLED"; "1"; 
+			"@MOD_DISABLED"; "0" 
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
+		CHOICE_DVARSTRINGLIST_VIS(3, "@MOD_GIVE_WEAPON_MINE", st_award_mines, { 
+			"@MOD_ENABLED"; "1"; 
+			"@MOD_DISABLED"; "0" 
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
+		CHOICE_DVARSTRINGLIST_VIS(4, "@MOD_GIVE_WEAPON_TACTICAL", st_award_tacticals, { 
+			"@MOD_ENABLED"; "1"; 
+			"@MOD_DISABLED"; "0" 
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
 
 		// MAP OPTIONS
 
