@@ -7003,6 +7003,7 @@ open_doors()
 				moon_doors = getentarray( "zombie_airlock_buy", "targetname" );
 				for(i = 0; i < moon_doors.size; i++)
 				{
+					wait( 0.05 );
 					moon_doors[i] notify( "trigger", get_players()[0], true );
 				}
 			}
