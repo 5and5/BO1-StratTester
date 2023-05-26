@@ -9,6 +9,10 @@
 
 main()
 {
+
+	level.strat_tester_version = "2.3";
+	setDvar("strat_tester_version", level.strat_tester_version);
+
 	level.player_too_many_weapons_monitor = false;
 	level.player_too_many_weapons_monitor_func = ::player_too_many_weapons_monitor;
 	level._dontInitNotifyMessage = 1;
@@ -38,6 +42,7 @@ main()
 	level.box_hits = 0;
 	level.trap_hits = 0;
 
+	level.max_perks = 8;
 
 	level.zombie_visionset = "zombie_neutral";
 
@@ -202,10 +207,6 @@ post_all_players_connected()
 	maps\_zombiemode_score::init();
 	level difficulty_init();
 
-	//TTS
-	//level thread hud_zombies_stats();
-	// level thread hud_sph();
-
 	//thread zombie_difficulty_ramp_up(); 
 
 	// DCS 091610: clear up blood patches when set to mature.
@@ -249,16 +250,20 @@ post_all_players_connected()
 	}
 	
 	//levelthreads
+	level thread maps\_zombiemode_zone_manager::_debug_zones_tts();
+
 	level thread hud_game_time();
 	level thread open_doors();
 	level thread open_windows();
 	level thread turn_on_power();
-	level thread get_doors_nearby();
+	// level thread get_doors_nearby();
 	level thread disable_powerup();
 	level thread disable_special_zombies();
 
-	if ( level.script == "zombie_pentagon" )
+	if ( level.script == "zombie_pentagon" ) {
 		level thread enable_traps_five();
+		level thread maps\_zombiemode_zone_manager::window_watcher();
+	}
 	
 	chests = getentarray( "treasure_chest_use", "targetname" );
 	for ( i = 0; i < chests.size; i++ )
@@ -861,7 +866,7 @@ init_levelvars()
 	// used to a check in last stand for players to become zombies
 	level.is_zombie_level			= true; 
 	level.laststandpistol			= "m1911_zm";		// so we dont get the uber colt when we're knocked out
-	level.first_round				= false;
+	level.first_round				= true;
 	level.round_number				= 1;
 	level.round_start_time			= 0;
 	level.pro_tips_start_time		= 0;
@@ -983,6 +988,11 @@ init_dvars()
 	if(GetDvar( #"magic_box_explore_only") == "")
 	{
 		SetDvar( "magic_box_explore_only", "1" );
+	}
+
+	if(GetDvar("round_number") == "") {
+		SetDvar("round_number", 100);
+		level.round_number = 100;
 	}
 
 	SetDvar( "revive_trigger_radius", "75" ); 
@@ -1714,6 +1724,7 @@ onPlayerConnect()
 		player.entity_num = player GetEntityNumber(); 
 		player thread onPlayerSpawned(); 
 		player thread onPlayerDisconnect(); 
+		player thread player_perk_monitor();
 		player thread player_revive_monitor();
 
 		player freezecontrols( true );
@@ -1756,7 +1767,8 @@ onPlayerConnect_clientDvars()
 		"miniscoreboardhide", "1",
 		"cg_drawSpectatorMessages", "0",
 		"ui_hud_hardcore", "0",
-		"playerPushAmount", "1" );
+		"playerPushAmount", "1",
+		"has_longersprint", "0" );
 
 	self SetDepthOfField( 0, 0, 512, 4000, 4, 0 );
 
@@ -1774,6 +1786,7 @@ onPlayerConnect_clientDvars()
 
 	self SetClientDvar("hud_enemy_counter_value", "");
 	self SetClientDvar("hud_sph", "");
+	self setClientDvar("hud_tesla_kills", "");
 	self SetClientDvar("hud_zone_name", "");
 }
 
@@ -1851,7 +1864,7 @@ onPlayerSpawned()
 		
 		if ( is_true( level.player_out_of_playable_area_monitor ) )
 		{
-			self thread player_out_of_playable_area_monitor();
+			// self thread player_out_of_playable_area_monitor();
 		}
 
 		if ( is_true( level.player_too_many_weapons_monitor ) )
@@ -1896,18 +1909,9 @@ onPlayerSpawned()
 				self thread player_monitor_travel_dist();	
 
 				self thread player_grenade_watcher();
-
 				
-				//Practice Stuff
-				if ( level.script == "zombie_cod5_factory" )
-					self.score = 651000;
-				else if ( level.script == "zombie_temple" )
-					self.score = 505000;
-				else
-					self.score = 500000;
-
+				self.score = 500000;
 				level.chest_moves = 1;
-
 				self thread watch_for_trade();
 
 				//self thread hud_health_bar();
@@ -1919,7 +1923,32 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
+				self thread hud_tesla_kills();
+				self thread zombies_per_horde();
+				self thread tesla_watcher();
+				
+				wait(2);
+				self.score = 500000;
+				if ( level.script == "zombie_cod5_factory" )
+					self.score = 650000;
+
+				wait(1);
+					
+				self setblur(0, .1);
 			}
+		}
+	}
+}
+
+tesla_watcher()
+{
+	level.tesla_shots = 0;
+	for ( ;; )
+	{
+		self waittill( "weapon_fired", weapon );
+		if (weapon == "tesla_gun_zm" || weapon == "tesla_gun_upgraded_zm")
+		{
+			level.tesla_shots++;
 		}
 	}
 }
@@ -2261,6 +2290,31 @@ player_prevent_damage( eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, s
 	return false;
 }
 
+/* Keep track of perks a player currently has */
+player_perk_monitor()
+{
+	level endon("end_game");
+	self endon("disconnect");
+
+	perks_on_map = get_perk_list();
+
+	while (true)
+	{
+		if (self maps\_laststand::player_is_in_laststand())
+			self waittill("finished_awarding_perks");
+
+		for (p = 0; p < perks_on_map.size; p++)
+		{
+			if (self hasperk(perks_on_map[p]))
+				self.perk_controller[perks_on_map[p]] = true;
+			else
+				self.perk_controller[perks_on_map[p]] = false;
+		}
+
+		wait 0.1;
+	}
+}
+
 //
 //	Keep track of players going down and getting revived
 player_revive_monitor()
@@ -2276,7 +2330,7 @@ player_revive_monitor()
         
 		bbPrint( "zombie_playerdeaths: round %d playername %s deathtype revived x %f y %f z %f", level.round_number, self.playername, self.origin );
 
-		self thread give_player_perks();
+		self thread give_player_perks(true);
 
 		//self laststand_giveback_player_perks();
 
@@ -3523,6 +3577,8 @@ round_spawning()
 		{
 			level.zombie_total--;
 			ai thread round_spawn_failsafe();
+			// lveez - this fixes loads of dogs spawns at first round start on riese
+			level.zombie_spawned = 1;
 			count++; 
 		}
 
@@ -3662,9 +3718,11 @@ round_pause( delay )
 	}
 
 	level.countdown_hud = create_counter_hud();
-	level.countdown_hud SetValue( delay );
+	level.countdown_hud.horzAlign = "center";
+	level.countdown_hud.vertAlign = "center";
 	level.countdown_hud.color = ( 1, 1, 1 );
 	level.countdown_hud.alpha = 1;
+	level.countdown_hud SetValue( delay );
 	level.countdown_hud FadeOverTime( 2.0 );
 	wait( 2.0 );
 
@@ -3692,7 +3750,7 @@ round_pause( delay )
 	wait( 1.0 );
 
 	level.countdown_hud destroy_hud();
-	iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
+	//iprintln("Spawn Delay: " + level.zombie_vars["zombie_spawn_delay"]);
 }
 
 
@@ -4144,33 +4202,59 @@ round_think()
 {
 	round_number = getDvar( "round_number" );
 	if( round_number == "" )
-	{
 		round_number = 100;
-	}
+
 	level.round_number = int(round_number);
 
-	for(i = 0; i < level.round_number; i++) {
-		if(level.zombie_vars["zombie_spawn_delay"] > .08) {
-			level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
-		}			
-		else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
-			level.zombie_vars["zombie_spawn_delay"] = .08;
-		}
+	if(level.round_number != 1) {
+		level.first_round = false;
 	}
 
 	round_pause( getDvarInt( "round_start_delay" ) );
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
-	level.zombie_move_speed = 105;
+	// level.zombie_move_speed = 105;
+
+	// lveez - fix special round healths
 	level.dog_health = 1600;
 	level.dog_round_count = 5;
+	level.monkeys_encountered = 4;
+	ai_calculate_health(level.round_number);
+	
 	level.game_started = 1;
-	level.next_dog_round = 666;
-	level.next_monkey_round = 666;
-	level.next_doc_round = 666;
+	// lveez - if don't wait for this flag the next doc rounds gets reset
+	if (level.script == "zombie_pentagon" && getDvarInt( "turn_power_on" ) == 1)
+	{
+		flag_wait( "power_on" );
+	}
+
+	// lveez - mixed rounds fix (if level variables become undefined
+	// between restarts this can be removed.)
+	level.zombie_spawned = undefined;
+
+	level.next_special_round = 0;
+
+	override_next_special_round();
 
 	for( ;; )
 	{
+		// lveez - override special round if they changed option
+		if (getDvarInt("next_special_round") != level.next_special_round)
+		{
+			level.next_special_round = getDvarInt("next_special_round");
+			override_next_special_round();
+		}
+
+		// lveez - update next special round
+		if (flag("dog_round") || flag("thief_round") || flag("monkey_round"))
+		{
+			override_next_special_round();
+		}
+
+		// lveez - moved notify here so that the dog rounds update
+		level notify( "between_round_over" );
+
+		// get_players()[0] iPrintLn(level.next_dog_round);
 
 		//////////////////////////////////////////
 		//designed by prod DT#36173
@@ -4198,6 +4282,27 @@ round_think()
 
 		bbPrint( "zombie_rounds: round %d player_count %d", level.round_number, players.size );
 
+		//This makes it so starting on a particular round makes the spawn delay
+		//Be consistent with the round you skip to. -TTS
+		level.zombie_vars["zombie_spawn_delay"] = 2;
+		level.zombie_move_speed = 1;
+		timer = level.zombie_vars["zombie_spawn_delay"];
+		for(i = 1; i < level.round_number; i++) {
+			if(level.zombie_vars["zombie_spawn_delay"] > .08) {
+				level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
+			}			
+			else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
+				level.zombie_vars["zombie_spawn_delay"] = .08;
+			}
+
+			level.zombie_move_speed = i * level.zombie_vars["zombie_move_speed_multiplier"];
+
+		}
+
+		//iprintln("move speed: " + level.zombie_move_speed);
+
+
+
 		level.round_start_time = GetTime();
 		level thread [[level.round_spawn_func]]();
 
@@ -4208,19 +4313,10 @@ round_think()
 		level.current_round_start_time = int(gettime() / 1000);
 
 		//level thread hud_sph();
+		level.num_tesla_kills = 0;
+		level.tesla_shots = 0;
 
-		//This makes it so starting on a particular round makes the spawn delay
-		//Be consistent with the round you skip to. -TTS
-		level.zombie_vars["zombie_spawn_delay"] = 2;
-		timer = level.zombie_vars["zombie_spawn_delay"];
-		for(i = 0; i < level.round_number; i++) {
-			if(level.zombie_vars["zombie_spawn_delay"] > .08) {
-				level.zombie_vars["zombie_spawn_delay"] = level.zombie_vars["zombie_spawn_delay"] * .95;
-			}			
-			else if(level.zombie_vars["zombie_spawn_delay"] < .08) {
-				level.zombie_vars["zombie_spawn_delay"] = .08;
-			}
-		}
+		//iprintln("Round " + level.round_number + ": " + level.zombie_vars["zombie_spawn_delay"]);
 
 		[[level.round_wait_func]]();
 
@@ -4242,8 +4338,6 @@ round_think()
 		level chalk_round_over();
 
 		level.round_number++;
-
-		level notify( "between_round_over" );
 	}
 }
 
@@ -6867,6 +6961,12 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_cod5_sumpf" && doors[i].target == "attic_blocker" )
 					continue;
+				else if ( level.script == "zombie_coast" && doors[i].target == "pf23_auto1" ) // light house to beach
+					continue;
+				else if ( level.script == "zombie_coast" && doors[i].target == "pf23_auto2" ) // flopper to beach
+					continue;
+				else if ( level.script == "zombie_moon" && doors[i].target == "pf1344_auto365") // one window
+					continue;
 				else
 				{
 					doors[i] notify( "trigger", get_players()[0], true );
@@ -6883,6 +6983,12 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_cod5_sumpf" && debris[i].target == "upstairs_blocker" )
 					continue;
+				else if ( level.script == "zombie_temple" && debris[i].target == "cave03_to_power_door" )
+					continue;
+				else if ( level.script == "zombie_coast" && debris[i].target == "shipfront_bottom_debris" ) // beach to jug
+					continue;
+				else if ( level.script == "zombie_coast" && debris[i].target == "beach_debris" ) // cave
+					continue;
 				else 
 				{			
 					if ( level.script == "zombie_temple" )
@@ -6890,7 +6996,17 @@ open_doors()
 					debris[i] notify( "trigger", get_players()[0], true );
 				}
 				wait( 0.05 );
-			}	
+			}
+
+			if( level.script == "zombie_moon" )
+			{
+				moon_doors = getentarray( "zombie_airlock_buy", "targetname" );
+				for(i = 0; i < moon_doors.size; i++)
+				{
+					moon_doors[i] notify( "trigger", get_players()[0], true );
+				}
+			}
+
 			break;
 		}
 		wait 0.1;
@@ -7092,9 +7208,10 @@ theater_disable_crawlers( spawner )
 // turns on power and activates things around the map
 turn_on_power()
 {	
+	level waittill( "fade_introblack" );
+	
 	if( getDvar( "turn_power_on" ) == "" )
 		setDvar( "turn_power_on", 1 );
-	level waittill( "fade_introblack" );
 
 	while(1)
 	{
@@ -7103,7 +7220,7 @@ turn_on_power()
 			if ( level.script == "zombie_theater" )
 			{
 
-				level.ignore_spawner_func = ::theater_disable_crawlers;
+				//level.ignore_spawner_func = ::theater_disable_crawlers;
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
@@ -7114,15 +7231,15 @@ turn_on_power()
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
-				wait ( 5 );
-				level.next_thief_round = 1;
-
+				flag_set("power_on");
 			}	
 			else if ( level.script == "zombie_cosmodrome" )
 			{
 
 				trig = getent( "use_elec_switch" , "targetname" );
 				trig notify( "trigger" );
+				flag_set( "power_on" );
+				flag_set( "perk_bought" );
 
 				// open up pack a punch
 				upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
@@ -7154,7 +7271,7 @@ turn_on_power()
 			}
 			else if ( level.script == "zombie_moon" )
 			{
-
+				flag_wait("teleporter_used");
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
@@ -7170,6 +7287,7 @@ turn_on_power()
 			{
 
 				// activate zipline
+				wait 3;
 				zipPowerTrigger = getent("zip_lever_trigger", "targetname");
 				zipPowerTrigger notify( "trigger" );
 
@@ -7312,6 +7430,12 @@ give_player_weapons()
 {	
 	level waittill( "fade_introblack" );
 
+	if(getDvar("give_weapons") == "")
+		setDvar("give_weapons", 1);
+
+	if(getDvarInt("give_weapons") == 0)
+		return;
+
 	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
 	{
 	case "zombie_cod5_prototype":
@@ -7328,6 +7452,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_zm" );
 		self switchToWeapon( "cz75dw_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("betty_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;
 
 	case "zombie_cod5_sumpf":
@@ -7336,6 +7462,8 @@ give_player_weapons()
 		self giveWeapon( "cz75dw_zm" );
 		self switchToWeapon( "tesla_gun_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("betty_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		// if(isDefined(level.additional_primaryweaponmachine_origin))
 		// 	self giveWeapon( "ray_gun_zm" );}
 		break;
@@ -7347,6 +7475,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self switchToWeapon( "tesla_gun_upgraded_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("betty_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		// if(isDefined(level.additional_primaryweaponmachine_origin))
 		// 	self giveWeapon( "m1911_upgraded_zm", 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
 		break;
@@ -7358,7 +7488,9 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_zm" );
 		self switchToWeapon( "thundergun_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
-			break;
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
+		break;
 
 	case "zombie_pentagon":
 		self takeWeapon( "m1911_zm" );
@@ -7367,6 +7499,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self switchToWeapon( "crossbow_explosive_upgraded_zm");
 		self maps\_zombiemode_weap_cymbal_monkey::player_give_cymbal_monkey();
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;	
 
 	case "zombie_cosmodrome":
@@ -7375,6 +7509,8 @@ give_player_weapons()
 		self giveWeapon( "ray_gun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self switchToWeapon( "thundergun_upgraded_zm");
 		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;
 
 	case "zombie_coast":
@@ -7384,6 +7520,8 @@ give_player_weapons()
 		self switchToWeapon( "sniper_explosive_upgraded_zm");
 		//self giveWeapon( "ray_gun_upgraded_zm", 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "ray_gun_upgraded_zm" ) );
 		self maps\_zombiemode_weap_nesting_dolls::player_give_nesting_dolls();
+		trigs = getentarray("claymore_purchase","targetname");
+		trigs[0] notify( "trigger", self );
 		break;
 
 	case "zombie_temple":
@@ -7398,23 +7536,38 @@ give_player_weapons()
 	case "zombie_moon":
 		self takeWeapon( "m1911_zm" );
 		self giveWeapon( "bowie_knife_zm" );
-		self giveWeapon( "microwavegun_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "microwavegun_upgraded_zm" ) );
+		self giveWeapon( "microwavegundw_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "microwavegundw_upgraded_zm" ) );
 		self giveWeapon( "m1911_upgraded_zm", 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( "m1911_upgraded_zm" ) );
-		self switchToWeapon( "microwavegun_upgraded_zm");
+		self switchToWeapon( "microwavegundw_upgraded_zm");
 		self maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb();
+		self maps\_zombiemode_equipment::equipment_give( "equip_hacker_zm" );
 		break;
 	}
 }
 
-give_player_perks()
+give_player_perks(player_revived)
 {	
-	if ( getDvar( "player_perk_1") == "" && getDvar( "player_perk_2") == "" && getDvar( "player_perk_3") == "" && getDvar( "player_perk_4") == "" && getDvar( "player_perk_5") == "" && getDvar( "player_perk_6") == "" )
-	{	
-		switch ( Tolower( GetDvar( #"mapname" ) ) ) 
-		{
-		case "zombie_cod5_prototype":
+	perks = get_perk_list();
 
-			break;
+	if(getdvar("set_perks") == "none") 
+	{
+		if (is_true(player_revived))
+		{
+			for (p = 0; p < perks.size; p++)
+			{
+				if (is_true(self.perk_controller[perks[p]]))
+					self maps\_zombiemode_perks::give_perk(perks[p], true);
+			}
+		}
+	}
+	else if(getDvar("set_perks") == "all") {
+		for(i = 0; i < perks.size; i++) {
+			self maps\_zombiemode_perks::give_perk( perks[i], true );
+		}
+	}
+	//set to "setup"
+	else {
+		switch ( Tolower( GetDvar( #"mapname" ) ) ) {
 
 		case "zombie_cod5_asylum":
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
@@ -7480,7 +7633,6 @@ give_player_perks()
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
 		break;
 
 		case "zombie_temple":
@@ -7494,33 +7646,30 @@ give_player_perks()
 			
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
 			break;
 
 		case "zombie_moon":
 			self maps\_zombiemode_perks::give_perk( "specialty_quickrevive", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_flakjacket", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_fastreload", true );
-			if(isDefined(level.zombie_additionalprimaryweapon_machine_origin)) {
-				self maps\_zombiemode_perks::give_perk( "specialty_additionalprimaryweapon", true );
-			}
 			self maps\_zombiemode_perks::give_perk( "specialty_armorvest", true );
 			self maps\_zombiemode_perks::give_perk( "specialty_longersprint", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_rof", true );
-			self maps\_zombiemode_perks::give_perk( "specialty_deadshot", true );
 			break;
 		}
 	}
-	else
+
+	self notify("finished_awarding_perks");
+}
+
+get_perk_list() {
+	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
+
+	perks = [];
+	for ( i = 0; i < vending_triggers.size; i++ )
 	{
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_1"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_2"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_3"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_4"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_5"), true );
-		self maps\_zombiemode_perks::give_perk( getDvar( "player_perk_6"), true );
+		perks[perks.size] = vending_triggers[i].script_noteworthy;
 	}
+	return perks;
 }
 
 set_player_weapon()
@@ -7558,6 +7707,18 @@ hud_sph()
 		level.round_seconds_per_horde = int(current_time / hordes * 100) / 100;
 		self setClientDvar("hud_sph", level.round_seconds_per_horde);
 
+		wait 1;
+	}
+}
+
+hud_tesla_kills()
+{
+	level endon("end_game");
+    level waittill ( "start_of_round" );
+
+	for ( ;; )
+	{
+		self setClientDvar("hud_tesla_kills", level.num_tesla_kills/level.tesla_shots);
 		wait 1;
 	}
 }
@@ -7822,10 +7983,6 @@ update_time(time, timer) {
 	}
 }
 
-	
-
-
-
 round_time() {
 
 	level.round_time = 0;
@@ -7852,13 +8009,8 @@ round_time_watcher(roundTime) {
 
 }
 
-hud_zombies_stats() {
-	//level thread hud_zombies_health();
-	//level thread hud_zombies_remaining();
-	//level thread hud_zombies_speed();
-}
-
 hud_zombies_remaining() {
+	
 	while(1)
 	{
 		zombs = level.zombie_total + get_enemy_count();
@@ -7962,11 +8114,12 @@ get_doors_nearby()
 		//targets = GetEntArray( self.target, "targetname" );
         for( i = 0; i < zombie_doors.size; i++ )
         {
+			
         	//zombie_doors[i] notify("trigger", players[0]);
             if (Distance(zombie_doors[i].origin, players[0].origin) < 128)
             {
                	iprintln(zombie_doors[i].target);
-               	//iprintln(zombie_doors[i].origin);
+               	iprintln(zombie_doors[i].origin);
                	wait 0.5;
             }
 
@@ -7992,18 +8145,24 @@ disable_powerup()
 		setDvar( "disable_powerups", false );
 	while(1)
 	{	
-		powerups = getDvar( "disable_powerups" );
-		if ( powerups )
-			level.mutators["mutator_noPowerups"] = true;
-		else
+		powerups = getDvarInt( "disable_powerups" );
+		if ( powerups ) {
+			//Some places explicity check for "1" when comparing for true
+			level.mutators["mutator_noPowerups"] = "1";
+		}
+		else {
 			level.mutators["mutator_noPowerups"] = false;
+		}
 		
-		wait 0.1;
+		wait 1;
 	}
 }
 
 disable_special_zombies()
-{	
+{
+	if(getDvarInt("shang_special_zombies") == 1)
+		return;
+
 	flag_wait( "all_players_spawned" );
 	if( level.script == "zombie_temple" )
 	{	
@@ -8119,6 +8278,9 @@ send_message_to_csc(name, message)
 
 health_bar_hud()
 {
+	self endon("death");
+	self endon("disconnect");
+
 	health_bar_width_max = 110;
 
 	while (1)
@@ -8129,5 +8291,62 @@ health_bar_hud()
 		self SetClientDvar("hud_health_bar_width", health_bar_width_max * health_ratio);
 
 		wait 0.05;
+	}
+}
+
+zombies_per_horde() {
+	self endon("death");
+	self endon("disconnect");
+	
+	oldZph = undefined;
+	while(1) {
+		zph = getDvarInt("zombies_per_horde");
+
+		if(zph != oldZph) {
+			level.zombie_ai_limit = zph;
+			oldZph = zph;
+		}
+		wait(1);
+	}
+}
+
+override_next_special_round()
+{
+	switch (level.next_special_round)
+	{
+		case 1: // 1 => 4/5 rounders like normal
+			level.next_dog_round = level.round_number + randomintrange(3,5);
+			level.next_thief_round = level.round_number + randomintrange(3,5);
+			level.next_monkey_round = level.round_number + randomintrange(3,5);
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 2: // 2 => 4 rounders
+			level.next_dog_round = level.round_number + 3;
+			level.next_thief_round = level.round_number + 3;
+			level.next_monkey_round = level.round_number + 3;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 3: // 3 => 5 rounders
+			level.next_dog_round = level.round_number + 4;
+			level.next_thief_round = level.round_number + 4;
+			level.next_monkey_round =  level.round_number + 4;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		case 4: // 4 => every round
+			level.next_dog_round = level.round_number;
+			level.next_thief_round = level.round_number;
+			level.next_monkey_round =level.round_number;
+			level.prev_thief_round = level.next_thief_round;
+			break;
+
+		default:
+			level.next_dog_round = 10000;
+			level.next_thief_round = 10000;
+			level.next_monkey_round = 10000;
+			level.prev_thief_round = level.next_thief_round;
+			break;
 	}
 }

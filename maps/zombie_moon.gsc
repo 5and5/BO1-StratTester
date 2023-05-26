@@ -168,7 +168,7 @@ main()
 	
 	level thread maps\zombie_moon_digger::digger_init();
 
-	// level thread maps\zombie_moon_ai_astro::init();
+	level thread maps\zombie_moon_ai_astro::init();
 	level thread maps\zombie_moon_ai_quad::init();
 
 	maps\zombie_moon_gravity::init();
@@ -876,12 +876,10 @@ vision_set_init()
 //-------------------------------------------------------------------------------
 moon_round_think_func()
 {
-	level.game_started = 0;
-	round_number = getDvar( "round_number" );
-	if( round_number == "" )
-		round_number = 100;
+	if(getDvar("round_number") == "")
+		setDvar("round_number", 100);
 
-	level.round_number = int(round_number);
+	level.round_number = getDvarInt( "round_number" );
 
 	for( ;; )
 	{

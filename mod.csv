@@ -5,6 +5,7 @@ menufile,ui/hud_zombie.menu
 menufile,ui/hud_zombie.txt
 
 //GENERAL SCRITPS
+rawfile,maps/_zombiemode.gsc
 rawfile,maps/_zombiemode_ai_director.gsc
 rawfile,maps/_zombiemode_ai_dogs.gsc
 rawfile,maps/_zombiemode_blockers.gsc
@@ -12,21 +13,18 @@ rawfile,maps/_zombiemode_equipment.gsc
 rawfile,maps/_zombiemode_perks.gsc
 rawfile,maps/_zombiemode_powerups.gsc
 rawfile,maps/_zombiemode_spawner.gsc
+rawfile,maps/_zombiemode_weap_black_hole_bomb.gsc
+rawfile,maps/_zombiemode_weap_nesting_dolls.gsc
 rawfile,maps/_zombiemode_weapons.gsc
 rawfile,maps/_zombiemode_zone_manager.gsc
-rawfile,maps/_zombiemode.gsc
 
-rawfile,maps/zombie_coast_water.gsc
+//MAP SPECIFIC SCRITPS
 rawfile,maps/zombie_coast.gsc
-rawfile,maps/zombie_cod5_asylum.gsc
-rawfile,maps/zombie_cod5_factory.gsc
-rawfile,maps/zombie_cod5_prototype.gsc
-rawfile,maps/zombie_cod5_sumpf.gsc
-rawfile,maps/zombie_cosmodrome.gsc
-rawfile,maps/zombie_moon_digger.gsc
+rawfile,maps/zombie_coast_water.gsc
 rawfile,maps/zombie_moon.gsc
-rawfile,maps/zombie_temple.gsc
+rawfile,maps/zombie_moon_digger.gsc
 
+//STRATTESTER SCRIPTS
 rawfile,maps/_strattester_api.gsc
 rawfile,maps/_strattester_func.gsc
 rawfile,maps/_strattester_player.gsc

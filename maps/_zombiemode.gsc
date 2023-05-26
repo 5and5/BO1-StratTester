@@ -10,7 +10,7 @@
 main()
 {
 
-	level.strat_tester_version = "2.2";
+	level.strat_tester_version = "2.3";
 	setDvar("strat_tester_version", level.strat_tester_version);
 
 	level.player_too_many_weapons_monitor = false;
@@ -1871,7 +1871,7 @@ onPlayerSpawned()
 		
 		if ( is_true( level.player_out_of_playable_area_monitor ) )
 		{
-			self thread player_out_of_playable_area_monitor();
+			// self thread player_out_of_playable_area_monitor();
 		}
 
 		if ( is_true( level.player_too_many_weapons_monitor ) )
@@ -1916,18 +1916,9 @@ onPlayerSpawned()
 				self thread player_monitor_travel_dist();	
 
 				self thread player_grenade_watcher();
-
 				
-				//Practice Stuff
-				if ( level.script == "zombie_cod5_factory" )
-					self.score = 651000;
-				else if ( level.script == "zombie_temple" )
-					self.score = 505000;
-				else
-					self.score = 500000;
-
+				self.score = 500000;
 				level.chest_moves = 1;
-
 				self thread watch_for_trade();
 
 				//self thread hud_health_bar();
@@ -1942,8 +1933,14 @@ onPlayerSpawned()
 				self thread hud_tesla_kills();
 				self thread zombies_per_horde();
 				self thread tesla_watcher();
+				
+				wait(2);
+				self.score = 500000;
+				if ( level.script == "zombie_cod5_factory" )
+					self.score = 650000;
 
-				wait(3);
+				wait(1);
+					
 				self setblur(0, .1);
 			}
 		}
@@ -4233,7 +4230,7 @@ round_think()
 	
 	level.game_started = 1;
 	// lveez - if don't wait for this flag the next doc rounds gets reset
-	if (level.script == "zombie_pentagon")
+	if (level.script == "zombie_pentagon" && getDvarInt( "turn_power_on" ) == 1)
 	{
 		flag_wait( "power_on" );
 	}
@@ -4243,6 +4240,8 @@ round_think()
 	level.zombie_spawned = undefined;
 
 	level.next_special_round = 0;
+
+	override_next_special_round();
 
 	for( ;; )
 	{
@@ -6969,6 +6968,12 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_cod5_sumpf" && doors[i].target == "attic_blocker" )
 					continue;
+				else if ( level.script == "zombie_coast" && doors[i].target == "pf23_auto1" ) // light house to beach
+					continue;
+				else if ( level.script == "zombie_coast" && doors[i].target == "pf23_auto2" ) // flopper to beach
+					continue;
+				else if ( level.script == "zombie_moon" && doors[i].target == "pf1344_auto365") // one window
+					continue;
 				else
 				{
 					doors[i] notify( "trigger", get_players()[0], true );
@@ -6987,6 +6992,10 @@ open_doors()
 					continue;
 				else if ( level.script == "zombie_temple" && debris[i].target == "cave03_to_power_door" )
 					continue;
+				else if ( level.script == "zombie_coast" && debris[i].target == "shipfront_bottom_debris" ) // beach to jug
+					continue;
+				else if ( level.script == "zombie_coast" && debris[i].target == "beach_debris" ) // cave
+					continue;
 				else 
 				{			
 					if ( level.script == "zombie_temple" )
@@ -6994,7 +7003,18 @@ open_doors()
 					debris[i] notify( "trigger", get_players()[0], true );
 				}
 				wait( 0.05 );
-			}	
+			}
+
+			if( level.script == "zombie_moon" )
+			{
+				moon_doors = getentarray( "zombie_airlock_buy", "targetname" );
+				for(i = 0; i < moon_doors.size; i++)
+				{
+					wait( 0.05 );
+					moon_doors[i] notify( "trigger", get_players()[0], true );
+				}
+			}
+
 			break;
 		}
 		wait 0.1;
@@ -8028,7 +8048,10 @@ disable_powerup()
 }
 
 disable_special_zombies()
-{	
+{
+	if(getDvarInt("shang_special_zombies") == 1)
+		return;
+
 	flag_wait( "all_players_spawned" );
 	if( level.script == "zombie_temple" )
 	{	

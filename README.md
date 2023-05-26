@@ -18,9 +18,9 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 1. Enjoy! Everytime you want to strat tester you will need to start from Step 5. Installing new versions will have you start at step 2. 
 
 ## Download Common Zombie Patch Version
-### _**Note this version is not actively maintained and missing features compared to the latest version.**_
+### _**Note this may not contain features on the latest version.**_
 
-[Download](https://www.mediafire.com/file/dn8iuwts71l42c6/BO1-Strat_Tester_Patch.zip/file)
+[Download Version 2.3](https://www.mediafire.com/file/dn8iuwts71l42c6/BO1-Strat_Tester_Patch.zip/file)
 
 ## Current Features:
 
@@ -31,6 +31,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Remove Perk Limit
 - Perks reserved on down
 - Spawn in with some, all, or no perks
+- Remove out of playable area death barriers 
 
 ### HUD
 - Round Timer
@@ -40,7 +41,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Current Zone
 - Sprint meter
     - Sprint meter colors can be customized using the following commands or through the config (if you use the console commands, they are automatically written to config)
-        - `/cg_sprintMeterDisabledColor 0.8 0.1 0.1 0.2` - Color of the meter when you deplete your sprint and are recharing your sprint.
+        - `/cg_sprintMeterDisabledColor 0.8 0.1 0.1 0.2` - Color of the meter when you deplete your sprint and are recharging your sprint.
         - `/cg_sprintMeterEmptyColor 0.7 0.5 -.2 0.8` - Color the bar when you are nearly out of sprint  
         - `/cg_sprintMeterFullColor 0.8 0.8 0.8 0.8` - Color of the bar typically
         - `/hud_fade_sprint 1.7` - Time it takes for the sprint meter to fade.
@@ -81,8 +82,42 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Disable Astro
 - Disable George Romero
 - Disable nova crawlers on Kino, Moon & Five
+- Disable special zombies on Shang
 
 Missing a crucial feature for you to get better at the game? We are open to requests!
+
+# Cheats
+
+### List of Useful Cheats
+
+- `/god` godmode
+- `/demigod` godmode but you still get hit
+- `/noclip` flying
+- `/give ammo` refills ammo
+- `/timescale 10` changes the speed of the game (10 is max)
+- `/ai_disableSpawn 1` stops zombies from spawning
+- `/fast_restart` restart map
+- `/where` print "x y z" coordinates
+- `/setviewpos x y z` teleport to "x y z" coordinates
+
+### List of Useful Binds
+Add to the strat tester config (Call of Duty Black Ops\players\mods\Strat Tester\config.cfg)
+
+- `bind F1 "god"` binds godmode to F1
+- `bind F2 "noclip"` binds noclip to F2
+- `bind F3 "give ammo"` binds max ammo to F3
+- `bind F4 "toggle timescale 5 1"` binds 5x timescale toggle to F4
+- `bind F8 "give m16_gl_upgraded_zm"` binds give upgraded m16 to F8
+
+### List of Weapon Commands
+Remove the "upgraded" for none papped version
+
+- `/give explosive_bolt_upgraded_zm` Upgraded crossbow
+- `/give ray_gun_upgraded_zm` Upgraded raygun
+- `/give m1911_upgraded_zm` Upgraded m1911
+- `/give m16_gl_upgraded_zm` Upgraded m16
+- `/give ithaca_upgraded_zm` Upgraded steakout
+- `/give m14_upgraded_zm` Upgraded m14
 
 # Contributing
 
