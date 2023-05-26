@@ -11,7 +11,7 @@ main()
 	// This has to be first for CreateFX -- Dale
 	maps\zombie_cod5_factory_fx::main();
 
-	level thread zombie_cod5_factory::strattester_init();
+	level thread maps\zombie_cod5_factory_strattester::strattester_init();
 	
 	// viewmodel arms for the level
 	PreCacheModel( "viewmodel_usa_pow_arms" ); // Dempsey

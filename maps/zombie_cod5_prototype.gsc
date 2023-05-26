@@ -8,7 +8,7 @@ main()
 	// first for createFX (why?)
 	maps\zombie_cod5_prototype_fx::main();
 
-	level thread zombie_cod5_prototype_strattester::strattester_init();
+	level thread maps\zombie_cod5_prototype_strattester::strattester_init();
 
 	// viewmodel arms for the level
 	PreCacheModel( "viewmodel_usa_pow_arms" ); // Dempsey
