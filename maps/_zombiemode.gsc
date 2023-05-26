@@ -1736,7 +1736,7 @@ onPlayerConnect()
 
 		player thread watchTakenDamage();
 
-		player thread maps\_strattester_player::spawn_strattester_player();
+		player thread maps\_strattester::spawn_strattester_player();
 
 		player.score = 0; 
 		player.score_total = player.score; 
@@ -1924,7 +1924,7 @@ onPlayerSpawned()
 				//self thread hud_health_bar();
 				self thread insta_kill_rounds();				
 				self thread give_player_perks();
-				self thread maps\_strattester_api::give_player_weapons();
+				self thread maps\_strattester_weapons::give_player_weapons();
 				self thread set_player_weapon();
 				self thread zone_hud();
 				self thread health_bar_hud();

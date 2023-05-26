@@ -1,16 +1,40 @@
 #include common_scripts\utility; 
 #include maps\_utility;
 
-stub()
-{
-    return;
-}
+/*
+	Dvars are generated as follows 'st_<ent_number>_<wpn_number>'
+	Where ent number is internal ID of the player (0 to 3) and wpn_numbers are wpn1, wpn2 and wpn3. Those can be set directly in the config file
+	Example, to give blue player bow and bknives, following entires would be added to config file
+	st_1_wpn1 "knife_ballistic_upgraded_zm"
+	st_1_wpn2 "crossbow_explosive_upgraded_zm"
+*/
 
-debug_print(content)
+give_player_weapons()
 {
-    debug_mode = true;
-    if (debug_mode)
-        iPrintLn("DEBUG: " + content);
+	level waittill("fade_introblack");
+
+	if (getDvar("give_weapons") == "0")
+		return;
+
+	if (getDvar("st_award_melee") == "1")
+		self award_melee_weapon();
+	if (getDvar("st_award_mines") == "1")
+	{
+		if (!isDefined(level.strattester_mine_pointer))
+			level.strattester_mine_pointer = maps\_zombiemode_claymore::claymore_setup;
+		self thread [[level.strattester_mine_pointer]]();
+	}
+
+	self takeWeapon("m1911_zm");
+	self strattester_give_weapon(self.strattester.weapon1);
+	self strattester_give_weapon(self.strattester.weapon2);
+	if (self hasperk("specialty_additionalprimaryweapon"))
+		self strattester_give_weapon(self.strattester.weapon3);
+
+	if (getDvar("st_award_tacticals") == "1")
+		self thread strattester_give_tacticals(self.strattester.tactical);
+
+    self switchToWeapon(self.strattester.weapon1);
 }
 
 initialize_weapon_dvars_for_player(wpn_array)
@@ -111,10 +135,10 @@ get_tactical_pointer(tactical_id)
         4 - QED
     */
 
-    // debug_print("tactical pointer of id " + tactical_id + " isint=" + !isString(tactical_id));
+    // maps\_strattester::debug_print("tactical pointer of id " + tactical_id + " isint=" + !isString(tactical_id));
 
     if (tactical_id == 0)
-        return ::stub;
+        return maps\_strattester::stub;
     if (isDefined(level.strattester_tactical_black_hole) && tactical_id == 2)
         return level.strattester_tactical_black_hole;
     if (isDefined(level.strattester_tactical_dolls) && tactical_id == 3)
@@ -149,7 +173,7 @@ strattester_give_weapon(weapon)
 {
     if (!isDefined(level.zombie_weapons[weapon]) && !maps\_zombiemode_weapons::is_weapon_upgraded(weapon))
     {
-        iPrintLn("Can't find weapon: " + weapon);
+        maps\_strattester::debug_print("Can't find weapon: " + weapon);
         return;
     }
 
@@ -167,6 +191,6 @@ strattester_give_tacticals(func)
     self endon("disconnect");
 
     level waittill("start_of_round");
-    // debug_print("awarding tacticals");
+    // maps\_strattester::debug_print("awarding tacticals");
     self [[func]]();
 }
