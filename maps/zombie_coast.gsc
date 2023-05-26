@@ -7,6 +7,8 @@
 main()
 {
 	level thread maps\zombie_coast_ffotd::main_start();
+
+	level thread maps\zombie_coast_strattester::strattester_init();
 	
 	//for clientsiding the riser fx
 	level.riser_type = "snow";

@@ -34,6 +34,8 @@ main()
 	
 	level thread maps\zombie_moon_ffotd::main_start();
 
+	level thread maps\zombie_moon_strattester::strattester_init();
+
 	maps\_zombiemode_weap_quantum_bomb::init_registration();
 
 	maps\zombie_moon_fx::main();

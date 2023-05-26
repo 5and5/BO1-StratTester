@@ -24,6 +24,11 @@ rawfile,maps/zombie_coast_water.gsc
 rawfile,maps/zombie_moon.gsc
 rawfile,maps/zombie_moon_digger.gsc
 
+//STRATTESTER SCRIPTS
+rawfile,maps/_strattester_api.gsc
+rawfile,maps/_strattester_func.gsc
+rawfile,maps/_strattester_player.gsc
+
 //CLIENT SCRITPS
 rawfile,clientscripts/_zombiemode_ffotd.csc
 
