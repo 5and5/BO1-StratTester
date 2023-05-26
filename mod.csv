@@ -25,9 +25,16 @@ rawfile,maps/zombie_moon.gsc
 rawfile,maps/zombie_moon_digger.gsc
 
 //STRATTESTER SCRIPTS
-rawfile,maps/_strattester_api.gsc
-rawfile,maps/_strattester_func.gsc
-rawfile,maps/_strattester_player.gsc
+rawfile,maps/_strattester.gsc
+rawfile,maps/_strattester_weapons.gsc
+rawfile,maps/zombie_coast_strattester.gsc
+rawfile,maps/zombie_cod5_asylum_strattester.gsc
+rawfile,maps/zombie_cod5_factory_strattester.gsc
+rawfile,maps/zombie_cod5_prototype_strattester.gsc
+rawfile,maps/zombie_cod5_sumpf_strattester.gsc
+rawfile,maps/zombie_cosmodrome_strattester.gsc
+rawfile,maps/zombie_moon_strattester.gsc
+rawfile,maps/zombie_temple_strattester.gsc
 
 //CLIENT SCRITPS
 rawfile,clientscripts/_zombiemode_ffotd.csc
