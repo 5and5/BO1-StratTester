@@ -281,4 +281,10 @@ get_base_name_of_weapon(upgraded_weapon)
     }
 
     return upgraded_weapon;
+award_betties()
+{
+    trigs = getentarray("betty_purchase","targetname");
+    trigs[0] notify( "trigger", self );
+}
+
 }
