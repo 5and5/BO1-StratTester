@@ -25,11 +25,7 @@ give_player_weapons()
         if (getDvar("st_award_melee") == "1")
             self award_melee_weapon();
         if (getDvar("st_award_mines") == "1")
-        {
-            if (!isDefined(level.strattester_mine_pointer))
-                level.strattester_mine_pointer = maps\_zombiemode_claymore::claymore_setup;
-            self thread [[level.strattester_mine_pointer]]();
-        }
+            self award_mines();
 
         if (initial_give)
             self takeWeapon("m1911_zm");
@@ -323,10 +319,26 @@ watch_for_weapon_preset_change()
     }
 }
 
-award_betties()
+award_mines()
 {
-    trigs = getentarray("betty_purchase","targetname");
-    trigs[0] notify( "trigger", self );
+    switch (level.script)
+    {
+        case "zombie_cod5_asylum":
+        case "zombie_cod5_sumpf":
+        case "zombie_cod5_factory":
+            trigger = "betty_purchase";
+            break;
+        case "zombie_temple":
+            trigger = "spikemore_purchase";
+            break;
+        case "zombie_cod5_prototype":
+            return;
+        default:
+            trigger = "claymore_purchase";
+    }
+
+    trigs = getentarray(trigger,"targetname");
+    trigs[0] notify("trigger", self);
 }
 
 update_weapons()
