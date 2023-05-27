@@ -7267,6 +7267,8 @@ turn_on_power()
 			else if ( level.script == "zombie_moon" )
 			{
 				flag_wait("teleporter_used");
+				// lveez - wait_network_frame here to stop sound bugging to be permanently low gravity
+				wait_network_frame();
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
