@@ -528,8 +528,12 @@ watch_for_drop()
 	flag_wait( "begin_spawning" );
 	level.last_score_drop = 0;
 
+	// lveez - use this instead of the zombie_vars variable as it gets reset to 2000 at some point
+	point_drop_increment = getDvarInt("st_point_drop_increment");
+	original_drop_inc = point_drop_increment;
+
 	players = get_players();
-	score_to_drop = ( players.size * level.zombie_vars["zombie_score_start_"+players.size+"p"] ) + level.zombie_vars["zombie_powerup_drop_increment"];
+	score_to_drop = ( players.size * level.zombie_vars["zombie_score_start_"+players.size+"p"] ) + point_drop_increment;
 
 	while (1)
 	{
@@ -544,11 +548,25 @@ watch_for_drop()
 			curr_total_score += players[i].score_total;
 		}
 
+		// lveez - update it if it is changed mid game, uses previous point drop to update next point drop score.
+		if (getDvarInt("st_point_drop_increment") != original_drop_inc)
+		{
+			point_drop_increment = getDvarInt("st_point_drop_increment");
+			original_drop_inc = point_drop_increment;
+			score_to_drop = level.last_score_drop + point_drop_increment;
+		}
+
+		if (point_drop_increment == 0 || getDvar("disable_powerups"))
+		{
+			wait( 0.1 );
+			continue;
+		}
+
 		if (curr_total_score > score_to_drop )
 		{
-			level.zombie_vars["zombie_powerup_drop_increment"] *= 1.14;
+			point_drop_increment *= 1.14;
 			level.last_score_drop = score_to_drop;
-			score_to_drop = curr_total_score + level.zombie_vars["zombie_powerup_drop_increment"];
+			score_to_drop = curr_total_score + point_drop_increment;
 			level.zombie_vars["zombie_drop_item"] = 1;
 		}
 

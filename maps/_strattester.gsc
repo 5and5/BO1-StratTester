@@ -35,6 +35,7 @@ init_strattester_dvars()
     init_dvar("st_round_number", "100");
     init_dvar("st_backspeed_fix", "1");
     init_dvar("st_weapon_preset", "highround");
+    init_dvar("st_point_drop_increment", "50000");
 
     level thread watch_dvar("st_weapon_preset");
     level thread watch_dvar("st_backspeed_fix");
