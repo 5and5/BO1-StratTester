@@ -556,12 +556,11 @@ watch_for_drop()
 			score_to_drop = level.last_score_drop + point_drop_increment;
 		}
 
-		if (point_drop_increment == 0 || getDvar("disable_powerups"))
+		if (point_drop_increment == 0 || getDvarInt("disable_powerups"))
 		{
-			wait( 0.1 );
+			wait( 0.5 );
 			continue;
 		}
-
 		if (curr_total_score > score_to_drop )
 		{
 			point_drop_increment *= 1.14;
