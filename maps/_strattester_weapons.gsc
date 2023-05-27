@@ -11,30 +11,52 @@
 
 give_player_weapons()
 {
+    level endon("end_game");
+    self endon("disconnect");
+
 	level waittill("fade_introblack");
+    initial_give = true;
 
-	if (getDvar("give_weapons") == "0")
-		return;
+    while (true)
+    {
+        while (getDvar("give_weapons") == "0")
+            wait 0.05;
 
-	if (getDvar("st_award_melee") == "1")
-		self award_melee_weapon();
-	if (getDvar("st_award_mines") == "1")
-	{
-		if (!isDefined(level.strattester_mine_pointer))
-			level.strattester_mine_pointer = maps\_zombiemode_claymore::claymore_setup;
-		self thread [[level.strattester_mine_pointer]]();
-	}
+        if (getDvar("st_award_melee") == "1")
+            self award_melee_weapon();
+        if (getDvar("st_award_mines") == "1")
+        {
+            if (!isDefined(level.strattester_mine_pointer))
+                level.strattester_mine_pointer = maps\_zombiemode_claymore::claymore_setup;
+            self thread [[level.strattester_mine_pointer]]();
+        }
 
-	self takeWeapon("m1911_zm");
-	self strattester_give_weapon(self.strattester.weapon1);
-	self strattester_give_weapon(self.strattester.weapon2);
-	if (self hasperk("specialty_additionalprimaryweapon"))
-		self strattester_give_weapon(self.strattester.weapon3);
+        if (initial_give)
+            self takeWeapon("m1911_zm");
+        else
+        {
+            player_weapons = self GetWeaponsListPrimaries();
+            for (i = 0; i < player_weapons.size; i++)
+            {
+                self takeWeapon(player_weapons[i]);
+                wait 0.05;
+            }
+        }
 
-	if (getDvar("st_award_tacticals") == "1")
-		self thread strattester_give_tacticals(self.strattester.tactical);
+        self strattester_give_weapon(self.strattester.weapon1);
+        self strattester_give_weapon(self.strattester.weapon2);
+        if (self hasperk("specialty_additionalprimaryweapon"))
+            self strattester_give_weapon(self.strattester.weapon3);
 
-    self switchToWeapon(self.strattester.weapon1);
+        if (getDvar("st_award_tacticals") == "1")
+            self thread strattester_give_tacticals(self.strattester.tactical);
+
+        self switchToWeapon(self.strattester.weapon1);
+
+        level waittill("st_weapon_preset_changed");
+        initial_give = false;
+        self update_weapons();
+    }
 }
 
 initialize_weapon_dvars_for_player(wpn_array)
@@ -49,6 +71,9 @@ initialize_weapon_dvars_for_player(wpn_array)
 
 get_weapon_settings(wpn_array)
 {
+    if (!isDefined(wpn_array))
+        wpn_array = array("wpn1", "wpn2", "wpn3");
+
     weapon_settings = array();
 
     for (i = 0; i < wpn_array.size; i++)
@@ -281,10 +306,37 @@ get_base_name_of_weapon(upgraded_weapon)
     }
 
     return upgraded_weapon;
+}
+
+watch_for_weapon_preset_change()
+{
+    dvar_state = getDvar("st_weapon_preset");
+    while (true)
+    {
+        wait 0.05;
+
+        if (getDvar("st_weapon_preset") == dvar_state)
+            continue;
+
+        level notify("st_weapon_preset_changed");
+        dvar_state = getDvar("st_weapon_preset");
+    }
+}
+
 award_betties()
 {
     trigs = getentarray("betty_purchase","targetname");
     trigs[0] notify( "trigger", self );
 }
 
+update_weapons()
+{
+    new_weapons = get_weapon_settings();
+
+    tactical_id = self maps\_strattester_weapons::get_tactical_setting();
+
+    self.strattester.weapon1 = new_weapons["wpn1"];
+    self.strattester.weapon2 = new_weapons["wpn2"];
+    self.strattester.weapon3 = new_weapons["wpn3"];
+    self.strattester.tactical = maps\_strattester_weapons::get_tactical_pointer(tactical_id);
 }

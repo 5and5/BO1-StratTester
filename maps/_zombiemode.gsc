@@ -143,6 +143,8 @@ main()
 	level thread [[level.Player_Spawn_func]]();
 	level thread onPlayerConnect(); 
 	level thread post_all_players_connected();
+
+	level thread maps\_strattester_weapons::watch_for_weapon_preset_change();
 	
 	init_utility();
 	maps\_utility::registerClientSys("zombify");	// register a client system...
