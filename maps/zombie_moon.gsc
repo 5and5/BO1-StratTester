@@ -876,10 +876,7 @@ vision_set_init()
 //-------------------------------------------------------------------------------
 moon_round_think_func()
 {
-	if(getDvar("round_number") == "")
-		setDvar("round_number", 100);
-
-	level.round_number = getDvarInt( "round_number" );
+	level.round_number = getDvarInt("st_round_number");
 
 	for( ;; )
 	{

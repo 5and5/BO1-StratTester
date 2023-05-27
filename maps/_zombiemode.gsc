@@ -992,11 +992,6 @@ init_dvars()
 		SetDvar( "magic_box_explore_only", "1" );
 	}
 
-	if(GetDvar("round_number") == "") {
-		SetDvar("round_number", 100);
-		level.round_number = 100;
-	}
-
 	SetDvar( "revive_trigger_radius", "75" ); 
 	SetDvar( "player_lastStandBleedoutTime", "45" );
 
@@ -4206,11 +4201,7 @@ chalk_round_over()
 
 round_think()
 {
-	round_number = getDvar( "round_number" );
-	if( round_number == "" )
-		round_number = 100;
-
-	level.round_number = int(round_number);
+	level.round_number = getDvarInt("st_round_number");
 
 	if(level.round_number != 1) {
 		level.first_round = false;

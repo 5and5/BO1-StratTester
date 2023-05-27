@@ -32,6 +32,7 @@ init_dvar(dvar, def)
 
 init_strattester_dvars()
 {
+    init_dvar("st_round_number", "100");
 }
 
 stub()
