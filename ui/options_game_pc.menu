@@ -200,7 +200,7 @@
 
 			if (dvarString(st_use_cfg_weapons) == "")
 			{
-				setDvar st_use_cfg_weapons 1;
+				setDvar st_use_cfg_weapons 0;
 			}
 
 			if (dvarString(st_weapon_preset) == "")
