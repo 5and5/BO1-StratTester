@@ -203,6 +203,11 @@
 				setDvar st_use_cfg_weapons 1;
 			}
 
+			if (dvarString(st_weapon_preset) == "")
+			{
+				setDvar st_weapon_preset "highround";
+			}
+
 			
 			
 			LOCAL_CLOSE_ALL_BUT( options_game )
@@ -530,6 +535,12 @@
 		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_GIVE_CONFIG_WEAPONS", st_use_cfg_weapons, { 
 			"@MOD_ENABLED"; "1"; 
 			"@MOD_DISABLED"; "0" 
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
+		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_GIVE_WEAPONS_PRESET", st_weapon_preset, { 
+			"@MOD_PRESET_HIGHROUND"; "highround"; 
+			"@MOD_PRESET_INSTA"; "instas"; 
+			"@MOD_PRESET_30SR"; "30sr"; 
+			"@MOD_PRESET_NOPOWER"; "nopower" 
 		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
 
 		// MAP OPTIONS

@@ -91,40 +91,109 @@ get_tactical_setting()
 
 get_weapon_default(array_index)
 {
+    weapon_preset = getDvar("st_weapon_preset");
+    maps\_strattester::debug_print("weapon_preset: " + weapon_preset);
+
+    /*
+        Presets:
+        - Instas
+        - No Power
+        - 30sr
+        - Strat dependent hr
+    */
+
     switch (level.script)
     {
         case "zombie_cod5_prototype":
             a = array("thundergun_zm", "ray_gun_zm", "", "1");
             break;
         case "zombie_cod5_asylum":
-            a = array("cz75dw_zm", "ray_gun_zm", "", "1");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("zombie_thompson", "cz75dw_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("freezegun_zm", "ray_gun_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("hk21_zm", "ray_gun_zm", "", "1");
+            else
+                a = array("cz75dw_zm", "ray_gun_zm", "", "1");
             break;
         case "zombie_cod5_sumpf":
-            a = array("tesla_gun_zm", "cz75dw_zm", "", "1");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("zombie_stg44", "tesla_gun_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("tesla_gun_zm", "ray_gun_zm", "", "1");
+            else
+                a = array("tesla_gun_zm", "cz75dw_zm", "", "1");
             break;
         case "zombie_cod5_factory":
-            a = array("tesla_gun_upgraded_zm", "ray_gun_upgraded_zm", "", "1");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("zombie_thompson_upgraded", "tesla_gun_upgraded_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("tesla_gun_zm", "ray_gun_zm", "", "1");
+            else
+                a = array("tesla_gun_upgraded_zm", "ray_gun_upgraded_zm", "", "1");
             break;
         case "zombie_theater":
-            a = array("thundergun_zm", "ray_gun_zm", "", "1");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("mpl_zm", "thundergun_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("thundergun_zm", "ray_gun_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("thundergun_upgraded_zm", "ray_gun_upgraded_zm", "", "1");
+            else
+                a = array("thundergun_zm", "ray_gun_zm", "", "1");
             break;
         case "zombie_pentagon":
-            a = array("crossbow_explosive_upgraded_zm", "ray_gun_upgraded_zm", "", "1");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("ithaca_zm", "crossbow_explosive_upgraded_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("freezegun_zm", "ray_gun_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("ray_gun_upgraded_zm", "crossbow_explosive_upgraded_zm", "", "1");
+            else
+                a = array("crossbow_explosive_upgraded_zm", "ray_gun_upgraded_zm", "", "1");
             break;
         case "zombie_cosmodrome":
-            a = array("thundergun_upgraded_zm", "ray_gun_upgraded_zm", "", "2");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("m16_gl_upgraded_zm", "thundergun_upgraded_zm", "", "2");
+            else if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("thundergun_zm", "ray_gun_zm", "", "2");
+            else    // Same for HR & 30sr
+                a = array("thundergun_upgraded_zm", "ray_gun_upgraded_zm", "", "2");
             break;
         case "zombie_coast":
-            a = array("sniper_explosive_upgraded_zm", "humangun_upgraded_zm", "", "3");
+            if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("sniper_explosive_zm", "ray_gun_zm", "m72_law_zm", "3");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("m1911_upgraded_zm", "sniper_explosive_upgraded_zm", "ray_gun_upgraded_zm", "3");
+            else
+                a = array("sniper_explosive_upgraded_zm", "humangun_upgraded_zm", "crossbow_explosive_upgraded_zm", "3");
             break;
         case "zombie_temple":
-            a = array("shrink_ray_upgraded_zm", "m1911_upgraded_zm", "", "1");
+            if (isDefined(weapon_preset) && weapon_preset == "instas")
+                a = array("m16_gl_upgraded_zm", "shrink_ray_upgraded_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("shrink_ray_zm", "ray_gun_zm", "", "1");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("shrink_ray_upgraded_zm", "ray_gun_upgraded_zm", "", "1");
+            else
+                a = array("shrink_ray_upgraded_zm", "cz75dw_upgraded_zm", "", "1");
             break;
         case "zombie_moon":
-            a = array("microwavegun_upgraded_zm", "m1911_upgraded_zm", "", "2");
+            if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("microwavegundw_upgraded_zm", "ray_gun_upgraded_zm", "", "2");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("microwavegundw_upgraded_zm", "ray_gun_upgraded_zm", "", "2");
+            else    // Same for HR & Instas
+                a = array("microwavegundw_upgraded_zm", "m16_gl_upgraded_zm", "", "2");
             break;
         default:
-            a = array("", "", "", "0");
+            if (isDefined(weapon_preset) && weapon_preset == "nopower")
+                a = array("ray_gun_zm", "m72_law_zm", "", "0");
+            else if (isDefined(weapon_preset) && weapon_preset == "30sr")
+                a = array("ray_gun_zm", "hk21_zm", "", "0");
+            else
+                a = array("cz75dw_zm", "ray_gun_zm", "", "0");
     }
 
     if (isDefined(array_index) && isDefined(a[array_index]))
