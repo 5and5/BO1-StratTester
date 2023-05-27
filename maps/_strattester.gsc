@@ -33,8 +33,13 @@ init_dvar(dvar, def)
 init_strattester_dvars()
 {
     init_dvar("st_round_number", "100");
+    init_dvar("st_backspeed_fix", "1");
     init_dvar("st_weapon_preset", "highround");
+
     level thread watch_dvar("st_weapon_preset");
+    level thread watch_dvar("st_backspeed_fix");
+}
+
 watch_dvar(dvar)
 {
     level endon("end_game");
@@ -62,4 +67,20 @@ debug_print(content)
     debug_mode = true;
     if (debug_mode)
         iPrintLn("DEBUG: " + content);
+}
+
+evaluate_backspeed()
+{
+    level endon("end_game");
+    self endon("disconnect");
+
+    if (getDvar("st_backspeed_fix") == "1")
+        self setClientDvars("player_backSpeedScale", "1",
+        "player_strafeSpeedScale", "1");
+    else
+        self setClientDvars("player_backSpeedScale", "0.7",
+        "player_strafeSpeedScale", "0.8");
+
+    level waittill("st_backspeed_fix_changed");
+    self thread evaluate_backspeed();
 }

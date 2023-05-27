@@ -1723,6 +1723,7 @@ onPlayerConnect()
 		player thread onPlayerDisconnect(); 
 		player thread player_perk_monitor();
 		player thread player_revive_monitor();
+		player thread maps\_strattester::evaluate_backspeed();
 
 		player freezecontrols( true );
 
@@ -1846,9 +1847,7 @@ onPlayerSpawned()
 
 		self SetClientDvars( "cg_thirdPerson", "0",
 			"cg_fov", "75",
-			"cg_thirdPersonAngle", "0", 
-			"player_backSpeedScale", "1",
-			"player_strafeSpeedScale", "1");
+			"cg_thirdPersonAngle", "0" );
 
 		self setClientDvar("hud_zone_name_on_game", 1);
 		self setClientDvar("hud_health_bar_on_game", 1);
