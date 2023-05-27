@@ -1004,6 +1004,8 @@ init_dvars()
 
 	// HACK: To avoid IK crash in zombiemode: MikeA 9/18/2009	
 	//setDvar( "ik_enable", "0" );
+
+	maps\_strattester::init_strattester_dvars();
 }
 
 

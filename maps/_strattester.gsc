@@ -21,6 +21,19 @@ spawn_strattester_player()
     // debug_print("weapon3: " + self.strattester.weapon3);
 }
 
+init_dvar(dvar, def)
+{
+    if (!isDefined(def))
+        def = "0";
+
+    if (getDvar(dvar) == "")
+        setDvar(dvar, def);
+}
+
+init_strattester_dvars()
+{
+}
+
 stub()
 {
     return;
