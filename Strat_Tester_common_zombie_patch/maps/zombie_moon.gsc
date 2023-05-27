@@ -875,7 +875,7 @@ vision_set_init()
 moon_round_think_func()
 {
 	level.game_started = 0;
-	round_number = getDvar( "round_number" );
+	round_number = getDvar( "st_round_number" );
 	if( round_number == "" )
 		round_number = 100;
 

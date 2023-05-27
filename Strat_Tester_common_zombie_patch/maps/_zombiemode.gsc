@@ -990,8 +990,8 @@ init_dvars()
 		SetDvar( "magic_box_explore_only", "1" );
 	}
 
-	if(GetDvar("round_number") == "") {
-		SetDvar("round_number", 100);
+	if(GetDvar("st_round_number") == "") {
+		SetDvar("st_round_number", 100);
 		level.round_number = 100;
 	}
 
@@ -4200,7 +4200,7 @@ chalk_round_over()
 
 round_think()
 {
-	round_number = getDvar( "round_number" );
+	round_number = getDvar( "st_round_number" );
 	if( round_number == "" )
 		round_number = 100;
 
