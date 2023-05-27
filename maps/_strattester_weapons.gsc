@@ -49,6 +49,10 @@ give_player_weapons()
 
         self switchToWeapon(self.strattester.weapon1);
 
+        // Initialize that dvar to 1 in gsc
+        if (getDvar("st_award_hacker") == "1" && level.script == "zombie_moon")
+            self award_hacker();
+
         level waittill("st_weapon_preset_changed");
         initial_give = false;
         self update_weapons();
@@ -351,4 +355,14 @@ update_weapons()
     self.strattester.weapon2 = new_weapons["wpn2"];
     self.strattester.weapon3 = new_weapons["wpn3"];
     self.strattester.tactical = maps\_strattester_weapons::get_tactical_pointer(tactical_id);
+}
+
+award_hacker()
+{
+    hacker = GetEntArray("zombie_equipment_upgrade", "targetname"); 
+    for (i = 0; i < hacker.size; i++) 
+    { 
+        if(isDefined(hacker[i].zombie_equipment_upgrade) && hacker[i].zombie_equipment_upgrade == "equip_hacker_zm") 
+            hacker[i] notify("trigger", self); 
+    }
 }
