@@ -308,21 +308,6 @@ get_base_name_of_weapon(upgraded_weapon)
     return upgraded_weapon;
 }
 
-watch_for_weapon_preset_change()
-{
-    dvar_state = getDvar("st_weapon_preset");
-    while (true)
-    {
-        wait 0.05;
-
-        if (getDvar("st_weapon_preset") == dvar_state)
-            continue;
-
-        level notify("st_weapon_preset_changed");
-        dvar_state = getDvar("st_weapon_preset");
-    }
-}
-
 award_mines()
 {
     switch (level.script)

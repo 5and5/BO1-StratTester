@@ -33,6 +33,23 @@ init_dvar(dvar, def)
 init_strattester_dvars()
 {
     init_dvar("st_round_number", "100");
+    init_dvar("st_weapon_preset", "highround");
+    level thread watch_dvar("st_weapon_preset");
+watch_dvar(dvar)
+{
+    level endon("end_game");
+
+    dvar_state = getDvar(dvar);
+    while (true)
+    {
+        wait 0.05;
+
+        if (dvar_state == getDvar(dvar))
+            continue;
+
+        level notify(dvar + "_changed");
+        dvar_state = getDvar(dvar);
+    }
 }
 
 stub()
