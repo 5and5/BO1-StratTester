@@ -1,3 +1,6 @@
+#include common_scripts\utility; 
+#include maps\_utility;
+
 strattester_init()
 {
 	level.strattester_tactical_black_hole = maps\_zombiemode_weap_black_hole_bomb::player_give_black_hole_bomb;
@@ -17,18 +20,30 @@ astro_watcher()
 	level endon("end_game");
 	level endon("disconnect");
 	
+	// default astro to off so he does not spawn instantly
+	level.max_astro_zombies = 0;
+	
 	if (getDvar("st_astro_active") == "1")
 	{
 		level.max_astro_zombies = 1;
 		spawner = getent( "astronaut_zombie", "targetname" );
-		while (getDvar("st_astro_active") == "1" && level.on_the_moon == true)
+		while (getDvar("st_astro_active") == "1")
 		{
-			astro = spawner maps\_zombiemode_ai_astro::astro_zombie_spawn();
-			if ( !maps\_utility::spawn_failed( astro ) )
+			if (is_true(level.on_the_moon))
 			{
-				break;
+				astro = spawner maps\_zombiemode_ai_astro::astro_zombie_spawn();
+				if ( !spawn_failed( astro ) )
+				{
+					break;
+				}
 			}
-			maps\_utility::wait_network_frame();
+			else 
+			{
+				// wait 1 second after teleporter used to stop astro grabbing player instantly
+				flag_wait("teleporter_used");
+				wait(1);
+			}
+			wait_network_frame();
 		}
 	}
 	else if (getDvar("st_astro_active") == "0")
