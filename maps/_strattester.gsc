@@ -134,7 +134,7 @@ stub()
 
 debug_print(content)
 {
-    debug_mode = true;
+    debug_mode = false;
     if (debug_mode)
         iPrintLn("DEBUG: " + content);
 }
@@ -201,8 +201,8 @@ finish_round()
             }
         }
 
-        if (isDefined(test_ent))
-            debug_print("after dmg: " + test_ent.health);
+        // if (isDefined(test_ent))
+        //     debug_print("after dmg: " + test_ent.health);
 
         level waittill("start_of_round");
     }
