@@ -246,6 +246,11 @@
 				setDvar st_perfect_trade "0";
 			}
 
+			if (dvarString(st_ammo_refill) == "")
+			{
+				setDvar st_ammo_refill "0";
+			}
+
 
 			LOCAL_CLOSE_ALL_BUT( options_game )
 			
@@ -564,6 +569,7 @@
 
 		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_BACKSPEED_ENABLED", st_backspeed_fix, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 
+		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_INFINITE_AMMO", st_ammo_refill, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 
 		// WEAPON OPTIONS
 

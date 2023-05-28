@@ -1721,6 +1721,7 @@ onPlayerConnect()
 		player thread player_perk_monitor();
 		player thread player_revive_monitor();
 		player thread maps\_strattester::evaluate_backspeed();
+		player thread maps\_strattester_weapons::refill_ammo();
 
 		player freezecontrols( true );
 

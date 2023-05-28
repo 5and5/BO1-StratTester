@@ -311,3 +311,22 @@ get_wonderweapon()
             return "tesla_gun_zm";
     }
 }
+
+refill_ammo()
+{
+    level endon("end_game");
+    self endon("disconnect");
+
+    while (true)
+    {
+        if (getDvar("st_ammo_refill") == "1")
+        {
+            guns = self getWeaponsListPrimaries();
+
+            for (i = 0; i < guns.size; i++)
+                self giveMaxAmmo(guns[i]);
+        }
+
+        wait 0.25;
+    }
+}
