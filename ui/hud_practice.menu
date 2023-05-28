@@ -193,7 +193,7 @@
 		{
 			name				"zone_name_text"
 			type				ITEM_TYPE_TEXT
-			rect 				4 -112.5 0 0
+			rect 				1.5 -112.5 0 0
 			exp					rect Y(-112.5 + ((dvarString("st_hud_zone_health_bar") != "both") * 16))
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
