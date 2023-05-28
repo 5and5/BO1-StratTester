@@ -2092,14 +2092,8 @@ treasure_chest_weapon_spawn( chest, player, respin )
 		{
 			rand = treasure_chest_ChooseWeightedRandomWeapon( player );
 
-/#
-			weapon = GetDvar( #"scr_force_weapon" );
-			if ( weapon != "" && IsDefined( level.zombie_weapons[ weapon ] ) )
-			{
-				rand = weapon;
-				SetDvar( "scr_force_weapon", "" );
-			}
-#/
+			if (getDvar("st_perfect_trade") == "1")
+				rand = maps\_strattester_weapons::get_wonderweapon();
 		}
 	}
 	

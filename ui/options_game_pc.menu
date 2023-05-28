@@ -241,6 +241,11 @@
 				setDvar st_backspeed_fix "1";
 			}
 
+			if (dvarString(st_perfect_trade) == "")
+			{
+				setDvar st_perfect_trade "0";
+			}
+
 
 			LOCAL_CLOSE_ALL_BUT( options_game )
 			
@@ -500,6 +505,11 @@
 		
 
 		CHOICE_DVARFLOATLIST_VIS(1, "@MOD_MAGICBOX_MOVABLE", magic_chest_movable, {
+			"@MENU_YES_CAPS" 1
+			"@MENU_NO_CAPS" 0
+		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations") )
+
+		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_PERFECT_TRADE", st_perfect_trade, {
 			"@MENU_YES_CAPS" 1
 			"@MENU_NO_CAPS" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations") )

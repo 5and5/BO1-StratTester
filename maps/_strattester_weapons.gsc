@@ -288,3 +288,26 @@ award_hacker()
             hacker[i] notify("trigger", self); 
     }
 }
+
+get_wonderweapon()
+{
+    switch (level.script)
+    {
+        case "zombie_theater":
+        case "zombie_cosmodrome":
+        case "zombie_cod5_prototype":
+            return "thundergun_zm";
+        case "zombie_pentagon":
+        case "zombie_cod5_asylum":
+            return "ray_gun_zm";
+        case "zombie_coast":
+            return "humangun_zm";
+        case "zombie_temple":
+            return "shrink_ray_zm";
+        case "zombie_moon":
+            return "microwavegundw_zm";
+        case "zombie_cod5_sumpf":
+        case "zombie_cod5_factory":
+            return "tesla_gun_zm";
+    }
+}

@@ -78,6 +78,9 @@ init_strattester_dvars()
     init_dvar("st_disable_firesale", "1");
     init_dvar("st_disable_death_machine", "1");
 
+    // Box dvars
+    init_dvar("st_perfect_trade", "0");
+
     // Map dvars
     init_dvar("st_zombie_pentagon_disabled_window1", "conference_ne");
     init_dvar("st_zombie_pentagon_disabled_window2", "hallway_e");
