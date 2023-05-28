@@ -7929,9 +7929,10 @@ insta_kill_rounds()
 			zombies = GetAiArray( "axis" );
 			for (i = 0; i < zombies.size; i++)
 			{
-
+				if (zombies.targetname == "astronaut_zombie_ai")
+					continue;
+				
 				zombies[i].health = 150;
-
 			}
 
 		}
