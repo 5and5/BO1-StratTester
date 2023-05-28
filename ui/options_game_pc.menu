@@ -564,15 +564,10 @@
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_GAME_OPTIONS", when(dvarString("ui_options_game_popup") == "game_options") )
 
 		CHOICE_DVARSTRINGLIST_VIS(1, "@MOD_MULE_KICK_ENABLED", mulekick_enabled, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-
 		CHOICE_DVARSTRINGLIST_VIS(2, "@MOD_POWER_ON", st_turn_power_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-
 		CHOICE_DVARSTRINGLIST_VIS(3, "@MOD_DOORS_OPEN", st_open_doors, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-
 		CHOICE_DVARSTRINGLIST_VIS(4, "@MOD_WINDOWS_OPEN", st_open_windows, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-
 		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_BACKSPEED_ENABLED", st_backspeed_fix, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
-
 		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_INFINITE_AMMO", st_ammo_refill, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 
 		// WEAPON OPTIONS
@@ -609,9 +604,23 @@
 			"@MOD_PRESET_INSTA"; "instas"; 
 			"@MOD_PRESET_30SR"; "30sr"; 
 			"@MOD_PRESET_NOPOWER"; "nopower";
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options" && (dvarString("mapname") != "zombie_coast" || dvarString("mapname") != "zombie_theater") ) )
+		
+		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_GIVE_WEAPONS_PRESET", st_weapon_preset, { 
+			"@MOD_PRESET_HIGHROUND"; "highround"; 
+			"@MOD_PRESET_INSTA"; "instas"; 
+			"@MOD_PRESET_30SR"; "30sr"; 
+			"@MOD_PRESET_NOPOWER"; "nopower";
 			"@MOD_PRESET_NOVAS"; "novas";
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options" && dvarString("mapname") == "zombie_theater") )
+
+		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_GIVE_WEAPONS_PRESET", st_weapon_preset, { 
+			"@MOD_PRESET_HIGHROUND"; "highround"; 
+			"@MOD_PRESET_INSTA"; "instas"; 
+			"@MOD_PRESET_30SR"; "30sr"; 
+			"@MOD_PRESET_NOPOWER"; "nopower";
 			"@MOD_PRESET_BOAT"; "boat"
-		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
+		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options" && dvarString("mapname") == "zombie_coast") )
 
 		// MAP OPTIONS
 
