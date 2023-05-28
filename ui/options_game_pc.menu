@@ -538,7 +538,7 @@
 
 		CHOICE_DVARSTRINGLIST_VIS(6, "POINT DROP INCREMENT", st_point_drop_increment, { 
 			"@MOD_OFF" 0 "2000" 2000 "5000" 5000 "10000" 10000 "20000" 20000 "30000" 30000 "50000" 50000 "100000" 100000 "250000" 250000
-		}, ;, when(dvarString("ui_options_game_popup") == "perk_drop_options" && dvarInt(disable_powerups) == 0))
+		}, ;, when(dvarString("ui_options_game_popup") == "perk_drop_options" && dvarInt(st_disable_powerups) == 0))
 
 		// GAME OPTIONS
 

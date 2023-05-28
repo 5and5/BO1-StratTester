@@ -7898,6 +7898,7 @@ insta_kill_rounds()
 			}
 
 		}
+		// Why are we not checking for health < 150 ? ~ Zi0
 		else if (getDvar("st_round_insta") == "0" && level.zombie_health == -2055759567)
 		{
 

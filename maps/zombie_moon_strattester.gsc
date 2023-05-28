@@ -11,8 +11,8 @@ strattester_init()
 /* map specific dvars */
 init_strattester_moon_dvars()
 {
-	maps\_strattester::init_dvar("st_astro_active", "0");
-	level thread maps\_strattester::watch_dvar("st_astro_active");
+	// Since your commit i added watcher call inside init_dvar, so just applied that ~ Zi0
+	maps\_strattester::init_dvar("st_astro_active", "0", true);
 }
 
 astro_watcher()
