@@ -547,7 +547,9 @@
 			"@MOD_PRESET_HIGHROUND"; "highround"; 
 			"@MOD_PRESET_INSTA"; "instas"; 
 			"@MOD_PRESET_30SR"; "30sr"; 
-			"@MOD_PRESET_NOPOWER"; "nopower" 
+			"@MOD_PRESET_NOPOWER"; "nopower";
+			"@MOD_PRESET_NOVAS"; "novas";
+			"@MOD_PRESET_BOAT"; "boat"
 		}, ;, when(dvarString("ui_options_game_popup") == "weapon_options"))
 
 		// MAP OPTIONS

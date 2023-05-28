@@ -27,6 +27,7 @@ rawfile,maps/zombie_moon_digger.gsc
 //STRATTESTER SCRIPTS
 rawfile,maps/_strattester.gsc
 rawfile,maps/_strattester_weapons.gsc
+rawfile,maps/_strattester_presets.gsc
 rawfile,maps/zombie_coast_strattester.gsc
 rawfile,maps/zombie_cod5_asylum_strattester.gsc
 rawfile,maps/zombie_cod5_factory_strattester.gsc
