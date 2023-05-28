@@ -527,7 +527,7 @@ director_zombie_manager()
 {
 	// check for one start boss spawner before anything else
 	start_boss = getent( "start_boss_spawner", "script_noteworthy" );
-	if ( isDefined( start_boss ) && getDvarInt("director_active") )
+	if ( isDefined( start_boss ) && getDvarInt("st_director_active") )
 	{
 		while ( true )
 		{
@@ -548,7 +548,7 @@ director_zombie_manager()
 			spawner = director_zombie_pick_best_spawner();
 			if( isDefined( spawner ) )
 			{
-				if(getDvarInt("director_active")) {
+				if(getDvarInt("st_director_active")) {
 					spawner director_zombie_spawn();
 				}
 			}

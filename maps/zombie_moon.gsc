@@ -239,25 +239,18 @@ main()
 digger_dvar_activate() {
 	level endon("death");
 
-	setDvar("digger_bio", 0);
-	setDvar("digger_t6", 0);
-	setDvar("digger_t11", 0);
-
 	flag_wait("power_on");
 	while(1) {
 		wait(1);
 
-		if(getDvarInt("digger_bio")) {
+		if(getDvar("st_digger_bio") == "1")
 			maps\zombie_moon_digger::digger_activate("biodome");
-		}
 
-		if(getDvarInt("digger_t6")) {
+		if(getDvar("st_digger_t6") == "1")
 			maps\zombie_moon_digger::digger_activate("teleporter");
-		}
 
-		if(getDvarInt("digger_t11")) {
+		if(getDvar("st_digger_t11") == "1")
 			maps\zombie_moon_digger::digger_activate("hangar");
-		}
 	}
 }
 
@@ -979,7 +972,7 @@ moon_round_think_func()
 			}
 			else {
 				if(level.game_started == 0) {
-					round_pause(getDvarInt("round_start_delay"));
+					round_pause(getDvarInt("st_round_start_delay"));
 					level.game_started = 1;
 				}
 			}

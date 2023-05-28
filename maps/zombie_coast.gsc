@@ -262,7 +262,7 @@ custom_add_weapons()
 
 coast_spawn_init_delay(director)
 {
-	if(getDvarInt("director_active")) {
+	if(getDvarInt("st_director_active")) {
 		flag_wait( "begin_spawning" );
 		flag_clear( "spawn_zombies");
 		director_zomb = undefined;

@@ -686,8 +686,8 @@ create_spawner_list( zkeys )
 			{
 				if(IsDefined(zone.num_spawners) && zone.spawners.size > zone.num_spawners )
 				{
-					window_option1 = GetDvar("zombie_pentagon_disabled_window1");
-					window_option2 = GetDvar("zombie_pentagon_disabled_window2");
+					window_option1 = GetDvar("st_zombie_pentagon_disabled_window1");
+					window_option2 = GetDvar("st_zombie_pentagon_disabled_window2");
 
 					// lveez - use spawner.target to identify the window,
 					// the index of the spawner can change.
@@ -774,7 +774,7 @@ create_spawner_list( zkeys )
 			{
 				if ( zone.spawners[x].is_enabled )
 				{
-					if(getDvarInt("novas_active") == 0) {
+					if(getDvar("st_novas_active") == "0") {
 						if(zone.spawners[x].script_noteworthy != "quad_zombie_spawner") {
 							level.enemy_spawns[ level.enemy_spawns.size ] = zone.spawners[x];
 						} 
@@ -810,15 +810,15 @@ window_watcher() {
 	
 	level endon("death");
 	
-	window1 = GetDvar("zombie_pentagon_disabled_window1");
-	window2 = GetDvar("zombie_pentagon_disabled_window2");
+	window1 = GetDvar("st_zombie_pentagon_disabled_window1");
+	window2 = GetDvar("st_zombie_pentagon_disabled_window2");
 	
 	while(1) {
-		if(GetDvar("zombie_pentagon_disabled_window1") != window1 || GetDvar("zombie_pentagon_disabled_window2") != window2) 
+		if(GetDvar("st_zombie_pentagon_disabled_window1") != window1 || GetDvar("st_zombie_pentagon_disabled_window2") != window2) 
 		{
 			iprintln("Changing windows");
-			window1 = GetDvar("zombie_pentagon_disabled_window1");
-			window2 = GetDvar("zombie_pentagon_disabled_window2");
+			window1 = GetDvar("st_zombie_pentagon_disabled_window1");
+			window2 = GetDvar("st_zombie_pentagon_disabled_window2");
 
 			reinit_zone_spawners();
 		}

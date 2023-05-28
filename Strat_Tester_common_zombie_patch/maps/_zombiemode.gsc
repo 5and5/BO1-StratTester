@@ -11,7 +11,7 @@ main()
 {
 
 	level.strat_tester_version = "2.3";
-	setDvar("strat_tester_version", level.strat_tester_version);
+	setDvar("st_version", level.strat_tester_version);
 
 	level.player_too_many_weapons_monitor = false;
 	level.player_too_many_weapons_monitor_func = ::player_too_many_weapons_monitor;
@@ -979,18 +979,14 @@ init_dvars()
 	{
 		SetDvar( "zombie_cheat", "0" );
 	}
-	
-	if ( level.script != "zombie_cod5_prototype" )
-	{
-		SetDvar( "magic_chest_movable", "1" );
-	}
 
 	if(GetDvar( #"magic_box_explore_only") == "")
 	{
 		SetDvar( "magic_box_explore_only", "1" );
 	}
 
-	if(GetDvar("st_round_number") == "") {
+	if(GetDvar("st_round_number") == "")
+	{
 		SetDvar("st_round_number", 100);
 		level.round_number = 100;
 	}
@@ -1784,10 +1780,10 @@ onPlayerConnect_clientDvars()
 		//self SetClientDvar("r_enablePlayerShadow", 1); 
 	}
 
-	self SetClientDvar("hud_enemy_counter_value", "");
-	self SetClientDvar("hud_sph", "");
-	self setClientDvar("hud_tesla_kills", "");
-	self SetClientDvar("hud_zone_name", "");
+	self SetClientDvar("st_hud_enemy_counter_value", "");
+	self SetClientDvar("st_hud_sph", "");
+	self setClientDvar("st_hud_tesla_kills", "");
+	self SetClientDvar("st_hud_zone_name", "");
 }
 
 
@@ -4210,7 +4206,7 @@ round_think()
 		level.first_round = false;
 	}
 
-	round_pause( getDvarInt( "round_start_delay" ) );
+	round_pause( getDvarInt( "st_round_start_delay" ) );
 	
 	set_zombie_var( "zombie_powerup_drop_increment", 	100000 );
 	// level.zombie_move_speed = 105;
@@ -4223,7 +4219,7 @@ round_think()
 	
 	level.game_started = 1;
 	// lveez - if don't wait for this flag the next doc rounds gets reset
-	if (level.script == "zombie_pentagon" && getDvarInt( "turn_power_on" ) == 1)
+	if (level.script == "zombie_pentagon" && getDvarInt( "st_turn_power_on" ) == 1)
 	{
 		flag_wait( "power_on" );
 	}
@@ -4239,9 +4235,9 @@ round_think()
 	for( ;; )
 	{
 		// lveez - override special round if they changed option
-		if (getDvarInt("next_special_round") != level.next_special_round)
+		if (getDvarInt("st_next_special_round") != level.next_special_round)
 		{
-			level.next_special_round = getDvarInt("next_special_round");
+			level.next_special_round = getDvarInt("st_next_special_round");
 			override_next_special_round();
 		}
 
@@ -6929,12 +6925,12 @@ set_sidequest_completed(id)
 
 open_doors()
 {	
-	if( getDvar( "open_doors" ) == "" )
-		setDvar( "open_doors", 1 );
+	if( getDvar( "st_open_doors" ) == "" )
+		setDvar( "st_open_doors", 1 );
 
 	while(1)
 	{
-		if( getDvarInt( "open_doors" ) == 1 )
+		if( getDvar( "st_open_doors" ) == "1" )
 		{
 			doors = getentarray( "zombie_door", "targetname" );
 			for ( i = 0; i < doors.size; i++ )
@@ -7064,12 +7060,12 @@ custom_get_non_destroyed_chunks( barrier_chunks )
 
 open_windows()
 {	
-	if( getDvar( "open_windows" ) == "" )
-		setDvar( "open_windows", 1 );
+	if( getDvar( "st_open_windows" ) == "" )
+		setDvar( "st_open_windows", 1 );
 
 	while(1)
 	{
-		if( getDvarInt( "open_windows" ) == 1 )
+		if( getDvar( "st_open_windows" ) == "1" )
 		{
 			window_boards = getstructarray( "exterior_goal", "targetname" );
 
@@ -7210,12 +7206,12 @@ turn_on_power()
 {	
 	level waittill( "fade_introblack" );
 	
-	if( getDvar( "turn_power_on" ) == "" )
-		setDvar( "turn_power_on", 1 );
+	if( getDvar( "st_turn_power_on" ) == "" )
+		setDvar( "st_turn_power_on", 1 );
 
 	while(1)
 	{
-		if ( getDvarInt( "turn_power_on" ) == 1 )
+		if ( getDvarInt( "st_turn_power_on" ) == 1 )
 		{
 			if ( level.script == "zombie_theater" )
 			{
@@ -7430,10 +7426,10 @@ give_player_weapons()
 {	
 	level waittill( "fade_introblack" );
 
-	if(getDvar("give_weapons") == "")
-		setDvar("give_weapons", 1);
+	if(getDvar("st_give_weapons") == "")
+		setDvar("st_give_weapons", 1);
 
-	if(getDvarInt("give_weapons") == 0)
+	if(getDvarInt("st_give_weapons") == 0)
 		return;
 
 	switch ( Tolower( GetDvar( #"mapname" ) ) ) 
@@ -7549,7 +7545,7 @@ give_player_perks(player_revived)
 {	
 	perks = get_perk_list();
 
-	if(getdvar("set_perks") == "none") 
+	if(getdvar("st_set_perks") == "none") 
 	{
 		if (is_true(player_revived))
 		{
@@ -7560,7 +7556,7 @@ give_player_perks(player_revived)
 			}
 		}
 	}
-	else if(getDvar("set_perks") == "all") {
+	else if(getDvar("st_set_perks") == "all") {
 		for(i = 0; i < perks.size; i++) {
 			self maps\_zombiemode_perks::give_perk( perks[i], true );
 		}
@@ -7680,7 +7676,7 @@ set_player_weapon()
 	while(1)
 	{	
 		wait 0.05;
-		weapon = getDvar( "weapon_to_give" );
+		weapon = getDvar("st_weapon_to_give");
 		if( weapon == "" )
 			continue;
 		if( weapon == prev_weapon )
@@ -7705,7 +7701,7 @@ hud_sph()
 		if( level.zombie_total + get_enemy_count() == 0 )
 			current_time = level.current_round_end_time - level.current_round_start_time;
 		level.round_seconds_per_horde = int(current_time / hordes * 100) / 100;
-		self setClientDvar("hud_sph", level.round_seconds_per_horde);
+		self setClientDvar("st_hud_sph", level.round_seconds_per_horde);
 
 		wait 1;
 	}
@@ -7718,7 +7714,7 @@ hud_tesla_kills()
 
 	for ( ;; )
 	{
-		self setClientDvar("hud_tesla_kills", level.num_tesla_kills/level.tesla_shots);
+		self setClientDvar("st_hud_tesla_kills", level.num_tesla_kills/level.tesla_shots);
 		wait 1;
 	}
 }
@@ -8017,16 +8013,16 @@ hud_zombies_remaining() {
 
 		if( zombs == 0 || is_true(flag("enter_nml")) || is_true(flag("round_restarting")) )
 		{
-			if(GetDvar("hud_enemy_counter_value") != "0")
+			if(GetDvar("st_hud_enemy_counter_value") != "0")
 			{
-				self SetClientDvar("hud_enemy_counter_value", "0");
+				self SetClientDvar("st_hud_enemy_counter_value", "0");
 			}
 		}
 		else
 		{
-			if(GetDvarInt("hud_enemy_counter_value") != zombs)
+			if(GetDvarInt("st_hud_enemy_counter_value") != zombs)
 			{
-				self SetClientDvar("hud_enemy_counter_value", zombs);
+				self SetClientDvar("st_hud_enemy_counter_value", zombs);
 			}
 		}
 
@@ -8042,7 +8038,7 @@ insta_kill_rounds()
 	{
 
 		// set insta kill round if not already set
-		if (getDvarInt("round_insta") == 1 && level.zombie_health != -50)
+		if (getDvar("st_round_insta") == "1" && level.zombie_health != -50)
 		{
 
 			level.zombie_health = -50;
@@ -8057,7 +8053,7 @@ insta_kill_rounds()
 			}
 
 		}
-		else if (getDvarInt("round_insta") == 0 && level.zombie_health == -50)
+		else if (getDvar("st_round_insta") == "0" && level.zombie_health == -50)
 		{
 
 			ai_calculate_health( level.round_number );
@@ -8141,11 +8137,11 @@ get_doors_nearby()
 
 disable_powerup()
 {	
-	if( getDvar( "disable_powerups" ) == "")
-		setDvar( "disable_powerups", false );
+	if( getDvar( "st_disable_powerups" ) == "")
+		setDvar( "st_disable_powerups", false );
 	while(1)
 	{	
-		powerups = getDvarInt( "disable_powerups" );
+		powerups = getDvarInt( "st_disable_powerups" );
 		if ( powerups ) {
 			//Some places explicity check for "1" when comparing for true
 			level.mutators["mutator_noPowerups"] = "1";
@@ -8160,7 +8156,7 @@ disable_powerup()
 
 disable_special_zombies()
 {
-	if(getDvarInt("shang_special_zombies") == 1)
+	if(getDvar("st_shang_special_zombies") == "1")
 		return;
 
 	flag_wait( "all_players_spawned" );
@@ -8198,7 +8194,7 @@ zone_hud()
 
 		self send_message_to_csc("hud_anim_handler", "hud_zone_name_out");
 		wait .25;
-		self SetClientDvar("hud_zone_name", name);
+		self SetClientDvar("st_hud_zone_name", name);
 		self send_message_to_csc("hud_anim_handler", "hud_zone_name_in");
 	}
 }
@@ -8287,8 +8283,8 @@ health_bar_hud()
 	{
 		health_ratio = self.health / self.maxhealth;
 
-		self SetClientDvar("hud_health_bar_value", self.health);
-		self SetClientDvar("hud_health_bar_width", health_bar_width_max * health_ratio);
+		self SetClientDvar("st_hud_health_bar_value", self.health);
+		self SetClientDvar("st_hud_health_bar_width", health_bar_width_max * health_ratio);
 
 		wait 0.05;
 	}
@@ -8300,7 +8296,7 @@ zombies_per_horde() {
 	
 	oldZph = undefined;
 	while(1) {
-		zph = getDvarInt("zombies_per_horde");
+		zph = getDvarInt("st_zombies_per_horde");
 
 		if(zph != oldZph) {
 			level.zombie_ai_limit = zph;

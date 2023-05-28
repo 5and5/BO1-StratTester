@@ -49,9 +49,9 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 
 ### Round Settings
 - Set various starting rounds
-    - If you want to start on a round that is not in the options, you can do so with `/round_number <number>` and restarting.
+    - If you want to start on a round that is not in the options, you can do so with `/st_round_number <number>` and restarting.
 - Set a delay to navigate to where you need to start the round at game start
-    - You can set a custom delay by typing `/round_start_delay <number>`
+    - You can set a custom delay by typing `/st_round_start_delay <number>`
 - Toggle whether round has insta-kill like behavior or not (useful if you want to practice on rounds lower than 163)
 - Set the number of zombies per horde (useful for getting accurate SPH's on maps like COTD or Moon where there are only 23 normal zombies per horde due to a persistent boss holding the 24th slot).
 - Select the frequency of special rounds between every round, every 4 rounds every 5 rounds, or every 4/5 rounds (vanilla)

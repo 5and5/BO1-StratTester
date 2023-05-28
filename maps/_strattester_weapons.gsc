@@ -20,7 +20,7 @@ give_player_weapons()
 
     while (true)
     {
-        while (getDvar("give_weapons") == "0")
+        while (getDvar("st_give_weapons") == "0")
             wait 0.05;
 
         if (getDvar("st_award_melee") == "1")

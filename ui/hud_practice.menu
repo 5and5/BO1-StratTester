@@ -67,8 +67,8 @@
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
-			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("hud_enemy_counter_value"))	
-			visible				when(dvarInt(hud_enemy_counter_on) > 0)
+			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("st_hud_enemy_counter_value"))	
+			visible				when(dvarInt(st_hud_enemy_counter_on) > 0)
 			decoration
 		}
 
@@ -77,14 +77,14 @@
 			name				"sph_text"
 			type				ITEM_TYPE_TEXT
 			rect 				4 2 0 0		
-			exp					rect Y( 2 + (dvarInt(hud_enemy_counter_on) ) * 15 )
-			exp 				text(locString("MOD_SPH") + dvarString("hud_sph"))		//multiple exp's (expressions?) can be defined for different functions
+			exp					rect Y( 2 + (dvarInt(st_hud_enemy_counter_on) ) * 15 )
+			exp 				text(locString("MOD_SPH") + dvarString("st_hud_sph"))		//multiple exp's (expressions?) can be defined for different functions
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
-			visible				when(dvarInt(hud_sph_on) > 0)
+			visible				when(dvarInt(st_hud_sph_on) > 0)
 			decoration
 		}
 
@@ -93,14 +93,14 @@
 			name				"tesla_text"
 			type				ITEM_TYPE_TEXT
 			rect 				4 2 0 0		
-			exp					rect Y( 2 + (dvarInt(hud_enemy_counter_on)) * 15 + (dvarInt(hud_sph_on)) * 15 )
-			exp 				text(locString("MOD_TESLA") + dvarString("hud_tesla_kills"))		//multiple exp's (expressions?) can be defined for different functions
+			exp					rect Y( 2 + (dvarInt(st_hud_enemy_counter_on)) * 15 + (dvarInt(st_hud_sph_on)) * 15 )
+			exp 				text(locString("MOD_TESLA") + dvarString("st_hud_tesla_kills"))		//multiple exp's (expressions?) can be defined for different functions
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
-			visible				when(dvarInt(hud_tesla_on) > 0)
+			visible				when(dvarInt(st_hud_tesla_on) > 0)
 			decoration
 		}
 		
@@ -110,7 +110,7 @@
 	{
 		name "sprintMeter"
 		fullScreen MENU_FALSE
-		visible when(dvarInt(drawsprint) > 0)
+		visible when(dvarInt(st_drawsprint) > 0)
 		rect 0 0 40 10 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 
 
@@ -161,7 +161,7 @@
 			textfont	UI_FONT_EXTRABIG
 			textalign	ITEM_ALIGN_TOP_RIGHT
 			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9))
-			exp			text("Strat Tester " + dvarString("strat_tester_version"));
+			exp			text("Strat Tester " + dvarString("st_version"));
 			visible		1	
 		}
 
@@ -177,7 +177,7 @@
 			textfont	UI_FONT_NORMAL
 			textalign	ITEM_ALIGN_TOP_RIGHT
 			exp			text(locString("MOD_ROUND_TIME") + dvarString("hud_round_time"))
-			visible 	when(dvarInt(hud_timer) > 0)
+			visible 	when(dvarInt(st_hud_timer) > 0)
 			visible		1	
 		}
 	}
@@ -187,20 +187,20 @@
 		name				"zone_name"
 		rect				0 0 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
 		fullscreen			0
-		visible				when(dvarString("hud_zone_health_bar") =="zone" || dvarString("hud_zone_health_bar") == "both")
+		visible				when(dvarString("st_hud_zone_health_bar") =="zone" || dvarString("st_hud_zone_health_bar") == "both")
 
 		itemDef
 		{
 			name				"zone_name_text"
 			type				ITEM_TYPE_TEXT
 			rect 				4 -112.5 0 0
-			exp					rect Y(-112.5 + ((dvarString("hud_zone_health_bar") != "both") * 16))
+			exp					rect Y(-112.5 + ((dvarString("st_hud_zone_health_bar") != "both") * 16))
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_LEFT
-			exp					text(locString(toUpper(dvarString("hud_zone_name"))))
+			exp					text(locString(toUpper(dvarString("st_hud_zone_name"))))
 			visible				1
 			decoration
 
@@ -223,7 +223,7 @@
 		name				"health_bar"
 		rect				0 -111.5 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
 		fullscreen			0
-		visible				when(dvarString("hud_zone_health_bar") == "health" || dvarString("hud_zone_health_bar") == "both")
+		visible				when(dvarString("st_hud_zone_health_bar") == "health" || dvarString("st_hud_zone_health_bar") == "both")
 
 		itemDef
 		{
@@ -243,7 +243,7 @@
 			type				ITEM_TYPE_IMAGE
 			style				WINDOW_STYLE_SHADER
 			rect				2 2 110 10
-			exp					rect W(dvarInt("hud_health_bar_width"))
+			exp					rect W(dvarInt("st_hud_health_bar_width"))
 			foreColor			1 1 1 0.85
 			background			"white"
 			visible				1
@@ -260,7 +260,7 @@
 			textStyle			ITEM_TEXTSTYLE_SHADOWED
 			textFont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_CENTER
-			exp					text(dvarInt("hud_health_bar_value"))
+			exp					text(dvarInt("st_hud_health_bar_value"))
 			visible				1
 			decoration
 		}
