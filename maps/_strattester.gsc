@@ -60,7 +60,7 @@ init_strattester_dvars()
     // HUD dvars
     init_dvar("st_hud_timer", "1");
     init_dvar("st_drawsprint", "0");
-    init_dvar("st_hud_zone_health_bar", "0");
+    init_dvar("st_hud_zone_health_bar", "none");
 
     // Weapon dvars
     init_dvar("st_weapon_preset", "highround", true);
