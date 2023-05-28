@@ -219,6 +219,13 @@ strattester_give_weapon(weapon)
     else
         self giveWeapon(weapon);
 
+    if (weapon == "microwavegundw_upgraded_zm")
+        self GiveMaxAmmo("microwavegun_upgraded_zm");
+    else if (weapon == "microwavegundw_zm")
+        self GiveMaxAmmo("microwavegun_zm");
+    else if (weapon == "m16_gl_upgraded_zm")
+        self GiveMaxAmmo("gl_m16_upgraded_zm");
+
     self giveMaxAmmo(weapon);
     return true;
 }
