@@ -78,9 +78,7 @@ main()
 
 	// Special zombie types, dogs and quads.
 	level.custom_ai_type = [];
-	if(getDvar("st_astro_active") == "1") {
-		level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
-	}
+	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_astro::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_quad::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_dogs::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_faller::faller_init );
@@ -234,6 +232,8 @@ main()
 	level.ai_astro_explode = ::moon_push_zombies_when_astro_explodes;
 
 	level thread digger_dvar_activate();
+	maps\zombie_moon_strattester::init_strattester_moon_dvars();
+	thread maps\zombie_moon_strattester::astro_watcher();
 }
 
 digger_dvar_activate() {

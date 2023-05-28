@@ -116,6 +116,11 @@
 				setDvar st_round_start_delay 3;
 			}
 
+			if(dvarString(st_point_drop_increment) == "")
+			{
+				setDvar st_point_drop_increment 50000;
+			}
+
 			if(dvarString(st_disable_powerups) == "")
 			{
 				setDvar st_disable_powerups 1;
@@ -531,6 +536,9 @@
 		}, ;, when(dvarString("ui_options_game_popup") == "perk_drop_options" && ( dvarString("mapname") == "zombie_pentagon" || dvarString("mapname") == "zombie_cosmodrome" 
 				|| dvarString("mapname") == "zombie_coast" || dvarString("mapname") == "zombie_moon") ))
 
+		CHOICE_DVARSTRINGLIST_VIS(6, "POINT DROP INCREMENT", st_point_drop_increment, { 
+			"@MOD_OFF" 0 "2000" 2000 "5000" 5000 "10000" 10000 "20000" 20000 "30000" 30000 "50000" 50000 "100000" 100000 "250000" 250000
+		}, ;, when(dvarString("ui_options_game_popup") == "perk_drop_options" && dvarInt(disable_powerups) == 0))
 
 		// GAME OPTIONS
 

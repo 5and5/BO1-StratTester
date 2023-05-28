@@ -7247,6 +7247,8 @@ turn_on_power()
 			else if ( level.script == "zombie_moon" )
 			{
 				flag_wait("teleporter_used");
+				// lveez - wait_network_frame here to stop sound bugging to be permanently low gravity
+				wait(0.2);
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
@@ -7880,20 +7882,23 @@ insta_kill_rounds()
 		// set insta kill round if not already set
 		if (getDvar("st_round_insta") == "1" && level.zombie_health != -50)
 		{
-
-			level.zombie_health = -50;
+			/* lveez - this is the health on round 163*/
+			level.zombie_health = -2055759567;
 
 			// set zombie health for all currently alive zombies
 			zombies = GetAiArray( "axis" );
 			for (i = 0; i < zombies.size; i++)
 			{
-
+				if (zombies[i].targetname == "astronaut_zombie_ai")
+				{
+					continue;
+				}
+				
 				zombies[i].health = 150;
-
 			}
 
 		}
-		else if (getDvar("st_round_insta") == "0" && level.zombie_health == -50)
+		else if (getDvar("st_round_insta") == "0" && level.zombie_health == -2055759567)
 		{
 
 			ai_calculate_health( level.round_number );
