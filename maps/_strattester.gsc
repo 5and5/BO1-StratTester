@@ -93,7 +93,7 @@ init_strattester_dvars()
     init_dvar("st_digger_t11", "0");
     init_dvar("st_digger_bio", "0");
     init_dvar("st_shang_special_zombies", "0");
-    init_dvar("st_astro_active", "0");
+    init_dvar("st_astro_active", "0", true);
 }
 
 init_strattester_client_dvars()

@@ -232,7 +232,6 @@ main()
 	level.ai_astro_explode = ::moon_push_zombies_when_astro_explodes;
 
 	level thread digger_dvar_activate();
-	maps\zombie_moon_strattester::init_strattester_moon_dvars();
 	thread maps\zombie_moon_strattester::astro_watcher();
 }
 
