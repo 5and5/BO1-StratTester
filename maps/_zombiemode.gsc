@@ -4376,7 +4376,7 @@ ai_calculate_health( round_number )
 	}
 
 	if (getDvar("st_round_insta") == "off" && level.zombie_health < 150)
-		level.zombie_health = 2035643393;
+		ai_calculate_health(162);
 	else if (getDvar("st_round_insta") == "on" & level.zombie_health > 150)
 		ai_calculate_health(163);
 }
