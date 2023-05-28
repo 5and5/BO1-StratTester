@@ -7541,6 +7541,8 @@ get_perk_list() {
 hud_sph()
 {
 	level endon("end_game");
+	self setClientDvar("st_hud_sph", 0);
+
     level waittill ( "start_of_round" );
 	
 	while(1)
@@ -7832,6 +7834,8 @@ update_time(time, timer) {
 round_time() 
 {
 	level.round_time = 0;
+	update_time(level.round_time, "hud_round_time");
+	level waittill("start_of_round");
 
 	while(1) 
 	{
