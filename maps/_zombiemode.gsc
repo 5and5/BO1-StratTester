@@ -7829,30 +7829,16 @@ update_time(time, timer) {
 	}
 }
 
-round_time() {
-
+round_time() 
+{
 	level.round_time = 0;
 
-	level thread round_time_watcher();
-
-	while(1) {
-		level.round_time++;
+	while(1) 
+	{
+		level.round_time = int(gettime() / 1000) - level.current_round_start_time;
 		update_time(level.round_time, "hud_round_time");
-		wait(1);
+		wait(0.5);
 	}
-}
-
-round_time_watcher(roundTime) {
-
-	level endon("end_game");
-
-	while(1) {
-		level waittill("start_of_round");
-		level.round_time = 0;
-		wait(1);
-	}
-
-
 }
 
 hud_zombies_remaining() {
