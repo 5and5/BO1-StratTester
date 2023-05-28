@@ -162,6 +162,10 @@ finish_round()
     while (true)
     {
         level waittill("st_finish_round_changed");
+
+        if (isDefined(level.round_end_forbidden_func) && [[level.round_end_forbidden_func]]())
+            continue;
+
         level.zombie_total = 0;
         test_ent = undefined;
 
