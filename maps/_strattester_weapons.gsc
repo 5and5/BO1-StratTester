@@ -60,16 +60,6 @@ give_player_weapons()
     }
 }
 
-initialize_weapon_dvars_for_player(wpn_array)
-{
-    for (i = 0; i < wpn_array.size; i++)
-    {
-        dvar = "st_" + self.entity_num + "_" + wpn_array[i];
-        if (getDvar(dvar) == "")
-            setDvar(dvar, "");
-    }
-}
-
 get_weapon_settings(wpn_array)
 {
     if (!isDefined(wpn_array))

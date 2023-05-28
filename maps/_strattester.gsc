@@ -7,7 +7,6 @@ spawn_strattester_player()
 
     /* Logic for weapons given on spawn */
     wpn_array = array("wpn1", "wpn2", "wpn3");
-    self maps\_strattester_weapons::initialize_weapon_dvars_for_player(wpn_array);
     weapons_array = self maps\_strattester_weapons::get_weapon_settings(wpn_array);
     tactical_id = self maps\_strattester_weapons::get_tactical_setting();
 
