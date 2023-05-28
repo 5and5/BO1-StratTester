@@ -1906,7 +1906,6 @@ onPlayerSpawned()
 				self thread insta_kill_rounds();				
 				self thread give_player_perks();
 				self thread maps\_strattester_weapons::give_player_weapons();
-				self thread set_player_weapon();
 				self thread zone_hud();
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
