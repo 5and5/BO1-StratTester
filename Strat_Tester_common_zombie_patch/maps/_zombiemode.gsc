@@ -1914,7 +1914,6 @@ onPlayerSpawned()
 				self thread insta_kill_rounds();				
 				self thread give_player_perks();
 				self thread give_player_weapons();
-				self thread set_player_weapon();
 				self thread zone_hud();
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
@@ -7666,26 +7665,6 @@ get_perk_list() {
 		perks[perks.size] = vending_triggers[i].script_noteworthy;
 	}
 	return perks;
-}
-
-set_player_weapon()
-{	
-	level waittill( "fade_introblack" );
-	prev_weapon = "";
-
-	while(1)
-	{	
-		wait 0.05;
-		weapon = getDvar("st_weapon_to_give");
-		if( weapon == "" )
-			continue;
-		if( weapon == prev_weapon )
-			continue;
-
-		self maps\_zombiemode_weapons::weapon_give( weapon );
-		prev_weapon = weapon;
-	}
-
 }
 
 hud_sph()

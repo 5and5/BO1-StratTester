@@ -210,7 +210,7 @@ strattester_give_weapon(weapon)
     if (!isDefined(level.zombie_weapons[weapon]) && !maps\_zombiemode_weapons::is_weapon_upgraded(weapon))
     {
         // maps\_strattester::debug_print("Can't find weapon: " + weapon);
-        return;
+        return false;
     }
 
     maps\_strattester::debug_print("weapon: " + weapon);
@@ -220,6 +220,7 @@ strattester_give_weapon(weapon)
         self giveWeapon(weapon);
 
     self giveMaxAmmo(weapon);
+    return true;
 }
 
 strattester_give_tacticals(func)

@@ -7529,26 +7529,6 @@ get_perk_list() {
 	return perks;
 }
 
-set_player_weapon()
-{	
-	level waittill( "fade_introblack" );
-	prev_weapon = "";
-
-	while(1)
-	{	
-		wait 0.05;
-		weapon = getDvar("st_weapon_to_give");
-		if( weapon == "" )
-			continue;
-		if( weapon == prev_weapon )
-			continue;
-
-		self maps\_zombiemode_weapons::weapon_give( weapon );
-		prev_weapon = weapon;
-	}
-
-}
-
 hud_sph()
 {
 	level endon("end_game");

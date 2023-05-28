@@ -109,7 +109,7 @@ Add to the strat tester config (Call of Duty Black Ops\players\mods\Strat Tester
 - `bind F4 "toggle timescale 5 1"` binds 5x timescale toggle to F4
 - `bind F8 "give m16_gl_upgraded_zm"` binds give upgraded m16 to F8
 
-### List of Weapon Commands
+### List of Weapon Commands (host only)
 Remove the "upgraded" for none papped version
 
 - `/give explosive_bolt_upgraded_zm` Upgraded crossbow

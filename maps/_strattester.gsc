@@ -70,7 +70,7 @@ init_strattester_dvars()
     init_dvar("st_award_hacker", "1");
     init_dvar("st_use_cfg_weapons", "0");
     init_dvar("st_give_weapons", "1");
-    init_dvar("st_weapon_to_give", "");
+    init_dvar("st_weapon_to_give", "", true);
 
     // Perks & drops dvars
     init_dvar("st_set_perks", "all");
