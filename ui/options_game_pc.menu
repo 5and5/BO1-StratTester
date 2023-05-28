@@ -251,6 +251,11 @@
 				setDvar st_ammo_refill "0";
 			}
 
+			if (dvarString(st_finish_round) == "")
+			{
+				setDvar st_finish_round "0";
+			}
+
 
 			LOCAL_CLOSE_ALL_BUT( options_game )
 			
@@ -338,17 +343,18 @@
 		FRAME_CHOICE_DVARFLOATLIST_VIS( 24, "@MOD_HUD_FOVSCALE", cg_fovScale_settings, { "1.000" 1 "1.025" 1.025 "1.050" 1.05 "1.075" 1.075 "1.100" 1.1 "1.125" 1.125 "1.150" 1.15 "1.175" 1.175 "1.200" 1.2 "1.225" 1.225 "1.250" 1.25 "1.275" 1.275 "1.300" 1.3 }, ;, 1 )
 		FRAME_CHOICE_DVARFLOATLIST_VIS( 25, "@MOD_MAX_FPS", com_maxfps, { "60" 60 "90" 90 "120" 120 "125" 125 "144" 144 "240" 240 "250" 250 "@MPUI_RULES_UNLIMITED_CAPS" 0 }, ;, 1 )
 		FRAME_CHOICE_DVARYESNO_VIS( 26, "@MENU_MATURE_CAPS", cg_mature, ;, 1 )
+		FRAME_CHOICE_DVARSTRINGLIST_VIS( 27, "@MOD_FINISH_ROUND", st_finish_round, { "@MOD_PRESS_ME"; "1"; "@MOD_PRESS_ME"; "0" }, ;, 1)
 
 
-		FRAME_CHOICE_SECTION_TITLE( 27, "@MOD_SETTINGS" )
+		FRAME_CHOICE_SECTION_TITLE( 28, "@MOD_SETTINGS" )
 
-		FRAME_CHOICE_BUTTON_VIS( 28, "@MOD_HUD_OPTIONS", setdvar ui_options_game_popup "hud_options"; open mature_content_pc_disable_warning, 1 )
-		FRAME_CHOICE_BUTTON_VIS( 29, "@MOD_ROUND_OPTIONS", setdvar ui_options_game_popup "round_options"; open mature_content_pc_disable_warning, 1 )		
-		FRAME_CHOICE_BUTTON_VIS( 30, "@MOD_BOX_LOCATION_OPTIONS", setdvar ui_options_game_popup "initial_box_locations"; open mature_content_pc_disable_warning, 1)	
-		FRAME_CHOICE_BUTTON_VIS( 31, "@MOD_PERK_DROP_OPTIONS", setdvar ui_options_game_popup "perk_drop_options"; open mature_content_pc_disable_warning, 1)	
-		FRAME_CHOICE_BUTTON_VIS( 32, "@MOD_GAME_OPTIONS", setdvar ui_options_game_popup "game_options"; open mature_content_pc_disable_warning, 1)	
-		FRAME_CHOICE_BUTTON_VIS( 33, "@MOD_WEAPON_OPTIONS", setdvar ui_options_game_popup "weapon_options"; open mature_content_pc_disable_warning, 1)	
-		FRAME_CHOICE_BUTTON_VIS( 34, "@MOD_MAP_OPTIONS", setdvar ui_options_game_popup "map_options"; open mature_content_pc_disable_warning, 1)
+		FRAME_CHOICE_BUTTON_VIS( 29, "@MOD_HUD_OPTIONS", setdvar ui_options_game_popup "hud_options"; open mature_content_pc_disable_warning, 1 )
+		FRAME_CHOICE_BUTTON_VIS( 30, "@MOD_ROUND_OPTIONS", setdvar ui_options_game_popup "round_options"; open mature_content_pc_disable_warning, 1 )		
+		FRAME_CHOICE_BUTTON_VIS( 31, "@MOD_BOX_LOCATION_OPTIONS", setdvar ui_options_game_popup "initial_box_locations"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 32, "@MOD_PERK_DROP_OPTIONS", setdvar ui_options_game_popup "perk_drop_options"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 33, "@MOD_GAME_OPTIONS", setdvar ui_options_game_popup "game_options"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 34, "@MOD_WEAPON_OPTIONS", setdvar ui_options_game_popup "weapon_options"; open mature_content_pc_disable_warning, 1)	
+		FRAME_CHOICE_BUTTON_VIS( 35, "@MOD_MAP_OPTIONS", setdvar ui_options_game_popup "map_options"; open mature_content_pc_disable_warning, 1)
 
 
 

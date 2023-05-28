@@ -57,6 +57,8 @@ init_strattester_dvars()
     init_dvar("st_disable_powerups", "1");
     init_dvar("st_zombies_per_horde", "24");
 
+    init_dvar("st_finish_round", "0", true);  // With this doesn't matter what value, can be either 0 or 1, watcher is the most important
+
     // HUD dvars
     init_dvar("st_hud_timer", "1");
     init_dvar("st_drawsprint", "0");
@@ -151,4 +153,47 @@ evaluate_backspeed()
 
     level waittill("st_backspeed_fix_changed");
     self thread evaluate_backspeed();
+}
+
+finish_round()
+{
+    level endon("end_game");
+
+    while (true)
+    {
+        level waittill("st_finish_round_changed");
+        level.zombie_total = 0;
+
+        on_the_map = GetAiSpeciesArray("axis");
+        for (i = 0; i < on_the_map.size; i++)
+        {
+            if (!isDefined(on_the_map[i].animname))
+                continue;
+
+            switch (on_the_map[i].animname)
+            {
+                case "director_zombie":
+                case "ape_zombie":
+                case "monkey_zombie":
+                case "zombie_dog":
+                case "thief_zombie":
+                case "astro_zombie":
+                    is_special = true;
+                    break;
+                default:
+                    is_special = false;
+            }
+
+            if (!is_true(is_special))
+            {
+                dmg = on_the_map[i].health + 1;
+                if (dmg < 150)
+                    dmg = 150;
+                on_the_map[i] doDamage(dmg, on_the_map[i].origin);
+            }
+        }
+
+        level waittill("start_of_round");
+    }
+
 }
