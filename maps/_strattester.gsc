@@ -163,6 +163,7 @@ finish_round()
     {
         level waittill("st_finish_round_changed");
         level.zombie_total = 0;
+        test_ent = undefined;
 
         on_the_map = GetAiSpeciesArray("axis");
         for (i = 0; i < on_the_map.size; i++)
@@ -186,12 +187,18 @@ finish_round()
 
             if (!is_true(is_special))
             {
-                dmg = on_the_map[i].health + 1;
-                if (dmg < 150)
-                    dmg = 150;
+                dmg = on_the_map[i].health + 666;
+                if (dmg < 150 || dmg > 2147483647)
+                    dmg = 2147483647;
                 on_the_map[i] doDamage(dmg, on_the_map[i].origin);
+
+                if (isAlive(on_the_map[i]))
+                    test_ent = on_the_map[i];
             }
         }
+
+        if (isDefined(test_ent))
+            debug_print("after dmg: " + test_ent.health);
 
         level waittill("start_of_round");
     }
