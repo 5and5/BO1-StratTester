@@ -146,6 +146,7 @@ main()
 
 	level thread maps\_strattester::finish_round();
 	level thread maps\_strattester::instaround_toggle_watcher();
+	level thread maps\_strattester::zombies_per_horde();
 
 	init_utility();
 	maps\_utility::registerClientSys("zombify");	// register a client system...
@@ -1914,7 +1915,6 @@ onPlayerSpawned()
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
 				self thread hud_tesla_kills();
-				self thread zombies_per_horde();
 				self thread tesla_watcher();
 				
 				wait(2);
@@ -8091,22 +8091,6 @@ health_bar_hud()
 		self SetClientDvar("st_hud_health_bar_width", health_bar_width_max * health_ratio);
 
 		wait 0.05;
-	}
-}
-
-zombies_per_horde() {
-	self endon("death");
-	self endon("disconnect");
-	
-	oldZph = undefined;
-	while(1) {
-		zph = getDvarInt("st_zombies_per_horde");
-
-		if(zph != oldZph) {
-			level.zombie_ai_limit = zph;
-			oldZph = zph;
-		}
-		wait(1);
 	}
 }
 

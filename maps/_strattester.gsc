@@ -55,7 +55,7 @@ init_strattester_dvars()
     init_dvar("st_next_special_round", "0");
     init_dvar("st_round_start_delay", "3");
     init_dvar("st_disable_powerups", "1");
-    init_dvar("st_zombies_per_horde", "24");
+    init_dvar("st_zombies_per_horde", "24", true);
 
     init_dvar("st_finish_round", "0", true);  // With this doesn't matter what value, can be either 0 or 1, watcher is the most important
 
@@ -213,4 +213,16 @@ instaround_toggle_watcher()
         level waittill("st_round_insta_changed");
         level notify("st_finish_round_changed");
     }
+}
+
+zombies_per_horde()
+{
+	level endon("end_game");
+	
+	while (true) 
+	{
+        level waittill("st_zombies_per_horde_changed");
+        level.zombie_ai_limit = getDvarInt("st_zombies_per_horde");
+        SetAILimit(level.zombie_ai_limit);
+	}
 }
