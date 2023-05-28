@@ -50,6 +50,12 @@ give_player_weapons()
 
         self switchToWeapon(self.strattester.weapon1);
 
+        /*
+        all_weapons = self getWeaponsList();
+        for (i = 0; i < all_weapons.size; i++)
+            maps\_strattester::debug_print(all_weapons[i]);
+        */
+
         // Initialize that dvar to 1 in gsc
         if (getDvar("st_award_hacker") == "1" && level.script == "zombie_moon")
             self award_hacker();
@@ -111,7 +117,7 @@ get_weapon_default(array_index, index)
 
     weapon_preset = getDvar("st_weapon_preset");
     p = get_players().size;
-    maps\_strattester::debug_print("weapon_preset: " + weapon_preset + " index: " + index);
+    // maps\_strattester::debug_print("weapon_preset: " + weapon_preset + " index: " + index);
 
     /*
         Presets:
@@ -213,7 +219,7 @@ strattester_give_weapon(weapon)
         return false;
     }
 
-    maps\_strattester::debug_print("weapon: " + weapon);
+    // maps\_strattester::debug_print("weapon: " + weapon);
     if (isSubStr(weapon, "upgraded"))
         self giveWeapon(weapon, 0, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options(weapon));
     else
