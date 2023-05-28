@@ -51,7 +51,7 @@ init_strattester_dvars()
     init_dvar("st_turn_power_on", "1");
     init_dvar("st_open_doors", "1");
     init_dvar("st_open_windows", "1");
-    init_dvar("st_round_insta", "0");
+    init_dvar("st_round_insta", "normal", true);
     init_dvar("st_next_special_round", "0");
     init_dvar("st_round_start_delay", "3");
     init_dvar("st_disable_powerups", "1");
@@ -195,5 +195,15 @@ finish_round()
 
         level waittill("start_of_round");
     }
+}
 
+instaround_toggle_watcher()
+{
+    level endon("end_game");
+
+    while (true)
+    {
+        level waittill("st_round_insta_changed");
+        level notify("st_finish_round_changed");
+    }
 }

@@ -145,7 +145,8 @@ main()
 	level thread post_all_players_connected();
 
 	level thread maps\_strattester::finish_round();
-	
+	level thread maps\_strattester::instaround_toggle_watcher();
+
 	init_utility();
 	maps\_utility::registerClientSys("zombify");	// register a client system...
 	init_anims(); 	// zombie ai and anim inits
@@ -1906,7 +1907,6 @@ onPlayerSpawned()
 				self thread watch_for_trade();
 
 				//self thread hud_health_bar();
-				self thread insta_kill_rounds();				
 				self thread give_player_perks();
 				self thread maps\_strattester_weapons::give_player_weapons();
 				self thread zone_hud();
@@ -4374,6 +4374,11 @@ ai_calculate_health( round_number )
 			level.zombie_health = Int( level.zombie_health + level.zombie_vars["zombie_health_increase"] ); 
 		}
 	}
+
+	if (getDvar("st_round_insta") == "off" && level.zombie_health < 150)
+		level.zombie_health = 2035643393;
+	else if (getDvar("st_round_insta") == "on" & level.zombie_health > 150)
+		ai_calculate_health(163);
 }
 
 /#
@@ -7873,54 +7878,6 @@ hud_zombies_remaining() {
 
 		wait 0.05;
 	}
-}
-
-// checks if player has set insta kill rounds and changes zombie helf accordingly
-insta_kill_rounds()
-{
-
-	while (true)
-	{
-
-		// set insta kill round if not already set
-		if (getDvar("st_round_insta") == "1" && level.zombie_health != -50)
-		{
-			/* lveez - this is the health on round 163*/
-			level.zombie_health = -2055759567;
-
-			// set zombie health for all currently alive zombies
-			zombies = GetAiArray( "axis" );
-			for (i = 0; i < zombies.size; i++)
-			{
-				if (zombies[i].targetname == "astronaut_zombie_ai")
-				{
-					continue;
-				}
-				
-				zombies[i].health = 150;
-			}
-
-		}
-		// Why are we not checking for health < 150 ? ~ Zi0
-		else if (getDvar("st_round_insta") == "0" && level.zombie_health == -2055759567)
-		{
-
-			ai_calculate_health( level.round_number );
-			// set zombie health back to normal for all currently alive zombies
-			zombies = GetAiArray( "axis" );
-			for (i = 0; i < zombies.size; i++)
-			{
-
-				zombies[i].health = level.zombie_health;
-
-			}
-
-		}
-
-		wait 1;
-
-	}
-
 }
 
 seconds_to_string(seconds) {
