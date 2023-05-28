@@ -1,5 +1,6 @@
 *.files
 *.tmp
+*.ff
 console.log
 missingasset.csv
 
