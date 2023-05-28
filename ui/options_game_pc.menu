@@ -714,7 +714,7 @@
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && ( dvarString("mapname") == "zombie_theater" || dvarString("mapname") == "zombie_moon" || dvarString("mapname") == "zombie_pentagon" ) ) )
 
-		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_ASTRO_ACTIVE", astro_active, {
+		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_ASTRO_ACTIVE", st_astro_active, {
 			"@MOD_ENABLED" 1
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_moon"  ) )

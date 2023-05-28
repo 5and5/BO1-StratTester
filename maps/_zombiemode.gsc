@@ -7268,7 +7268,7 @@ turn_on_power()
 			{
 				flag_wait("teleporter_used");
 				// lveez - wait_network_frame here to stop sound bugging to be permanently low gravity
-				wait_network_frame();
+				wait(0.2);
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
 
