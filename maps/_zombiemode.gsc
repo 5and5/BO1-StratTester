@@ -7920,23 +7920,25 @@ insta_kill_rounds()
 	{
 
 		// set insta kill round if not already set
-		if (getDvarInt("round_insta") == 1 && level.zombie_health != -50)
+		if (getDvarInt("round_insta") == 1 && level.zombie_health != -2055759567)
 		{
-
-			level.zombie_health = -50;
+			/* lveez - this is the health on round 163*/
+			level.zombie_health = -2055759567;
 
 			// set zombie health for all currently alive zombies
 			zombies = GetAiArray( "axis" );
 			for (i = 0; i < zombies.size; i++)
 			{
-				if (zombies.targetname == "astronaut_zombie_ai")
+				if (zombies[i].targetname == "astronaut_zombie_ai")
+				{
 					continue;
+				}
 				
 				zombies[i].health = 150;
 			}
 
 		}
-		else if (getDvarInt("round_insta") == 0 && level.zombie_health == -50)
+		else if (getDvarInt("round_insta") == 0 && level.zombie_health == -2055759567)
 		{
 
 			ai_calculate_health( level.round_number );
