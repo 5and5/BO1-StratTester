@@ -343,8 +343,6 @@
 		FRAME_CHOICE_DVARFLOATLIST_VIS( 24, "@MOD_HUD_FOVSCALE", cg_fovScale_settings, { "1.000" 1 "1.025" 1.025 "1.050" 1.05 "1.075" 1.075 "1.100" 1.1 "1.125" 1.125 "1.150" 1.15 "1.175" 1.175 "1.200" 1.2 "1.225" 1.225 "1.250" 1.25 "1.275" 1.275 "1.300" 1.3 }, ;, 1 )
 		FRAME_CHOICE_DVARFLOATLIST_VIS( 25, "@MOD_MAX_FPS", com_maxfps, { "60" 60 "90" 90 "120" 120 "125" 125 "144" 144 "240" 240 "250" 250 "@MPUI_RULES_UNLIMITED_CAPS" 0 }, ;, 1 )
 		FRAME_CHOICE_DVARYESNO_VIS( 26, "@MENU_MATURE_CAPS", cg_mature, ;, 1 )
-		FRAME_CHOICE_DVARSTRINGLIST_VIS( 27, "@MOD_FINISH_ROUND", st_finish_round, { "@MOD_PRESS_ME"; "1"; "@MOD_PRESS_ME"; "0" }, ;, 1)
-
 
 		FRAME_CHOICE_SECTION_TITLE( 28, "@MOD_SETTINGS" )
 
@@ -406,12 +404,12 @@
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_ROUND_OPTIONS", when(dvarString("ui_options_game_popup") == "round_options") )
 		
-		CHOICE_DVARFLOATLIST_VIS( 2, "@MOD_ROUND_NUMBER", st_round_number, { "1" 1 "10" 10 "20" 20 "25" 25 "30" 30 "35" 35 "40" 40 "50" 50 "70" 70 "100" 100 "150" 150 "163" 163 "200" 200}, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-		CHOICE_DVARFLOATLIST_VIS( 3, "@MOD_ROUND_START_DELAY", st_round_start_delay, {  "3" 3 "5" 5 "10" 10 "20" 20 "30" 30 "45" 45 "60" 60 "90" 90 "120" 120 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-		CHOICE_DVARSTRINGLIST_VIS( 4, "@MOD_ROUND_INSTA", st_round_insta, { "@MOD_UNCHANGED"; "normal"; "@MOD_OFF"; "off"; "@MOD_ON"; "on" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_ZOMBIES_PER_HORDE", st_zombies_per_horde, { "24" 24 "23" 23 "22" 22 "21" 21 "20" 20 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-		CHOICE_DVARFLOATLIST_VIS( 6, "@MOD_SPECIAL_ROUND", st_next_special_round, { "@MOD_OFF" 0 "4/5" 1 "4" 2 "5" 3 "EVERY ROUND" 4 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
-		
+		CHOICE_DVARFLOATLIST_VIS( 1, "@MOD_ROUND_NUMBER", st_round_number, { "1" 1 "10" 10 "20" 20 "25" 25 "30" 30 "35" 35 "40" 40 "50" 50 "70" 70 "100" 100 "150" 150 "163" 163 "200" 200}, ;, when(dvarString("ui_options_game_popup") == "round_options"))
+		CHOICE_DVARFLOATLIST_VIS( 2, "@MOD_ROUND_START_DELAY", st_round_start_delay, {  "3" 3 "5" 5 "10" 10 "20" 20 "30" 30 "45" 45 "60" 60 "90" 90 "120" 120 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
+		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_ROUND_INSTA", st_round_insta, { "@MOD_UNCHANGED"; "normal"; "@MOD_OFF"; "off"; "@MOD_ON"; "on" }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
+		CHOICE_DVARSTRINGLIST_VIS( 4, "@MOD_ZOMBIES_PER_HORDE", st_zombies_per_horde, { "24" 24 "23" 23 "22" 22 "21" 21 "20" 20 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
+		CHOICE_DVARFLOATLIST_VIS( 5, "@MOD_SPECIAL_ROUND", st_next_special_round, { "@MOD_OFF" 0 "4/5" 1 "4" 2 "5" 3 "EVERY ROUND" 4 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
+		CHOICE_DVARFLOATLIST_VIS( 6, "@MOD_FINISH_ROUND", st_finish_round, { "@MOD_PRESS_ME" 1 "@MOD_PRESS_ME" 0 }, ;, when(dvarString("ui_options_game_popup") == "round_options"))
  
 
 		// BOX LOCATIONS OPTIONS
