@@ -149,6 +149,7 @@ main()
 	level thread maps\_strattester::zombies_per_horde();
 
 	init_utility();
+	registerClientSys("client_systems");
 	maps\_utility::registerClientSys("zombify");	// register a client system...
 	init_anims(); 	// zombie ai and anim inits
 
