@@ -786,15 +786,20 @@
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_moon"  ) )
 
-		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_TESLA", st_hud_tesla_on, {
-			"@MOD_ENABLED" 1
-			"@MOD_DISABLED" 0
-		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_cod5_factory"  ) )
-
-		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_SPECIAL_ZOMBIES", st_shang_special_zombies, {
+				CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_SPECIAL_ZOMBIES", st_shang_special_zombies, {
 			"@MOD_ENABLED" 1
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("mapname") == "zombie_temple" && dvarString("ui_options_game_popup") == "map_options"))
+
+		CHOICE_DVARFLOATLIST_VIS(2, "@MOD_HUD_KILLS_PER_SHOT", st_hud_kills_per_shot_on, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
+		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && (dvarString("mapname") == "zombie_cod5_factory" || dvarString("mapname") == "zombie_cod5_prototype" || dvarString("mapname") == "zombie_cod5_sumpf" || dvarString("mapname") == "zombie_cosmodrome" || dvarString("mapname") == "zombie_theater") ) )
+		
+		CHOICE_DVARFLOATLIST_VIS(6, "@MOD_HUD_KILLS_PER_SHOT", st_hud_kills_per_shot_on, {
+			"@MOD_ENABLED" 1
+			"@MOD_DISABLED" 0
+		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_moon"  ) )
 
 
 

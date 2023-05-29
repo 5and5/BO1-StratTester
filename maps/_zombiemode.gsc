@@ -1914,8 +1914,8 @@ onPlayerSpawned()
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();
 				self thread hud_sph();
-				self thread hud_tesla_kills();
-				self thread tesla_watcher();
+				self thread hud_wonder_weapon_kills();
+				self thread wonder_weapon_kills_watcher();
 				
 				wait(2);
 				self.score = 500000;
@@ -1930,16 +1930,21 @@ onPlayerSpawned()
 	}
 }
 
-tesla_watcher()
+wonder_weapon_kills_watcher()
 {
-	level.tesla_shots = 0;
+	self.wonder_weapon_shots = 0;
+	self.wonder_weapon_kills = 0;
+
 	for ( ;; )
 	{
 		self waittill( "weapon_fired", weapon );
-		if (weapon == "tesla_gun_zm" || weapon == "tesla_gun_upgraded_zm")
-		{
-			level.tesla_shots++;
-		}
+
+			if (weapon == "thundergun_zm" || weapon == "thundergun_upgraded_zm" ||
+				weapon == "tesla_gun_zm" || weapon == "tesla_gun_upgraded_zm" ||
+				weapon == "microwavegun_zm" || weapon == "microwavegun_upgraded_zm")
+			{
+				self.wonder_weapon_shots++;
+			}
 	}
 }
 
@@ -4224,6 +4229,13 @@ round_think()
 
 	for( ;; )
 	{
+		players = get_players();
+		for( i = 0; i < players.size; i++ )
+		{
+			players[i].wonder_weapon_kills = 0;
+			players[i].wonder_weapon_shots = 0;
+		}
+
 		// lveez - override special round if they changed option
 		if (getDvarInt("st_next_special_round") != level.next_special_round)
 		{
@@ -4297,10 +4309,6 @@ round_think()
 		//reset kill tracker at the beginning of every round -TTS
 		level.global_zombies_killed_round = 0;
 		level.current_round_start_time = int(gettime() / 1000);
-
-		//level thread hud_sph();
-		level.num_tesla_kills = 0;
-		level.tesla_shots = 0;
 
 		//iprintln("Round " + level.round_number + ": " + level.zombie_vars["zombie_spawn_delay"]);
 
@@ -7559,14 +7567,17 @@ hud_sph()
 	}
 }
 
-hud_tesla_kills()
+hud_wonder_weapon_kills()
 {
 	level endon("end_game");
     level waittill ( "start_of_round" );
 
+	self setClientDvar("st_hud_kills_per_shot", "0");
+
 	for ( ;; )
 	{
-		self setClientDvar("st_hud_tesla_kills", level.num_tesla_kills/level.tesla_shots);
+		kill_avg = int(self.wonder_weapon_kills / self.wonder_weapon_shots * 100) / 100; // only 2 decimal places
+		self setClientDvar("st_hud_kills_per_shot", kill_avg);
 		wait 1;
 	}
 }

@@ -3854,9 +3854,11 @@ zombie_death_event( zombie )
 		attacker = zombie.attacker;
 		weapon = zombie.damageWeapon;
 
-		if (zombie maps\_zombiemode_weap_tesla::enemy_killed_by_tesla())
+		if (zombie maps\_zombiemode_weap_tesla::enemy_killed_by_tesla() ||
+		 	zombie maps\_zombiemode_weap_thundergun::enemy_killed_by_thundergun() ||
+			is_true( zombie.microwavegun_death ))
 		{
-			level.num_tesla_kills++;
+			zombie.attacker.wonder_weapon_kills++;
 		}
 
 		bbPrint( "zombie_kills: round %d zombietype zombie damagetype %s damagelocation %s playername %s playerweapon %s playerx %f playery %f playerz %f zombiex %f zombiey %f zombiez %f",

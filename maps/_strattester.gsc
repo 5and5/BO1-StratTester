@@ -62,6 +62,8 @@ init_strattester_dvars()
     // HUD dvars
     init_dvar("st_hud_total_timer", "1");
     init_dvar("st_hud_round_timer", "1");
+    init_dvar("st_hud_sph_on", "0");
+    init_dvar("st_hud_kills_per_shot_on", "0");
     init_dvar("st_drawsprint", "0");
     init_dvar("st_hud_zone_health_bar", "none");
 
@@ -104,7 +106,7 @@ init_strattester_client_dvars()
     {
         players[i] init_client_dvar("st_hud_enemy_counter_value", "0");
         players[i] init_client_dvar("st_hud_sph", "0");
-        players[i] init_client_dvar("st_hud_tesla_kills", "0");
+        players[i] init_client_dvar("st_hud_kills_per_shot", "0");
         players[i] init_client_dvar("st_hud_zone_name", "");
         players[i] init_client_dvar("st_hud_health_bar_value", "100");
         players[i] init_client_dvar("st_hud_health_bar_width", "100");

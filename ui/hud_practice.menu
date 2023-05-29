@@ -90,20 +90,19 @@
 
 		itemDef 
 		{
-			name				"tesla_text"
+			name				"kills_text"
 			type				ITEM_TYPE_TEXT
 			rect 				4 2 0 0		
 			exp					rect Y( 2 + (dvarInt(st_hud_enemy_counter_on)) * 15 + (dvarInt(st_hud_sph_on)) * 15 )
-			exp 				text(locString("MOD_TESLA") + dvarString("st_hud_tesla_kills"))		//multiple exp's (expressions?) can be defined for different functions
+			exp 				text(locString("MOD_KILLS_PER_SHOT") + dvarString("st_hud_kills_per_shot"))		//multiple exp's (expressions?) can be defined for different functions
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
-			visible				when(dvarInt(st_hud_tesla_on) > 0)
+			visible				when(dvarInt(st_hud_kills_per_shot_on) > 0)
 			decoration
 		}
-		
 	}
 
 	menuDef 
