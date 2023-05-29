@@ -1908,7 +1908,6 @@ onPlayerSpawned()
 				level.chest_moves = 1;
 				self thread watch_for_trade();
 
-				//self thread hud_health_bar();
 				self thread give_player_perks();
 				self thread maps\_strattester_weapons::give_player_weapons();
 				self thread zone_hud();
@@ -7706,103 +7705,13 @@ enable_traps_five()
 
 build_trap()
 {
-
 	self notify( "trigger", get_players()[0] );
 	wait( 1 );
 
 }
 
-hud_health_bar()
+hud_game_time()
 {
-	self endon("disconnect");
-	self endon("end_game");
-
-	width = 113;
-	height = 7;
-
-	barElemBackround = create_hud( "left", "bottom");
-	barElemBackround.x = 0;
-	barElemBackround.y = -100;
-	barElemBackround.width = width + 2;
-	barElemBackround.height = height + 2;
-	barElemBackround.foreground = 0;
-	barElemBackround.shader = "black";
-	barElemBackround setShader( "black", width + 2, height + 2 );
-
-	barElem = create_hud( "left", "bottom");
-	barElem.x = 1;
-	barElem.y = -101;
-	barElem.width = width;
-	barElem.height = height;
-	barElem.foreground = 1;
-	barElem.shader = "white";
-	barElem setShader( "white", width, height );
-
-	health_text = create_hud( "left", "bottom");
-	health_text.x = 49;
-	health_text.y = -107;
-	health_text.fontScale = 1.3;
-
-	while (1)
-	{
-		if( getDvarInt( "hud_health_bar" ) == 0 )
-		{	
-			if(barElem.alpha != 0)
-			{
-				barElem.alpha = 0;
-				barElemBackround.alpha = 0;
-				health_text.alpha = 0;
-			}
-		}
-		else
-		{
-			barElem updateHealth(self.health / self.maxhealth);
-			health_text setValue(self.health);
-
-			if( is_true( self.waiting_to_revive ) || self maps\_laststand::player_is_in_laststand() )
-			{
-				barElem.alpha = 0;
-				barElemBackround.alpha = 0;
-				health_text.alpha = 0;
-
-				wait 0.05;
-				continue;
-			}
-
-			if ( health_text.alpha != 0.8 )
-	        {
-	            barElem.alpha = 0.75;
-	            barElemBackround.alpha = 0.75;
-				health_text.alpha = 0.8;
-	        }
-    	}
-		wait 0.05;
-	}
-}
-
-updateHealth( barFrac )
-{
-	barWidth = int(self.width * barFrac);
-	self setShader( self.shader, barWidth, self.height );
-}
-
-create_hud( side, top )
-{
-	hud = NewClientHudElem( self );
-	hud.horzAlign = side;
-	hud.vertAlign = top;
-	hud.alignX = side;
-	hud.alignY = top;
-	hud.alpha = 0;
-	hud.fontscale = 1.3;
-	hud.color = ( 1.0, 1.0, 1.0 );
-	hud.hidewheninmenu = 1;
-
-	return hud;
-}
-
-hud_game_time() {
-
 	level waittill("fade_introblack");
 
 	level thread game_time();
