@@ -7719,11 +7719,9 @@ hud_game_time()
 }
 
 game_time() {
-	//GameTime
-
 	level endon("intermission");
 
-	level.total_time = 3600;
+	level.total_time = 0;
 
 	while(1) {
 		level.total_time++;

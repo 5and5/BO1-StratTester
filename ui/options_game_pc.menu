@@ -391,14 +391,13 @@
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_HUD_OPTIONS", when(dvarString("ui_options_game_popup") == "hud_options") )
 		
-		CHOICE_DVARFLOATLIST_VIS( 1, "@MOD_HUD_TIMER", st_hud_timer, { "@MOD_ON" 1 "@MOD_OFF" 0 }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
-		CHOICE_DVARSTRINGLIST_VIS( 2, "@MOD_SPRINT", st_drawsprint, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
-		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_ZONE_HEALTH", st_hud_zone_health_bar, { "@MOD_NONE"; "none"; "@MOD_HEALTH"; "health"; "@MOD_ZONE"; "zone"; "@MOD_BOTH"; "both" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
-		CHOICE_DVARSTRINGLIST_VIS( 4, "@REIMAGINED_ENEMY_COUNTER", st_hud_enemy_counter_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
-		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_HUD_SPH", st_hud_sph_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
+		CHOICE_DVARFLOATLIST_VIS( 1, "@MOD_HUD_TOTAL_TIMER", st_hud_total_timer, { "@MOD_ON" 1 "@MOD_OFF" 0 }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
+		CHOICE_DVARFLOATLIST_VIS( 2, "@MOD_HUD_ROUND_TIMER", st_hud_round_timer, { "@MOD_ON" 1 "@MOD_OFF" 0 }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
+		CHOICE_DVARSTRINGLIST_VIS( 3, "@MOD_SPRINT", st_drawsprint, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
+		CHOICE_DVARSTRINGLIST_VIS( 4, "@MOD_ZONE_HEALTH", st_hud_zone_health_bar, { "@MOD_NONE"; "none"; "@MOD_HEALTH"; "health"; "@MOD_ZONE"; "zone"; "@MOD_BOTH"; "both" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
+		CHOICE_DVARSTRINGLIST_VIS( 5, "@REIMAGINED_ENEMY_COUNTER", st_hud_enemy_counter_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
+		CHOICE_DVARSTRINGLIST_VIS( 6, "@MOD_HUD_SPH", st_hud_sph_on, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "hud_options"))
 				
-		//CHOICE_DVARFLOATLIST_VIS( 6, "@MOD_HUD_ZOMBIES_STATS", hud_zombies_stats, { "NONE" 0 "MINIMAL" 1 "DETAILED" 2}, ;, when(dvarString("ui_options_game_popup") == "hud_options") )
-			
 
 		// ROUND OPTIONS
 
@@ -525,6 +524,7 @@
 			"@MENU_NO_CAPS" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "initial_box_locations") )
 
+
 		// PERK OPTIONS
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_PERK_DROP_OPTIONS", when(dvarString("ui_options_game_popup") == "perk_drop_options") )
@@ -559,6 +559,7 @@
 			"@MOD_OFF" 0 "2000" 2000 "5000" 5000 "10000" 10000 "20000" 20000 "30000" 30000 "50000" 50000 "100000" 100000 "250000" 250000
 		}, ;, when(dvarString("ui_options_game_popup") == "perk_drop_options" && dvarInt(st_disable_powerups) == 0))
 
+
 		// GAME OPTIONS
 
 		POPUP_TITLE_VIS( 90 10 120 80, "@MOD_GAME_OPTIONS", when(dvarString("ui_options_game_popup") == "game_options") )
@@ -569,6 +570,7 @@
 		CHOICE_DVARSTRINGLIST_VIS(4, "@MOD_WINDOWS_OPEN", st_open_windows, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		CHOICE_DVARSTRINGLIST_VIS(5, "@MOD_BACKSPEED_ENABLED", st_backspeed_fix, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
 		CHOICE_DVARSTRINGLIST_VIS(6, "@MOD_INFINITE_AMMO", st_ammo_refill, { "@MOD_ON"; "1"; "@MOD_OFF"; "0" }, ;, when(dvarString("ui_options_game_popup") == "game_options"))
+
 
 		// WEAPON OPTIONS
 

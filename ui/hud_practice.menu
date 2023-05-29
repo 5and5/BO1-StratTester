@@ -167,9 +167,25 @@
 
 		itemDef
 		{
+			name				"total_timer"
+			type				ITEM_TYPE_TEXT
+			rect 				-4 2 0 0
+			exp					rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + 25)
+			forecolor			1 1 1 1
+			textscale			TEXTSIZE_DEFAULT
+			textstyle			ITEM_TEXTSTYLE_SHADOWED
+			textfont			UI_FONT_NORMAL
+			textalign			ITEM_ALIGN_TOP_RIGHT
+			exp 				text(locString("MOD_GAME_TIME") + dvarString("hud_total_time"))
+			visible				when(dvarInt(st_hud_total_timer) > 0 )
+			decoration
+		}
+
+		itemDef
+		{
 			name		"round_timer"
 			rect 		-4 2 0 0
-			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + 25)
+			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + (dvarInt("st_hud_total_timer") * 13) + 25)
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED
@@ -177,8 +193,8 @@
 			textfont	UI_FONT_NORMAL
 			textalign	ITEM_ALIGN_TOP_RIGHT
 			exp			text(locString("MOD_ROUND_TIME") + dvarString("hud_round_time"))
-			visible 	when(dvarInt(st_hud_timer) > 0)
-			visible		1	
+			visible 	when(dvarInt(st_hud_round_timer) > 0)	
+			decoration
 		}
 	}
 
