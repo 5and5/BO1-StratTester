@@ -50,24 +50,27 @@
 		fadeAmount						.1
 	}
 
+	#define HUD_OFFSET 13.5
+
 	menuDef
 	{
 		name				"practice_stats"
-		rect				0 50 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x-pos y-pos width height horizontal_alignment vertical_alignmnet
+		rect				4 2 0 0 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_TOP //x-pos y-pos width height horizontal_alignment vertical_alignmnet
 		fullscreen			0
-		visible				1 
+		visible				1
 
 		itemDef
 		{
 			name				"enemy_counter_text"
 			type				ITEM_TYPE_TEXT
-			rect 				4 2 0 0			
+			rect 				0 0 0 0			
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
 			textstyle			ITEM_TEXTSTYLE_SHADOWED
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_LEFT
 			exp 				text(locString("MOD_ENEMIES_REMAINING") + dvarString("st_hud_enemy_counter_value"))	
+			exp 				rect Y(dvarInt(st_hud_command_print_offset) * 50)
 			visible				when(dvarInt(st_hud_enemy_counter_on) > 0)
 			decoration
 		}
@@ -76,8 +79,8 @@
 		{
 			name				"sph_text"
 			type				ITEM_TYPE_TEXT
-			rect 				4 2 0 0		
-			exp					rect Y( 2 + (dvarInt(st_hud_enemy_counter_on) ) * 15 )
+			rect 				0 0 0 0		
+			exp					rect Y((dvarInt(st_hud_command_print_offset) * 50) + (dvarInt(st_hud_enemy_counter_on) ) * HUD_OFFSET )
 			exp 				text(locString("MOD_SPH") + dvarString("st_hud_sph"))		//multiple exp's (expressions?) can be defined for different functions
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
@@ -92,8 +95,8 @@
 		{
 			name				"kills_text"
 			type				ITEM_TYPE_TEXT
-			rect 				4 2 0 0		
-			exp					rect Y( 2 + (dvarInt(st_hud_enemy_counter_on)) * 15 + (dvarInt(st_hud_sph_on)) * 15 )
+			rect 				0 0 0 0		
+			exp					rect Y((dvarInt(st_hud_command_print_offset) * 50) + (dvarInt(st_hud_enemy_counter_on)) * HUD_OFFSET + (dvarInt(st_hud_sph_on)) * HUD_OFFSET )
 			exp 				text(locString("MOD_KILLS_PER_SHOT") + dvarString("st_hud_kills_per_shot"))		//multiple exp's (expressions?) can be defined for different functions
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
@@ -146,14 +149,14 @@
 	menuDef 
 	{
 		name			"mod_timers"
-		rect 			0 0 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
+		rect 			-4 2 0 0 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_TOP
 		fullscreen		0
 		visible			1
 
 		itemDef 
 		{
 			name		"strat_tester_version"
-			rect 		-4 2 0 0
+			rect 		0 0 0 0
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED
@@ -169,7 +172,7 @@
 		{
 			name				"total_timer"
 			type				ITEM_TYPE_TEXT
-			rect 				-4 2 0 0
+			rect 				0 0 0 0
 			exp					rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + 25)
 			forecolor			1 1 1 1
 			textscale			TEXTSIZE_DEFAULT
@@ -184,8 +187,8 @@
 		itemDef
 		{
 			name		"round_timer"
-			rect 		-4 2 0 0
-			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + (dvarInt("st_hud_total_timer_on") * 13) + 25)
+			rect 		0 0 0 0
+			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + (dvarInt("st_hud_total_timer_on") * HUD_OFFSET) + 25)
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED
