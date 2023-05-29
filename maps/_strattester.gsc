@@ -60,12 +60,13 @@ init_strattester_dvars()
     init_dvar("st_finish_round", "0", true);  // With this doesn't matter what value, can be either 0 or 1, watcher is the most important
 
     // HUD dvars
-    init_dvar("st_hud_total_timer", "1");
-    init_dvar("st_hud_round_timer", "1");
+    init_dvar("st_hud_total_timer_on", "1");
+    init_dvar("st_hud_round_timer_on", "1");
+    init_dvar("st_hud_enemy_counter_on", "0");
     init_dvar("st_hud_sph_on", "0");
     init_dvar("st_hud_kills_per_shot_on", "0");
-    init_dvar("st_drawsprint", "0");
     init_dvar("st_hud_zone_health_bar", "none");
+    init_dvar("st_hud_drawsprint", "0");
 
     // Weapon dvars
     init_dvar("st_weapon_preset", "highround", true);

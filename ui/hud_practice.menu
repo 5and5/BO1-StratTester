@@ -109,7 +109,7 @@
 	{
 		name "sprintMeter"
 		fullScreen MENU_FALSE
-		visible when(dvarInt(st_drawsprint) > 0)
+		visible when(dvarInt(st_hud_drawsprint) > 0)
 		rect 0 0 40 10 HORIZONTAL_ALIGN_CENTER VERTICAL_ALIGN_CENTER
 
 		itemDef 
@@ -125,7 +125,7 @@
 			decoration
 			exp rect W(62 * (dvarInt("has_longersprint") + 1))
 			exp rect X(-62 * (dvarInt("has_longersprint") + 1) / 2)
-			exp rect Y(30 + ((dvarInt(st_drawsprint) - 1) * 135))
+			exp rect Y(30 + ((dvarInt(st_hud_drawsprint) - 1) * 135))
 		}
 
 		itemDef 
@@ -139,7 +139,7 @@
 			ownerdraw CG_PLAYER_SPRINT_METER
 			decoration
 			exp rect X(-60 * (dvarInt("has_longersprint") + 1) / 2)
-			exp rect Y(30 + ((dvarInt(st_drawsprint) - 1) * 135) + 1)
+			exp rect Y(30 + ((dvarInt(st_hud_drawsprint) - 1) * 135) + 1)
 		}
 	}
 
@@ -177,7 +177,7 @@
 			textfont			UI_FONT_NORMAL
 			textalign			ITEM_ALIGN_TOP_RIGHT
 			exp 				text(locString("MOD_GAME_TIME") + dvarString("hud_total_time"))
-			visible				when(dvarInt(st_hud_total_timer) > 0 )
+			visible				when(dvarInt(st_hud_total_timer_on) > 0 )
 			decoration
 		}
 
@@ -185,7 +185,7 @@
 		{
 			name		"round_timer"
 			rect 		-4 2 0 0
-			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + (dvarInt("st_hud_total_timer") * 13) + 25)
+			exp			rect Y(2 + (dvarInt("cg_drawFPS") * 18) + (dvarInt("cg_drawFPS") * dvarInt("onlinegame") * 9) + (dvarInt("st_hud_total_timer_on") * 13) + 25)
 			forecolor 	1 1 1 1
 			type 		ITEM_TYPE_TEXT
 			textstyle	ITEM_TEXTSTYLE_SHADOWED
@@ -193,7 +193,7 @@
 			textfont	UI_FONT_NORMAL
 			textalign	ITEM_ALIGN_TOP_RIGHT
 			exp			text(locString("MOD_ROUND_TIME") + dvarString("hud_round_time"))
-			visible 	when(dvarInt(st_hud_round_timer) > 0)	
+			visible 	when(dvarInt(st_hud_round_timer_on) > 0)	
 			decoration
 		}
 	}
