@@ -34,6 +34,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Remove out of playable area death barriers 
 
 ### HUD
+- Total Timer
 - Round Timer
 - Zombies remaining
 - Seconds Per Horde (measured every second)
@@ -52,12 +53,14 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
     - If you want to start on a round that is not in the options, you can do so with `/st_round_number <number>` and restarting.
 - Set a delay to navigate to where you need to start the round at game start
     - You can set a custom delay by typing `/st_round_start_delay <number>`
-- Toggle whether round has insta-kill like behavior or not (useful if you want to practice on rounds lower than 163)
+- Toggle the behavior of insta-kill rounds (either leave as is, or force enable / disable them for each round), useful for practicing round 163
 - Set the number of zombies per horde (useful for getting accurate SPH's on maps like COTD or Moon where there are only 23 normal zombies per horde due to a persistent boss holding the 24th slot).
 - Select the frequency of special rounds between every round, every 4 rounds every 5 rounds, or every 4/5 rounds (vanilla)
+- Finish the round - This is not a toogleable option. Click on it to instantly finish the current round (will not work for special rounds like dogs or monkeys and will not kill special zombies like George or Astronaut)
 
 ### Box Settings
 - Allow the box to roam from a particular location
+- Force perfect trades
 - Set a specific box location to practice hitting from
 
 ### Perks & Drops
@@ -67,13 +70,22 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Toggle whether Carpenters, Fire Sales, or Death Machines spawn at an individual level
 
 ### Game Settings
-- Enable/disable graphic content on the fly
 - Enable/disbale Mule Kick on a map
 - Turn on/off the power at start
 - Open doors on start (this tries to keep some common high-round doors closed, so you can leave this on unless you're testing a certain strategy that requires a more unique door setup)
-- Destroy all barriers on spawn 
+- Destroy all barriers on spawn
+- Enable / Disable fixed backwards speed
+- Enable / Disable infinite ammo
 - Give weapons needed to perform a high-round game (typically the wonder-weapon, tactical grenade, and other weapons typically used in a high round game).
 - Show average amount of zombies killed by each Wunderwaffe shot (Der Riese only)
+
+### Weapon Options
+- Toggle if weapons are given on spawn
+- Toggle if melee weapon (Bowie / Sickle) is given on spawn
+- Toggle if mines (Claymore / Betty / Spikemore) is given on spawn
+- Toggle if tacticals are given on spawn (Monkeys, Gershes etc.)
+- Toggle if weapon overrides from the config are used
+- Set weapon preset (check section [weapon presets](https://github.com/5and5/BO1-StratTester#weapon-presets))
 
 ### Map Options
 - Set specific windows on Five
@@ -83,12 +95,35 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Disable George Romero
 - Disable nova crawlers on Kino, Moon & Five
 - Disable special zombies on Shang
+- Show kills per shot
 
-Missing a crucial feature for you to get better at the game? We are open to requests!
+### Weapon presets
+
+Players (host only on coop games) can now select weapon preset. Weapon preset will set players current weapons. Changing preset mid-game will result in instant weapon change for all the players. Complete list of presets and what they do for each of the maps will be available soon!
+
+Additionally to presets, host can set weapon overrides in his config to give players specific weapons upon spawn (this cannot be changed mid game!). For that to happen, entry in the config similar to this is required
+
+```seta st_0_wpn1 "commando_upgraded_zm"```
+
+Where `st_` is always there, that's strattester prefix.
+
+Number `0` is a player ID. If you want to give this weapon to white player, set that to `0`, for blue player to `1`, for yellow player to `2`, for green player to `3`.
+
+Fragment `wpn1` specifies which weapon it is, available options are `wpn1`, `wpn2` and `wpn3`, where `wpn3` will only be applied if perk settings award players mule kick.
+
+Value of this entry must be a valid weapon code (full list of weapon codes will be available soon!), and weapon must be available on the map player wants to use weapon override on. If the code is not a valid weapon for a map, a weapon from the current preset will be used instead.
+
+To specify tactical grenade (for maps like Ascension or Moon where there are more than one tactical grenades) use entry
+
+```st_0_tact "1"```
+
+Where value specifies the number of a grenade. `1` for Monkeys, `2` for Gersh, `3` for Dools and `4` for QED.
+
+**Missing a crucial feature for you to get better at the game? We are open to requests!**
 
 # Cheats
 
-### List of Useful Cheats
+## List of Useful Cheats
 
 - `/god` godmode
 - `/demigod` godmode but you still get hit
@@ -100,7 +135,7 @@ Missing a crucial feature for you to get better at the game? We are open to requ
 - `/where` print "x y z" coordinates
 - `/setviewpos x y z` teleport to "x y z" coordinates
 
-### List of Useful Binds
+## List of Useful Binds
 Add to the strat tester config (Call of Duty Black Ops\players\mods\Strat Tester\config.cfg)
 
 - `bind F1 "god"` binds godmode to F1
@@ -109,7 +144,7 @@ Add to the strat tester config (Call of Duty Black Ops\players\mods\Strat Tester
 - `bind F4 "toggle timescale 5 1"` binds 5x timescale toggle to F4
 - `bind F8 "give m16_gl_upgraded_zm"` binds give upgraded m16 to F8
 
-### List of Weapon Commands (host only)
+## List of Weapon Commands (host only)
 Remove the "upgraded" for none papped version
 
 - `/give explosive_bolt_upgraded_zm` Upgraded crossbow
@@ -134,16 +169,19 @@ You can edit the code to implement whatever featuers you desire using your favor
 When you've made your changes, submit a pull request to the repo to be reviewed/tested.
 
 # Credits
+
 ## Direct Contributors
+
 - TTS4life 
 
 - 5and5 
 
 - lveez 
 
-- Zi0MiX 
+- Zi0
 
 ## Others
+
 Porterico - Initial mod for Five Windows being set
 
 JBleezy - Reimagined/Code references
