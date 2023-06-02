@@ -801,6 +801,12 @@
 			"@MOD_DISABLED" 0
 		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_moon"  ) )
 
+		CHOICE_DVARSTRINGLIST_VIS(1, "@MOD_START_ROCKET", st_start_rocket, { 
+			"@MOD_ENABLED"; "1"; 
+			"@MOD_DISABLED"; "0" 
+		}, ;, when(dvarString("ui_options_game_popup") == "map_options" && dvarString("mapname") == "zombie_cosmodrome"))
+
+
 
 
 		#undef CHOICE_TEXT_OFFSET_X

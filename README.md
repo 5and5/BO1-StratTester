@@ -96,6 +96,7 @@ For those who prefer a video guide, [click here](https://www.youtube.com/watch?v
 - Disable nova crawlers on Kino, Moon & Five
 - Disable special zombies on Shang
 - Show kills per shot
+- Enable forced rocket launch on Ascension
 
 ### Weapon presets
 

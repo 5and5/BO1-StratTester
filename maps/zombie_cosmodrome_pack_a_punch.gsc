@@ -33,7 +33,7 @@ pack_a_punch_main()
 pack_a_punch_activate()
 {
 	
-	if(getdvar("rocket_test") != "" )
+	if (maps\zombie_cosmodrome_strattester::override_rocket_sequence())
 	{
 		flag_set("lander_a_used");
 		flag_set("lander_b_used");
@@ -50,9 +50,14 @@ pack_a_punch_activate()
 	
 	wait(4);
 	
-	//flag_set("launch_activated");
-
-	flag_wait("launch_complete");
+	if (!maps\zombie_cosmodrome_strattester::override_rocket_sequence())
+		flag_wait("launch_complete");
+	else
+	{
+		/* This is enough to prevent infinite smoke bug, but may need tuning if any more issues occur */
+		wait 30;
+		flag_set("launch_activated");
+	}
 	
 	pack_print( "punch activate" );
 	//clientnotify( "pl1" );
@@ -95,13 +100,15 @@ this happens as each of the landers is ridden
 ------------------------------------*/
 rocket_launch_preparation()
 {
-
-	level waittill("new_lander_used");
-	
-	//steam, etc...
-	exploder(5601);
-	
-	level waittill("new_lander_used");
+	if (!maps\zombie_cosmodrome_strattester::override_rocket_sequence())
+	{
+		level waittill("new_lander_used");
+		
+		//steam, etc...
+		exploder(5601);
+		
+		level waittill("new_lander_used");
+	}
 	
 	wait(6);
 	
@@ -187,7 +194,8 @@ launch_rocket()
 	//level thread maps\zombie_cosmodrome_amb::play_cosmo_announcer_vox( "vox_ann_landers_used" );
 	
 	//light setmodel("zombie_zapper_cagelight_green");
-	self waittill("trigger",who);
+	if (!maps\zombie_cosmodrome_strattester::override_rocket_sequence())
+		self waittill("trigger",who);
 	
 	panel PlaySound( "zmb_comp_activate" );
 	level thread maps\zombie_cosmodrome_amb::play_cosmo_announcer_vox( "vox_ann_launch_button" );
