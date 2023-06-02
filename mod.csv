@@ -20,6 +20,7 @@ rawfile,maps/_zombiemode_zone_manager.gsc
 
 //MAP SPECIFIC SCRITPS
 rawfile,maps/zombie_cosmodrome.gsc
+rawfile,maps/zombie_cosmodrome_pack_a_punch.gsc
 rawfile,maps/zombie_coast.gsc
 rawfile,maps/zombie_coast_water.gsc
 rawfile,maps/zombie_moon.gsc
