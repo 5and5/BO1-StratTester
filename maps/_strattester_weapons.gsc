@@ -332,14 +332,19 @@ refill_ammo()
 
     while (true)
     {
-        if (getDvar("st_ammo_refill") == "1")
-        {
-            guns = self getWeaponsListPrimaries();
+        if (getDvar("st_ammo_refill") == "1" && !is_true(maps\_laststand::player_is_in_laststand()))
+        {    
+            guns = self GetWeaponsList();
+
+            self notify("zmb_max_ammo");
+            self notify("zmb_lost_knife");
+            self notify("zmb_disable_claymore_prompt");
+            self notify("zmb_disable_spikemore_prompt");
 
             for (i = 0; i < guns.size; i++)
                 self giveMaxAmmo(guns[i]);
         }
 
-        wait 0.25;
+        wait 0.4;
     }
 }
