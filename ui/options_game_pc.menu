@@ -508,12 +508,6 @@
 			"@MOD_MP40_BOX"; "chest1"
 		}, ;, when( (dvarString("ui_options_game_popup") == "initial_box_locations") && dvarString("mapname") == "zombie_cod5_factory" ))
 
-		CHOICE_DVARSTRINGLIST_VIS( 5, "@MOD_CURRENT_BOX_LOCATION", st_zombie_cod5_prototype_boxlocation, {
-			"THOMPSON"; "2";
-			"@REIMAGINED_INITIAL_MAGICBOX_ZOMBIE_PROTOTYPE"; "3"
-		}, ;, when( (dvarString("ui_options_game_popup") == "initial_box_locations") && dvarString("mapname") == "zombie_cod5_prototype" ))
-		
-
 		CHOICE_DVARFLOATLIST_VIS(1, "@MOD_MAGICBOX_MOVABLE", magic_chest_movable, {
 			"@MENU_YES_CAPS" 1
 			"@MENU_NO_CAPS" 0

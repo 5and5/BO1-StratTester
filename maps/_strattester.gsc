@@ -88,6 +88,7 @@ init_strattester_dvars()
 
     // Box dvars
     init_dvar("st_perfect_trade", "0");
+    init_dvar("st_" + level.script + "_boxlocation", "", true);
 
     // Map dvars
     init_dvar("st_zombie_pentagon_disabled_window1", "conference_ne");
