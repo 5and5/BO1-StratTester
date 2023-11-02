@@ -185,11 +185,11 @@ finish_round()
                 case "director_zombie":
                 case "ape_zombie":
                 case "monkey_zombie":
-                case "zombie_dog":
                 case "thief_zombie":
                 case "astro_zombie":
                     is_special = true;
                     break;
+                case "zombie_dog":
                 default:
                     is_special = false;
             }
