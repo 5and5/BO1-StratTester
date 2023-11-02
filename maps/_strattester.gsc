@@ -68,6 +68,7 @@ init_strattester_dvars()
     init_dvar("st_hud_kills_per_shot_on", "0");
     init_dvar("st_hud_zone_health_bar", "none");
     init_dvar("st_hud_drawsprint", "0");
+    init_dvar("st_hud_zombies_on_map_on", "0");
 
     // Weapon dvars
     init_dvar("st_weapon_preset", "highround", true);
@@ -112,6 +113,7 @@ init_strattester_client_dvars()
         players[i] init_client_dvar("st_hud_zone_name", "");
         players[i] init_client_dvar("st_hud_health_bar_value", "100");
         players[i] init_client_dvar("st_hud_health_bar_width", "100");
+        players[i] init_client_dvar("st_hud_zombies_on_map", "0");
     }
 }
 

@@ -74,11 +74,16 @@
 			if (dvarString(st_hud_tesla_on) == "")
 			{
 				setDvar st_hud_tesla_on 0;
-			}
+			}	
 
 			if(dvarString(st_hud_enemy_counter_on) == "")
 			{
 				setDvar st_hud_enemy_counter_on 0;
+			}
+
+			if(dvarString(st_hud_zombies_on_map_on) == "")
+			{
+				setDvar st_hud_zombies_on_map_on 0;
 			}
 
 			if(dvarString(st_turn_power_on) == "")

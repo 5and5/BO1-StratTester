@@ -1910,6 +1910,7 @@ onPlayerSpawned()
 
 				self thread give_player_perks();
 				self thread maps\_strattester_weapons::give_player_weapons();
+				self thread maps\_strattester_hud::init();
 				self thread zone_hud();
 				self thread health_bar_hud();
 				self thread hud_zombies_remaining();

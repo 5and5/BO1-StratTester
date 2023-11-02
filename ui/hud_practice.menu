@@ -106,6 +106,22 @@
 			visible				when(dvarInt(st_hud_kills_per_shot_on) > 0)
 			decoration
 		}
+
+		itemDef
+		{
+			name				"zombies_spawned_text"
+			type				ITEM_TYPE_TEXT
+			rect 				0 0 0 0			
+			forecolor			1 1 1 1
+			textscale			TEXTSIZE_DEFAULT
+			textstyle			ITEM_TEXTSTYLE_SHADOWED
+			textfont			UI_FONT_NORMAL
+			textalign			ITEM_ALIGN_TOP_LEFT
+			exp 				text(locString("MOD_ZOMBIES_SPAWNED") + dvarString("st_hud_zombies_on_map"))	
+			exp 				rect Y((dvarInt(st_hud_command_print_offset) * 50) + (dvarInt(st_hud_enemy_counter_on)) * HUD_OFFSET + (dvarInt(st_hud_sph_on)) * HUD_OFFSET + (dvarInt(st_hud_kills_per_shot_on)) * HUD_OFFSET  )
+			visible				when(dvarInt(st_hud_zombies_on_map_on) > 0)
+			decoration
+		}
 	}
 
 	menuDef 
