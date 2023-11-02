@@ -332,14 +332,62 @@ refill_ammo()
 
     while (true)
     {
-        if (getDvar("st_ammo_refill") == "1")
-        {
-            guns = self getWeaponsListPrimaries();
+        if (getDvar("st_ammo_refill") == "1" && !is_true(maps\_laststand::player_is_in_laststand()))
+        {    
+            guns = self GetWeaponsList();
+
+            self notify("zmb_max_ammo");
+            self notify("zmb_lost_knife");
+            self notify("zmb_disable_claymore_prompt");
+            self notify("zmb_disable_spikemore_prompt");
 
             for (i = 0; i < guns.size; i++)
                 self giveMaxAmmo(guns[i]);
         }
 
-        wait 0.25;
+        wait 0.4;
     }
+}
+
+get_boxlocation_dvar()
+{
+    return "st_" + level.script + "_boxlocation";
+}
+
+watch_for_new_box_location()
+{
+    level endon("end_game");
+
+	level waittill(get_boxlocation_dvar() + "_changed");	
+    // iprintln("dvar set to: " + getDvar(maps\_strattester_weapons::get_boxlocation_dvar()));
+    level.chests[level.chest_index] hide_current_chest();
+    level.chest_accessed = 0;
+    choose_next_chest_location();
+    level.chests[level.chest_index] maps\_zombiemode_weapons::show_chest();
+    level.chests[level.chest_index] maps\_zombiemode_weapons::hide_rubble();
+    // iprintln("moving box to: " + level.chests[level.chest_index].script_noteworthy);
+
+    level thread watch_for_new_box_location();
+}
+
+choose_next_chest_location()
+{
+	for (i = 0; i < level.chests.size; i++)
+	{
+		if (level.chests[i].script_noteworthy == GetDvar(maps\_strattester_weapons::get_boxlocation_dvar()))
+		{
+			level.chest_index = i;
+			break;
+		}
+	}
+}
+
+hide_current_chest()
+{
+    /* wait for box to close before moving it -> could cause bugs if you hide it when open */
+	while (is_true(self._box_open) || flag("moving_chest_now"))
+		wait(0.05);
+	self setvisibletoall();
+	self maps\_zombiemode_weapons::hide_chest();
+	self maps\_zombiemode_weapons::show_rubble();
 }

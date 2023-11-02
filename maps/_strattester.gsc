@@ -89,6 +89,7 @@ init_strattester_dvars()
 
     // Box dvars
     init_dvar("st_perfect_trade", "0");
+    init_dvar("st_" + level.script + "_boxlocation", "", true);
 
     // Map dvars
     init_dvar("st_zombie_pentagon_disabled_window1", "conference_ne");
@@ -100,6 +101,7 @@ init_strattester_dvars()
     init_dvar("st_digger_bio", "0");
     init_dvar("st_shang_special_zombies", "0");
     init_dvar("st_astro_active", "0", true);
+    init_dvar("st_start_rocket", "0");
 }
 
 init_strattester_client_dvars()
