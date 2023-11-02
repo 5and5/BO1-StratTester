@@ -44,7 +44,7 @@ watch_for_new_box_location()	// much faster move box location
 
 	for ( ; ; )
 	{
-		if (getDvar(level.script + "_boxlocation") != "")
+		if (getDvar("st_" + level.script + "_boxlocation") != "")
 		{			
 			// iprintln("dvar set to: " + getDvar(level.script + "_boxlocation"));
 			level.chests[level.chest_index] hide_current_chest();
@@ -62,13 +62,13 @@ choose_next_chest_location()	// sets the correct chest index based off the dvar
 {
 	for (i = 0; i < level.chests.size; i++)
 	{
-		if (level.chests[i].script_noteworthy == GetDvar(level.script + "_boxlocation"))
+		if (level.chests[i].script_noteworthy == GetDvar("st_" + level.script + "_boxlocation"))
 		{
 			level.chest_index = i;
 			break;
 		}
 	}
-	SetDvar(level.script + "_boxlocation", "");
+	SetDvar("st_" + level.script + "_boxlocation", "");
 }
 
 hide_current_chest()
