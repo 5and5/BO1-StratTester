@@ -147,6 +147,7 @@ main()
 	level thread maps\_strattester::finish_round();
 	level thread maps\_strattester::instaround_toggle_watcher();
 	level thread maps\_strattester::zombies_per_horde();
+	// level thread maps\_strattester::_watch_spawn_lock_time();
 
 	init_utility();
 	registerClientSys("client_systems");
@@ -3482,7 +3483,7 @@ round_spawning()
 	// DEBUG HACK:	
 	//max = 1;
 	old_spawn = undefined;
-//	while( level.zombie_total > 0 )
+	// while( level.zombie_total > 0 )
 	while( 1 )
 	{
 		while( get_enemy_count() >= level.zombie_ai_limit || level.zombie_total <= 0 )

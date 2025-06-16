@@ -235,3 +235,142 @@ zombies_per_horde()
         SetAILimit(level.zombie_ai_limit);
 	}
 }
+
+// _watch_spawn_lock_time()
+// {
+//     level endon("end_game");
+
+//     start = getTime();
+//     first = true;
+
+//     while (true)
+//     {
+//         wait 0.05;
+//         if (maps\_zombiemode_utility::get_enemy_count() < 24)
+//         {
+//             continue;
+//         }
+
+//         if (first)
+//         {
+//             iPrintLn("horde done spawning");
+//         }
+//         else
+//         {
+//             iPrintLn("horde done spawning in " + (getTime() - start));
+//         }
+
+//         while (maps\_zombiemode_utility::get_enemy_count() == 24)
+//         {
+//             wait 0.05;
+//         }
+
+//         horde_dead = getTime();
+//         wait 1;
+//         // iPrintLn("horde dead " + maps\_zombiemode_utility::get_enemy_count());
+//         while (!maps\_zombiemode_utility::get_enemy_count())
+//         {
+//             wait 0.05;
+//         }
+//         iprintln("failsafe time: " + (getTime() - horde_dead));
+//         first = false;
+//         start = getTime();
+//     }
+// }
+
+_trap_trackers()
+{
+    _mid_trap_hud = NewHudElem();
+	_mid_trap_hud.horzAlign = "center";
+	_mid_trap_hud.vertAlign = "top";
+	_mid_trap_hud.alignX = "right";
+	_mid_trap_hud.alignY = "middle";
+	_mid_trap_hud.y = 0;
+	_mid_trap_hud.fontScale = 1.2;
+	_mid_trap_hud.alpha = 1;
+	_mid_trap_hud.hidewheninmenu = 0;
+	_mid_trap_hud.foreground = 1;
+	_mid_trap_hud.color = (1.0, 1.0, 1.0);
+
+    _dressing_trap_hud = NewHudElem();
+	_dressing_trap_hud.horzAlign = "center";
+	_dressing_trap_hud.vertAlign = "top";
+	_dressing_trap_hud.alignX = "right";
+	_dressing_trap_hud.alignY = "middle";
+	_dressing_trap_hud.y = 10;
+	_dressing_trap_hud.fontScale = 1.2;
+	_dressing_trap_hud.alpha = 1;
+	_dressing_trap_hud.hidewheninmenu = 0;
+	_dressing_trap_hud.foreground = 1;
+	_dressing_trap_hud.color = (1.0, 1.0, 1.0);
+
+    _fire_trap_hud = NewHudElem();
+	_fire_trap_hud.horzAlign = "center";
+	_fire_trap_hud.vertAlign = "top";
+	_fire_trap_hud.alignX = "right";
+	_fire_trap_hud.alignY = "middle";
+	_fire_trap_hud.y = 10;
+	_fire_trap_hud.fontScale = 1.2;
+	_fire_trap_hud.alpha = 1;
+	_fire_trap_hud.hidewheninmenu = 0;
+	_fire_trap_hud.foreground = 1;
+	_fire_trap_hud.color = (1.0, 1.0, 1.0);
+
+    _mid_trap_kills = 0;
+    _dressing_trap_kills = 0;
+    _fire_trap_kills = 0;
+
+    while (true)
+    {
+        switch (waittill_any_return("_trap_mid_kill", "_trap_dressing_kill", "_trap_fire_kill"))
+        {
+            case "_trap_mid_kill":
+                _mid_trap_kills++;
+                _mid_trap setValue(_mid_trap_kills);
+                break;
+            case "_trap_dressing_kill":
+                _dressing_trap_kills++;
+                _dressing_trap_hud setValue(_dressing_trap_kills);
+                break;
+            case "_trap_fire_kill":
+                _fire_trap_kills++;
+                _fire_trap_hud setValue(_fire_trap_kills);
+                break;
+        }
+    }
+}
+
+waittill_any_return( string1, string2, string3, string4, string5, string6 )
+{
+	if ((!IsDefined (string1) || string1 != "death") &&
+		(!IsDefined (string2) || string2 != "death") &&
+		(!IsDefined (string3) || string3 != "death") &&
+		(!IsDefined (string4) || string4 != "death") &&
+		(!IsDefined (string5) || string5 != "death") &&
+		(!IsDefined (string6) || string6 != "death"))
+		self endon ("death");
+
+	ent = SpawnStruct();
+
+	if (IsDefined(string1))
+		self thread waittill_string(string1, ent);
+
+	if (IsDefined(string2))
+		self thread waittill_string(string2, ent);
+
+	if (IsDefined(string3))
+		self thread waittill_string(string3, ent);
+
+	if (IsDefined(string4))
+		self thread waittill_string(string4, ent);
+
+	if (IsDefined(string5))
+		self thread waittill_string(string5, ent);
+
+	if (IsDefined(string6))
+		self thread waittill_string(string6, ent);
+
+	ent waittill ("returned", msg);
+	ent notify ("die");
+	return msg;
+}
