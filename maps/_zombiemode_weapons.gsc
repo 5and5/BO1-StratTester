@@ -46,7 +46,7 @@ watch_for_new_box_location()	// much faster move box location
 	{
 		if (getDvar("st_" + level.script + "_boxlocation") != "")
 		{			
-			iprintln("dvar set to: " + getDvar("st_" + level.script + "_boxlocation"));
+			// iprintln("dvar set to: " + getDvar("st_" + level.script + "_boxlocation"));
 			level.chests[level.chest_index] hide_current_chest();
 			level.chest_accessed = 0;
 			choose_next_chest_location();
