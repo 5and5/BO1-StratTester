@@ -15,6 +15,11 @@ spawn_strattester_player()
     self.strattester.weapon3 = weapons_array["wpn3"];
     self.strattester.tactical = maps\_strattester_weapons::get_tactical_pointer(tactical_id);
 
+    self.st_grenades_thrown = 0;
+
+    self throwaway_grenade_hud();
+    self thread watch_grenade_pull();
+
     // debug_print("weapon1: " + self.strattester.weapon1);
     // debug_print("weapon2: " + self.strattester.weapon2);
     // debug_print("weapon3: " + self.strattester.weapon3);
@@ -23,6 +28,7 @@ spawn_strattester_player()
 init_levelvars()
 {
     level.st_version = "2.4";
+    level.st_grenades_thrown = 0;
 }
 
 init_dvar(dvar, def, set_watcher)
@@ -73,6 +79,7 @@ init_strattester_dvars()
     init_dvar("st_hud_kills_per_shot_on", "0");
     init_dvar("st_hud_zone_health_bar", "none");
     init_dvar("st_hud_drawsprint", "0");
+    init_dvar("st_grenade_hud", "0");
 
     // Weapon dvars
     init_dvar("st_weapon_preset", "highround", true);
@@ -118,6 +125,8 @@ init_strattester_client_dvars()
         players[i] init_client_dvar("st_hud_zone_name", "");
         players[i] init_client_dvar("st_hud_health_bar_value", "100");
         players[i] init_client_dvar("st_hud_health_bar_width", "100");
+        players[i] init_client_dvar("st_grenades_thrown", "0");
+        players[i] init_client_dvar("st_global_grenades_thrown", "0");
     }
 }
 
@@ -240,4 +249,110 @@ zombies_per_horde()
         level.zombie_ai_limit = getDvarInt("st_zombies_per_horde");
         SetAILimit(level.zombie_ai_limit);
 	}
+}
+
+watch_grenade_pull()
+{
+    level endon("end_game");
+    self endon("disconnect");
+
+    while (true)
+    {
+        self waittill ("grenade_pullback", weaponName);
+
+        // iPrintLn(weaponName);
+        switch (weaponName)
+        {
+            case "claymore_zm":
+            case "spikemore_zm":
+            case "mine_bouncing_betty":
+            case "zombie_cymbal_monkey":
+            case "zombie_nesting_dolls":
+            case "zombie_black_hole_bomb":
+                break;
+            default:
+                increment_grenades_thrown();
+        }
+    }
+}
+
+increment_grenades_thrown()
+{
+    if (!isdefined(self.st_grenade_hud))
+    {
+        self throwaway_grenade_hud();
+    }
+
+    level.st_grenades_thrown++;
+    self.st_grenades_thrown++;
+
+    // For the future, if put into menus
+    self setClientDvar("st_global_grenades_thrown", level.st_grenades_thrown);
+    self setClientDvar("st_grenades_thrown", self.st_grenades_thrown);
+
+    // Current throwaway GSC hud
+    self.st_grenade_hud setValue(self.st_grenades_thrown);
+    level.st_grenade_hud setValue(level.st_grenades_thrown);
+}
+
+throwaway_grenade_hud()
+{
+    if (!isdefined(level.st_grenade_hud))
+    {
+        level.st_grenade_hud = maps\_zombiemode_utility::create_simple_hud();
+        level.st_grenade_hud.alignX = "left"; 
+        level.st_grenade_hud.alignY = "top";
+        level.st_grenade_hud.horzAlign = "user_left"; 
+        level.st_grenade_hud.vertAlign = "user_top";
+        level.st_grenade_hud.color = ( 1, 1, 1 );
+        level.st_grenade_hud.fontscale = 1.2;
+        level.st_grenade_hud.x = 0;
+        level.st_grenade_hud.y = 85;
+        level.st_grenade_hud.label = "Total nades:";
+        level.st_grenade_hud.alpha = 1;
+
+        level.st_grenade_hud setValue(level.st_grenades_thrown);
+    }
+
+    self.st_grenade_hud = maps\_zombiemode_utility::create_simple_hud(self);
+    self.st_grenade_hud.alignX = "left"; 
+    self.st_grenade_hud.alignY = "top";
+    self.st_grenade_hud.horzAlign = "user_left"; 
+    self.st_grenade_hud.vertAlign = "user_top";
+    self.st_grenade_hud.color = ( 1, 1, 1 );
+    self.st_grenade_hud.fontscale = 1.2;
+    self.st_grenade_hud.x = 0;
+    self.st_grenade_hud.y = 96;
+    self.st_grenade_hud.label = "My nades:";
+    self.st_grenade_hud.alpha = 1;
+
+    self.st_grenade_hud setValue(self.st_grenades_thrown);
+
+    thread throwaway_grenade_hud_control();
+}
+
+throwaway_grenade_hud_control()
+{
+    level notify("st_kill_throwaway_grenade_hud_control");
+    level endon("st_kill_throwaway_grenade_hud_control");
+
+    while (true)
+    {
+        players = getplayers();
+
+        for (i = 0; i < players.size; i++)
+        {
+            if (isdefined(players[i].st_grenade_hud))
+            {
+                players[i].st_grenade_hud.alpha = getDvarInt("st_grenade_hud");
+            }
+        }
+
+        if (isdefined(level.st_grenade_hud))
+        {
+            level.st_grenade_hud.alpha = getDvarInt("st_grenade_hud");
+        }
+
+        wait 0.1;
+    }
 }
