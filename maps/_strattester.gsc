@@ -27,7 +27,7 @@ spawn_strattester_player()
 
 init_levelvars()
 {
-    level.st_version = "2.4";
+    level.st_version = "2.4-z1";
     level.st_grenades_thrown = 0;
 }
 
