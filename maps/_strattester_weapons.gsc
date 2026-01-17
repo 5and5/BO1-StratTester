@@ -334,7 +334,7 @@ refill_ammo()
     {
         if (getDvar("st_ammo_refill") == "1")
         {
-            guns = self getWeaponsListPrimaries();
+            guns = self GetWeaponsList();
 
             for (i = 0; i < guns.size; i++)
                 self giveMaxAmmo(guns[i]);
