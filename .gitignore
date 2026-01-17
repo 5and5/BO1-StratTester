@@ -1,6 +1,6 @@
 *.files
 *.tmp
-console.log
+*.log
 missingasset.csv
 
 weapons/sp/desktop.ini
