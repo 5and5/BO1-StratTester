@@ -20,6 +20,11 @@ spawn_strattester_player()
     // debug_print("weapon3: " + self.strattester.weapon3);
 }
 
+init_levelvars()
+{
+    level.st_version = "2.4";
+}
+
 init_dvar(dvar, def, set_watcher)
 {
     if (getDvar(dvar) == "")
@@ -106,6 +111,7 @@ init_strattester_client_dvars()
     players = get_players();
     for (i = 0; i < players.size; i++)
     {
+        players[i] setClientDvar("st_version", level.st_version);
         players[i] init_client_dvar("st_hud_enemy_counter_value", "0");
         players[i] init_client_dvar("st_hud_sph", "0");
         players[i] init_client_dvar("st_hud_kills_per_shot", "0");

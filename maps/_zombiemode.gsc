@@ -9,9 +9,7 @@
 
 main()
 {
-
-	level.strat_tester_version = "2.4";
-	setDvar("st_version", level.strat_tester_version);
+	maps\_strattester::init_levelvars();
 
 	level.player_too_many_weapons_monitor = false;
 	level.player_too_many_weapons_monitor_func = ::player_too_many_weapons_monitor;
