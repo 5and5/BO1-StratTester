@@ -1,5 +1,7 @@
 #include common_scripts\utility; 
 #include maps\_utility;
+#include maps\_zombiemode_net;
+#include maps\_zombiemode_audio;
 
 spawn_strattester_player()
 {
@@ -27,8 +29,12 @@ spawn_strattester_player()
 
 init_levelvars()
 {
-    level.st_version = "2.4-z1";
+    level.st_version = "2.4-z2";
     level.st_grenades_thrown = 0;
+    if (level.script == "zombie_cod5_asylum")
+    {
+        level.st_grenades_damage_tracking = [];
+    }
 }
 
 init_dvar(dvar, def, set_watcher)
@@ -354,5 +360,186 @@ throwaway_grenade_hud_control()
         }
 
         wait 0.1;
+    }
+}
+
+st_zombie_damage(mod, hit_location, hit_origin, player, amount)
+{
+    if( maps\_zombiemode_utility::is_magic_bullet_shield_enabled( self ) )
+    {
+        return;
+    }
+
+    //ChrisP - 12/8 - no points for killing gassed zombies!
+    player.use_weapon_type = mod;
+    if(isDefined(self.marked_for_death))
+    {
+        return;
+    }	
+
+    if( !IsDefined( player ) )
+    {
+        return; 
+    }
+
+    if ( self maps\_zombiemode_spawner::check_zombie_damage_callbacks( mod, hit_location, hit_origin, player, amount ) )
+    {
+        return;
+    }
+    else if( self maps\_zombiemode_spawner::zombie_flame_damage( mod, player ) )
+    {
+        if( self maps\_zombiemode_spawner::zombie_give_flame_damage_points() )
+        {
+            player maps\_zombiemode_score::player_add_points( "damage", mod, hit_location, self.isdog );
+        }
+    }
+    else if( self maps\_zombiemode_weap_tesla::is_tesla_damage( mod ) )
+    {
+        self maps\_zombiemode_weap_tesla::tesla_damage_init( hit_location, hit_origin, player );
+        return;
+    }
+    else
+    {
+        if ( self maps\_zombiemode_weap_freezegun::is_freezegun_damage( self.damagemod ) )
+        {
+            self thread maps\_zombiemode_weap_freezegun::freezegun_damage_response( player, amount );
+        }
+
+        // no points awarded for damage or deaths dealt by the shatter result
+        if ( !self maps\_zombiemode_weap_freezegun::is_freezegun_shatter_damage( self.damagemod ) )
+        {
+            if( maps\_zombiemode_spawner::player_using_hi_score_weapon( player ) )
+            {
+                damage_type = "damage";
+            }
+            else
+            {
+                damage_type = "damage_light";
+            }
+
+            if ( !is_true( self.no_damage_points ) )
+            {
+                player maps\_zombiemode_score::player_add_points( damage_type, mod, hit_location, self.isdog );
+            }
+        }
+    }
+
+    if ( IsDefined( self.zombie_damage_fx_func ) )
+    {
+        self [[ self.zombie_damage_fx_func ]]( mod, hit_location, hit_origin, player );
+    }
+
+    modName = maps\_zombiemode_utility::remove_mod_from_methodofdeath( mod );
+
+    if ( self maps\_zombiemode_weap_freezegun::is_freezegun_damage( self.damagemod ) )
+    {
+        ; // no scaling damage for the freezegun
+    }
+    else if( maps\_zombiemode_utility::is_placeable_mine( self.damageweapon ) )
+    {
+        if ( IsDefined( self.zombie_damage_claymore_func ) )
+        {
+            self [[ self.zombie_damage_claymore_func ]]( mod, hit_location, hit_origin, player );
+        }
+        else if ( isdefined( player ) && isalive( player ) )
+        {
+            self DoDamage( level.round_number * randomintrange( 100, 200 ), self.origin, player);
+        }
+        else
+        {
+            self DoDamage( level.round_number * randomintrange( 100, 200 ), self.origin, undefined );
+        }
+    }
+    else if ( mod == "MOD_GRENADE" || mod == "MOD_GRENADE_SPLASH" )
+    {
+        /* 
+         * This damage is calculated directly in DoDamage call in the original, 
+         * taking it out to keep the data
+         */
+        randomized = level.round_number + randomintrange(100, 200);
+        if (isdefined(level.st_grenades_damage_tracking) && level.st_grenades_damage_tracking.size < 48)
+        {
+            level.st_grenades_damage_tracking[level.st_grenades_damage_tracking.size] = randomized;
+        }
+
+        if ( isdefined( player ) && isalive( player ) )
+        {
+            self DoDamage( randomized, self.origin, player, 0, modName, hit_location);
+        }
+        else
+        {
+            self DoDamage( randomized, self.origin, undefined, 0, modName, hit_location );
+        }
+    }
+    else if( mod == "MOD_PROJECTILE" || mod == "MOD_EXPLOSIVE" || mod == "MOD_PROJECTILE_SPLASH" )
+    {
+        if ( isdefined( player ) && isalive( player ) )
+        {
+            self DoDamage( level.round_number * randomintrange( 0, 100 ), self.origin, player, 0, modName, hit_location);
+        }
+        else
+        {
+            self DoDamage( level.round_number * randomintrange( 0, 100 ), self.origin, undefined, 0, modName, hit_location );
+        }
+    }
+
+    //AUDIO Plays a sound when Crawlers are created
+    if( IsDefined( self.a.gib_ref ) && (self.a.gib_ref == "no_legs") && isalive( self ) )
+    {
+        if ( isdefined( player ) )
+        {
+            rand = randomintrange(0, 100);
+            if(rand < 10)
+            {
+                player create_and_play_dialog( "general", "crawl_spawn" );
+            }
+        }
+    }
+    else if( IsDefined( self.a.gib_ref ) && ( (self.a.gib_ref == "right_arm") || (self.a.gib_ref == "left_arm") ) )
+    {
+        if( self.has_legs && isalive( self ) )
+        {
+            if ( isdefined( player ) )
+            {
+                rand = randomintrange(0, 100);
+                if(rand < 7)
+                {
+                    player create_and_play_dialog( "general", "shoot_arm" );
+                }
+            }
+        }
+    }	
+    self thread maps\_zombiemode_powerups::check_for_instakill( player, mod, hit_location );
+}
+
+grenade_damage_tracking_printer()
+{
+    level endon("end_game");
+
+    while (true)
+    {
+        if (isdefined(level.st_grenades_damage_tracking) && level.st_grenades_damage_tracking.size)
+        {
+            table = level.st_grenades_damage_tracking;
+            level.st_grenades_damage_tracking = [];
+
+            line = "";
+            for (i = 0; i < table.size; i++)
+            {
+                if (i && i % 6 == 0)
+                {
+                    iPrintLn(line);
+                    line = "";
+                }
+                line += " " + table[i];
+            }
+
+            if (line != "")
+            {
+                iPrintLn(line);
+            }
+        }
+
+        wait 0.2;
     }
 }

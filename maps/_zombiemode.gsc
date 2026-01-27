@@ -145,6 +145,12 @@ main()
 	level thread maps\_strattester::finish_round();
 	level thread maps\_strattester::instaround_toggle_watcher();
 	level thread maps\_strattester::zombies_per_horde();
+	if (level.script == "zombie_cod5_asylum")
+	{
+		level thread maps\_strattester::grenade_damage_tracking_printer();
+	}
+
+	level.global_damage_func = maps\_strattester::st_zombie_damage;
 
 	init_utility();
 	registerClientSys("client_systems");
