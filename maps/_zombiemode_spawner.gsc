@@ -20,7 +20,7 @@ init()
 		}
 	}
  
-	array_thread(zombies, ::add_spawn_function, ::zombie_spawn_init);
+	array_thread(zombies, ::add_spawn_function, maps\_strattester::zombie_spawn_init_override);
 //MJM - No sense in automatically calling this if you're not going to do rise behavior.
 //	array_thread(zombies, ::add_spawn_function, ::zombie_rise);
 	array_thread(zombies, ::add_spawn_function, maps\_zombiemode::round_spawn_failsafe);

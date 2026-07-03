@@ -29,7 +29,7 @@ spawn_strattester_player()
 
 init_levelvars()
 {
-    level.st_version = "2.4-z2";
+    level.st_version = "2.4-z3";
     level.st_grenades_thrown = 0;
     if (level.script == "zombie_cod5_asylum")
     {
@@ -464,11 +464,11 @@ st_zombie_damage(mod, hit_location, hit_origin, player, amount)
 
         if ( isdefined( player ) && isalive( player ) )
         {
-            self DoDamage( randomized, self.origin, player, 0, modName, hit_location);
+            // self DoDamage( randomized, self.origin, player, 0, modName, hit_location);
         }
         else
         {
-            self DoDamage( randomized, self.origin, undefined, 0, modName, hit_location );
+            // self DoDamage( randomized, self.origin, undefined, 0, modName, hit_location );
         }
     }
     else if( mod == "MOD_PROJECTILE" || mod == "MOD_EXPLOSIVE" || mod == "MOD_PROJECTILE_SPLASH" )
@@ -541,5 +541,36 @@ grenade_damage_tracking_printer()
         }
 
         wait 0.2;
+    }
+}
+
+zombie_spawn_init_override(animname_set)
+{
+    self maps\_zombiemode_spawner::zombie_spawn_init(animname_set);
+
+    if (!isdefined(level.st_spawn_index))
+    {
+        level.st_spawn_index = -1;
+    }
+    level.st_spawn_index++;
+    self thread watch_health(level.st_spawn_index);
+}
+
+watch_health(i)
+{
+    level endon("end_game");
+    self endon("death");
+
+    curr_health = self.health;
+    while (true)
+    {
+        wait 0.05;
+        if (curr_health == self.health)
+        {
+            continue;
+        }
+
+        printf("health of " + i + " " + curr_health + " => " + self.health + " diff " + (curr_health - self.health));
+        curr_health = self.health;
     }
 }
